@@ -1,0 +1,16 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Install infrastructur as code dependencies",
+      "factory": "./ng-add/index",
+      "schema": "./ng-add/schema.json",
+      "hidden": true
+    },
+    "init": {
+      "description": "Initialize infrastructure as code for an application",
+      "factory": "./init/index",
+      "schema": "./init/schema.json"
+    }
+  }
+}

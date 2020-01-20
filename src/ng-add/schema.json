@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "NgAddIaC",
+  "title": "Add and install dependecies for the IaC plugin",
+  "type": "object",
+  "properties": {}
+}

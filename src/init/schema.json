@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "NgInitIaC",
+  "title": "Add IaC cloud configuration for an application",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
+    },
+    "provider": {
+      "type": "string",
+      "description": "Your cloud provider",
+      "x-prompt": {
+        "message": "Please choose your provider",
+        "type": "list",
+        "items": [
+          {
+            "label": "AWS",
+            "value": "aws"
+          },
+          {
+            "label": "Azure",
+            "value": "azure"
+          },
+          {
+            "label": "Google Cloud Platform",
+            "value": "gcp"
+          }
+        ]
+      }
+    }
+  },
+  "required": ["provider"]
+}

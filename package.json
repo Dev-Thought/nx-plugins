@@ -1,0 +1,34 @@
+{
+  "name": "@dev-thought/iac",
+  "version": "0.0.0",
+  "description": "A schematics",
+  "scripts": {
+    "prebuild": "rimraf build",
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && jest src/**/*_spec.ts"
+  },
+  "keywords": [
+    "pulumi",
+    "Infrastructure as code",
+    "IaC",
+    "terraform",
+    "schematics"
+  ],
+  "author": "Mitko Tschimev",
+  "license": "MIT",
+  "schematics": "./src/collection.json",
+  "dependencies": {
+    "@angular-devkit/core": "8.3.14",
+    "@angular-devkit/schematics": "8.3.14",
+    "@nrwl/workspace": "^8.11.2",
+    "@types/jasmine": "^3.3.9",
+    "@types/node": "^8.0.31",
+    "jasmine": "^3.3.1",
+    "rimraf": "^3.0.0",
+    "typescript": "3.5.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.9.0",
+    "jest": "^24.9.0"
+  }
+}
