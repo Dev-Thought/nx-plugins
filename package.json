@@ -1,6 +1,6 @@
 {
   "name": "@dev-thought/iac",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A schematics",
   "scripts": {
     "prebuild": "rimraf build",
@@ -16,6 +16,7 @@
   ],
   "author": "Mitko Tschimev",
   "license": "MIT",
+  "builders": "./src/builders.json",
   "schematics": "./src/collection.json",
   "dependencies": {
     "@angular-devkit/core": "8.3.14",

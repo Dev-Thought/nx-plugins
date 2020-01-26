@@ -1,0 +1,6 @@
+{
+  "id": "NgDestroySchema",
+  "title": "Destroy infrastructure",
+  "description": "Destroy the infrastructure for the app",
+  "properties": {}
+}

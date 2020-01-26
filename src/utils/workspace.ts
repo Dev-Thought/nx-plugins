@@ -14,12 +14,24 @@ export function getPulumiBinaryPath() {
 export function hasAlreadyInfrastructureProject(project: ProjectDefinition) {
   return (host: Tree, _context: SchematicContext) => {
     if (host.exists(join(project.root, 'infrastructure', 'Pulumi.yaml'))) {
-      _context.logger.error(
-        `The project ${project} already has an infrastructure setup`
-      );
-      _context.logger.error('No project path found');
+      throw new Error('This project already has an infrastructure');
     } else {
       return host;
     }
   };
+}
+
+export function getApplicationType(project: ProjectDefinition) {
+  const target = project.targets.get('build');
+  if (target) {
+    switch (target.builder) {
+      case '@angular-devkit/build-angular:browser':
+        return 'angular';
+      case '@nrwl/node:build':
+        return 'node';
+    }
+  }
+
+  // TODO: List supported build targets in documentation
+  throw new Error(`Can't find a supported build target for the project`);
 }

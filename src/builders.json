@@ -1,0 +1,15 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "builders": {
+    "deploy": {
+      "implementation": "./builders/deploy/index",
+      "schema": "./builders/deploy/schema.json",
+      "description": "Deploy infrastructure"
+    },
+    "destroy": {
+      "implementation": "./builders/destroy/index",
+      "schema": "./builders/destroy/schema.json",
+      "description": "Destroy infrstructure"
+    }
+  }
+}

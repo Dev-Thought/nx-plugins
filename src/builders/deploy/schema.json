@@ -1,0 +1,23 @@
+{
+  "id": "NgDeploySchema",
+  "title": "Deploy infrastructure",
+  "description": "Deploy the infrastructure for the app",
+  "properties": {
+    "configuration": {
+      "type": "string",
+      "default": "production",
+      "description": "A named configuration, as specified in the \"configurations\" section of angular.json",
+      "alias": "c"
+    },
+    "secretProvider": {
+      "type": "string",
+      "description": "The secret for your stack. Take a look at the documentation to find how to use cloud secrets https://www.pulumi.com/docs/reference/cli/pulumi_new/",
+      "default": "default"
+    },
+    "noBuild": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip build process during deployment"
+    }
+  }
+}

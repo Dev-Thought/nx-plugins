@@ -1,1 +1,1 @@
-export const pulumiVersion = '1.0.0';
+export const pulumiVersion = '1.0.1';

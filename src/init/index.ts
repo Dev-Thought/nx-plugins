@@ -10,12 +10,15 @@ import {
   move,
   SchematicContext,
   branchAndMerge,
-  template
+  template,
+  SchematicsException
 } from '@angular-devkit/schematics';
 import {
   readJsonInTree,
   addDepsToPackageJson,
-  getWorkspace
+  getWorkspace,
+  updateJsonInTree,
+  getWorkspacePath
 } from '@nrwl/workspace';
 import { spawnSync } from 'child_process';
 import { resolve, join } from 'path';
@@ -23,12 +26,16 @@ import { getCloudTemplateName } from '../utils/provider';
 import {
   getPulumiBinaryPath,
   getRealWorkspacePath,
-  hasAlreadyInfrastructureProject
+  hasAlreadyInfrastructureProject,
+  getApplicationType
 } from '../utils/workspace';
 import { readFileSync } from 'fs';
 import * as rimraf from 'rimraf';
-import { strings } from '@angular-devkit/core';
-import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
+import { JsonObject } from '@angular-devkit/core';
+import {
+  ProjectDefinition,
+  TargetDefinition
+} from '@angular-devkit/core/src/workspace';
 
 export default function(options: InitOptions) {
   return async (host: Tree, context: SchematicContext): Promise<Rule> => {
@@ -52,16 +59,17 @@ function initializeCloudProviderApplication(
   options: InitOptions
 ) {
   return chain([
-    generateNewTempPulumiProject(options.provider),
+    generateNewTempPulumiProject(options),
     copyTempPulumiProjectToTree(project),
     cleanupTempPulumiProject(),
-    generateInfrastructureCode(project, options)
+    generateInfrastructureCode(project, options),
+    updateProject(project, options)
   ]);
 }
 
-function generateNewTempPulumiProject(provider: string): Rule {
+function generateNewTempPulumiProject(options: InitOptions): Rule {
   return (host: Tree): Rule => {
-    let template = getCloudTemplateName(provider);
+    let template = getCloudTemplateName(options.provider);
 
     spawnSync(getPulumiBinaryPath(), [
       'new',
@@ -72,8 +80,7 @@ function generateNewTempPulumiProject(provider: string): Rule {
       '.tmp-iac',
       '--description',
       'Infrastructure as Code based on Pulumi',
-      '--generate-only',
-      '--force'
+      '--generate-only'
     ]);
     return addDependenciesFromPulumiProjectToPackageJson();
   };
@@ -144,12 +151,76 @@ function generateInfrastructureCode(
   options: InitOptions
 ) {
   return (host: Tree, context: SchematicContext) => {
-    // TODO: make aws/angular dynamic -> provder + application type
-    const templateSource = apply(url('./files/aws/angular'), [
-      move(join(project.root, 'infrastructure'))
-    ]);
+    const applicationType = getApplicationType(project);
+    const buildTarget = project.targets.get('build') as TargetDefinition;
+    const templateSource = apply(
+      url(`./files/${options.provider}/${applicationType}`),
+      [
+        template({
+          buildPath: join(
+            `../../../${(buildTarget.options as JsonObject).outputPath}`
+          ),
+          projectName: options.project
+        }),
+        move(join(project.root, 'infrastructure'))
+      ]
+    );
 
     const rule = chain([branchAndMerge(chain([mergeWith(templateSource)]))]);
     return rule(host, context);
+  };
+}
+
+export function updateProject(
+  project: ProjectDefinition,
+  options: InitOptions
+): Rule {
+  return async (host: Tree, _context: SchematicContext) => {
+    const architectOptions = {
+      main: join(project.root, 'infrastructure', 'index.ts'),
+      provider: options.provider
+    };
+    return chain([
+      updateJsonInTree(getWorkspacePath(host), json => {
+        const project = json.projects[options.project];
+
+        if (!project || !project.architect) {
+          throw new SchematicsException(
+            'An error has occured during modification of angular.json'
+          );
+        }
+        project.architect['deploy'] = {
+          builder: '@dev-thought/iac:deploy',
+          options: architectOptions
+        };
+        return json;
+      }),
+      updateJsonInTree(getWorkspacePath(host), json => {
+        const project = json.projects[options.project];
+
+        if (!project || !project.architect) {
+          throw new SchematicsException(
+            'An error has occured during modification of angular.json'
+          );
+        }
+        project.architect['destroy'] = {
+          builder: '@dev-thought/iac:destroy',
+          options: architectOptions
+        };
+        return json;
+      }),
+      // TODO: this is nx specific -> add angular compatibility
+      updateJsonInTree(join(project.root, 'tsconfig.app.json'), json => {
+        const exclude: string[] = json.exclude;
+        const excludePaths = 'infrastructure/**/*.ts';
+
+        if (!exclude) {
+          json.exclude = [excludePaths];
+        } else {
+          exclude.push(excludePaths);
+        }
+        return json;
+      })
+    ]);
   };
 }
