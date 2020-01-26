@@ -21,45 +21,13 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
 
   if (context.target) {
     const targetOptions = await context.getTargetOptions(context.target);
-    const indexTs = resolve(
-      context.workspaceRoot,
-      targetOptions.main as string
+    const cwd = dirname(
+      resolve(context.workspaceRoot, targetOptions.main as string)
     );
 
-    const result = spawnStack(dirname(indexTs), options.configuration);
-    if (result.stderr && result.stderr.toString().includes('no stack named')) {
-      spawnStack(dirname(indexTs), options.configuration, true);
-    }
+    createStackIfNotExist(cwd, options.configuration);
 
-    return await new Promise((resolve, reject) => {
-      const up = spawn(
-        getPulumiBinaryPath(),
-        ['up', '--cwd', dirname(indexTs), '--stack', options.configuration],
-        {
-          env: {
-            ...process.env,
-            PULUMI_CONFIG_PASSPHRASE: 'test',
-            AWS_PROFILE: 'cli-dev-thought'
-          }
-        }
-      );
-
-      up.stdout.on('data', data => {
-        console.log(data.toString());
-      });
-
-      up.stderr.on('data', data => {
-        console.error(`up stderr: ${data.toString()}`);
-      });
-
-      up.on('close', code => {
-        if (code !== 0) {
-          console.log(`up process exited with code ${code}`);
-          reject({ success: false });
-        }
-        resolve({ success: true });
-      });
-    });
+    return up(cwd, options.configuration);
   }
 
   return { success: false };
@@ -78,5 +46,44 @@ function spawnStack(cwd: string, configuration: string, withInit = false) {
       PULUMI_CONFIG_PASSPHRASE: 'test',
       AWS_PROFILE: 'cli-dev-thought'
     }
+  });
+}
+
+function createStackIfNotExist(cwd: string, configuration: string) {
+  const result = spawnStack(cwd, configuration);
+  if (result.stderr && result.stderr.toString().includes('no stack named')) {
+    spawnStack(cwd, configuration, true);
+  }
+}
+
+async function up(cwd: string, configuration: string) {
+  return await new Promise((resolve, reject) => {
+    const up = spawn(
+      getPulumiBinaryPath(),
+      ['up', '--cwd', cwd, '--stack', configuration],
+      {
+        env: {
+          ...process.env,
+          PULUMI_CONFIG_PASSPHRASE: 'test',
+          AWS_PROFILE: 'cli-dev-thought'
+        }
+      }
+    );
+
+    up.stdout.on('data', data => {
+      console.log(data.toString());
+    });
+
+    up.stderr.on('data', data => {
+      console.error(`up stderr: ${data.toString()}`);
+    });
+
+    up.on('close', code => {
+      if (code !== 0) {
+        console.log(`up process exited with code ${code}`);
+        reject({ success: false });
+      }
+      resolve({ success: true });
+    });
   });
 }

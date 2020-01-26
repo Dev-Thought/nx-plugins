@@ -83,7 +83,7 @@ let certificateArn: pulumi.Input<string> = config.certificateArn!;
 /**
  * Only provision a certificate (and related resources) if a certificateArn is _not_ provided via configuration.
  */
-if (config.certificateArn === undefined) {
+if (config.certificateArn === undefined && config.targetDomain) {
   const eastRegion = new aws.Provider('east', {
     profile: aws.config.profile,
     region: 'us-east-1' // Per AWS, ACM certificate must be in the us-east-1 region.
