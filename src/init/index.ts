@@ -8,7 +8,9 @@ import {
   url,
   mergeWith,
   move,
-  SchematicContext
+  SchematicContext,
+  branchAndMerge,
+  template
 } from '@angular-devkit/schematics';
 import {
   readJsonInTree,
@@ -24,21 +26,36 @@ import {
   hasAlreadyInfrastructureProject
 } from '../utils/workspace';
 import { readFileSync } from 'fs';
-import { Observable } from 'rxjs';
 import * as rimraf from 'rimraf';
+import { strings } from '@angular-devkit/core';
+import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
 
-export default function(options: InitOptions): Rule {
-  return chain([
-    hasAlreadyInfrastructureProject(options.project),
-    initializeCloudProviderApplication(options)
-  ]);
+export default function(options: InitOptions) {
+  return async (host: Tree, context: SchematicContext): Promise<Rule> => {
+    const workspace = await getWorkspace(host);
+    const project = workspace.projects.get(options.project);
+
+    if (project) {
+      return chain([
+        hasAlreadyInfrastructureProject(project),
+        initializeCloudProviderApplication(project, options)
+      ]);
+    }
+
+    context.logger.error(`Project doesn't exist`);
+    return chain([]);
+  };
 }
 
-function initializeCloudProviderApplication(options: InitOptions): Rule {
+function initializeCloudProviderApplication(
+  project: ProjectDefinition,
+  options: InitOptions
+) {
   return chain([
     generateNewTempPulumiProject(options.provider),
-    copyTempPulumiProjectToTree(options.project),
-    cleanupTempPulumiProject()
+    copyTempPulumiProjectToTree(project),
+    cleanupTempPulumiProject(),
+    generateInfrastructureCode(project, options)
   ]);
 }
 
@@ -62,33 +79,18 @@ function generateNewTempPulumiProject(provider: string): Rule {
   };
 }
 
-function copyTempPulumiProjectToTree(projectName: string): Rule {
+function copyTempPulumiProjectToTree(project: ProjectDefinition): Rule {
   return (host: Tree, _context: SchematicContext) => {
-    return new Observable<Tree>(observer => {
-      getWorkspace(host)
-        .then(workspace => {
-          const project = workspace.projects.get(projectName);
+    const pulumyConfig = readFileSync(
+      resolve(getRealWorkspacePath(), '.tmp-iac/Pulumi.yaml')
+    );
 
-          if (project) {
-            const pulumyConfig = readFileSync(
-              resolve(getRealWorkspacePath(), '.tmp-iac/Pulumi.yaml')
-            );
+    host.create(
+      join(project.root, 'infrastructure', 'Pulumi.yaml'),
+      pulumyConfig
+    );
 
-            host.create(
-              join(project.root, 'infrastructure', 'Pulumi.yaml'),
-              pulumyConfig
-            );
-
-            observer.next(host);
-            observer.complete();
-          } else {
-            observer.error('No project path found');
-          }
-        })
-        .catch(function(err: any) {
-          observer.error(err);
-        });
-    });
+    return host;
   };
 }
 
@@ -134,5 +136,20 @@ function addDependenciesFromPulumiProjectToPackageJson(): Rule {
       }, {}),
       {}
     );
+  };
+}
+
+function generateInfrastructureCode(
+  project: ProjectDefinition,
+  options: InitOptions
+) {
+  return (host: Tree, context: SchematicContext) => {
+    // TODO: make aws/angular dynamic -> provder + application type
+    const templateSource = apply(url('./files/aws/angular'), [
+      move(join(project.root, 'infrastructure'))
+    ]);
+
+    const rule = chain([branchAndMerge(chain([mergeWith(templateSource)]))]);
+    return rule(host, context);
   };
 }

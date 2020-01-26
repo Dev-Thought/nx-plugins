@@ -1,7 +1,6 @@
 import { resolve, join } from 'path';
 import { SchematicContext, Tree } from '@angular-devkit/schematics';
-import { Observable } from 'rxjs';
-import { getWorkspace } from '@nrwl/workspace';
+import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
 
 export function getRealWorkspacePath() {
   // TODO!: get better way
@@ -12,29 +11,15 @@ export function getPulumiBinaryPath() {
   return resolve(getRealWorkspacePath(), 'node_modules/.bin/pulumi');
 }
 
-export function hasAlreadyInfrastructureProject(projectName: string) {
+export function hasAlreadyInfrastructureProject(project: ProjectDefinition) {
   return (host: Tree, _context: SchematicContext) => {
-    return new Observable<Tree>(observer => {
-      getWorkspace(host)
-        .then(workspace => {
-          const project = workspace.projects.get(projectName);
-
-          if (
-            project &&
-            host.exists(join(project.root, 'infrastructure', 'Pulumi.yaml'))
-          ) {
-            _context.logger.error(
-              `The project ${projectName} already has an infrastructure setup`
-            );
-            observer.error('No project path found');
-          } else {
-            observer.next(host);
-            observer.complete();
-          }
-        })
-        .catch(function(err: any) {
-          observer.error(err);
-        });
-    });
+    if (host.exists(join(project.root, 'infrastructure', 'Pulumi.yaml'))) {
+      _context.logger.error(
+        `The project ${project} already has an infrastructure setup`
+      );
+      _context.logger.error('No project path found');
+    } else {
+      return host;
+    }
   };
 }
