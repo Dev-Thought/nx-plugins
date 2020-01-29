@@ -5,7 +5,7 @@
   "properties": {
     "configuration": {
       "type": "string",
-      "default": "production",
+      "default": "dev",
       "description": "A named configuration, as specified in the \"configurations\" section of angular.json",
       "alias": "c"
     },

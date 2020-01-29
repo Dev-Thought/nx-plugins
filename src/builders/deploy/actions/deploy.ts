@@ -40,12 +40,8 @@ function spawnStack(cwd: string, configuration: string, withInit = false) {
   }
 
   return spawnSync(getPulumiBinaryPath(), args, {
-    env: {
-      ...process.env,
-      // TODO: set environments
-      PULUMI_CONFIG_PASSPHRASE: 'test',
-      AWS_PROFILE: 'cli-dev-thought'
-    }
+    env: process.env,
+    stdio: 'inherit'
   });
 }
 
@@ -58,25 +54,15 @@ function createStackIfNotExist(cwd: string, configuration: string) {
 
 async function up(cwd: string, configuration: string) {
   return await new Promise((resolve, reject) => {
+    console.log('before up');
     const up = spawn(
       getPulumiBinaryPath(),
       ['up', '--cwd', cwd, '--stack', configuration],
       {
-        env: {
-          ...process.env,
-          PULUMI_CONFIG_PASSPHRASE: 'test',
-          AWS_PROFILE: 'cli-dev-thought'
-        }
+        env: process.env,
+        stdio: 'inherit'
       }
     );
-
-    up.stdout.on('data', data => {
-      console.log(data.toString());
-    });
-
-    up.stderr.on('data', data => {
-      console.error(`up stderr: ${data.toString()}`);
-    });
 
     up.on('close', code => {
       if (code !== 0) {

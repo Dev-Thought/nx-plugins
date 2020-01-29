@@ -22,14 +22,13 @@ import {
 } from '@nrwl/workspace';
 import { spawnSync } from 'child_process';
 import { resolve, join } from 'path';
-import { getCloudTemplateName } from '../utils/provider';
+import { getCloudTemplateName, PROVIDER } from '../utils/provider';
 import {
   getPulumiBinaryPath,
-  getRealWorkspacePath,
   hasAlreadyInfrastructureProject,
   getApplicationType
 } from '../utils/workspace';
-import { readFileSync } from 'fs';
+import { readFileSync, unlinkSync } from 'fs';
 import * as rimraf from 'rimraf';
 import { JsonObject } from '@angular-devkit/core';
 import {
@@ -59,60 +58,63 @@ function initializeCloudProviderApplication(
   options: InitOptions
 ) {
   return chain([
-    generateNewTempPulumiProject(options),
-    copyTempPulumiProjectToTree(project),
-    cleanupTempPulumiProject(),
+    generateNewTempPulumiProject(project, options),
     generateInfrastructureCode(project, options),
-    updateProject(project, options)
+    updateProject(project, options),
+    cleanupTempPulumiProject(project)
   ]);
 }
 
-function generateNewTempPulumiProject(options: InitOptions): Rule {
+function generateNewTempPulumiProject(
+  project: ProjectDefinition,
+  options: InitOptions
+): Rule {
   return (host: Tree): Rule => {
     let template = getCloudTemplateName(options.provider);
 
-    spawnSync(getPulumiBinaryPath(), [
-      'new',
-      template,
-      '--name',
-      'iac',
-      '--dir',
-      '.tmp-iac',
-      '--description',
-      'Infrastructure as Code based on Pulumi',
-      '--generate-only'
-    ]);
-    return addDependenciesFromPulumiProjectToPackageJson();
+    spawnSync(
+      getPulumiBinaryPath(),
+      [
+        'new',
+        template,
+        '--name',
+        options.project,
+        '--stack',
+        'dev',
+        '--dir',
+        resolve(join(project.root, 'infrastructure')),
+        '--description',
+        'Infrastructure as Code based on Pulumi'
+      ],
+      { stdio: 'inherit' }
+    );
+
+    return addDependenciesFromPulumiProjectToPackageJson(project, options);
   };
 }
 
-function copyTempPulumiProjectToTree(project: ProjectDefinition): Rule {
-  return (host: Tree, _context: SchematicContext) => {
-    const pulumyConfig = readFileSync(
-      resolve(getRealWorkspacePath(), '.tmp-iac/Pulumi.yaml')
-    );
-
-    host.create(
-      join(project.root, 'infrastructure', 'Pulumi.yaml'),
-      pulumyConfig
-    );
-
-    return host;
-  };
-}
-
-function cleanupTempPulumiProject() {
+function cleanupTempPulumiProject(project: ProjectDefinition) {
   return (host: Tree) => {
-    rimraf.sync(resolve(getRealWorkspacePath(), '.tmp-iac'));
+    unlinkSync(resolve(join(project.root, 'infrastructure'), '.gitignore'));
+    unlinkSync(resolve(join(project.root, 'infrastructure'), 'index.ts'));
+    unlinkSync(resolve(join(project.root, 'infrastructure'), 'tsconfig.json'));
+    unlinkSync(resolve(join(project.root, 'infrastructure'), 'package.json'));
+    unlinkSync(
+      resolve(join(project.root, 'infrastructure'), 'package-lock.json')
+    );
+    rimraf.sync(resolve(join(project.root, 'infrastructure'), 'node_modules'));
 
     return host;
   };
 }
 
-function addDependenciesFromPulumiProjectToPackageJson(): Rule {
+function addDependenciesFromPulumiProjectToPackageJson(
+  project: ProjectDefinition,
+  options: InitOptions
+): Rule {
   const pulumiCloudProviderDependencies = JSON.parse(
     readFileSync(
-      resolve(getRealWorkspacePath(), '.tmp-iac/package.json')
+      resolve(join(project.root, 'infrastructure'), 'package.json')
     ).toString()
   ).dependencies;
 
@@ -130,6 +132,10 @@ function addDependenciesFromPulumiProjectToPackageJson(): Rule {
           });
         }
       }
+    }
+
+    if (options.provider === PROVIDER.AWS) {
+      dependencyList.push({ name: 'mime', version: '2.4.4' });
     }
 
     if (!dependencyList.length) {

@@ -72,7 +72,8 @@ crawlDirectory(webContentsRootPath, (filePath: string) => {
 
 // logsBucket is an S3 bucket that will contain the CDN's request logs.
 const logsBucket = new aws.s3.Bucket(`${projectName}-requestLogs`, {
-  bucket: `${config.targetDomain}-logs`,
+  // TODO: how to connect the replica / do we need this?
+  // bucket: `${config.targetDomain}-logs`,
   acl: 'private'
 });
 
@@ -213,7 +214,7 @@ const distributionArgs: aws.cloudfront.DistributionArgs = {
   }
 };
 
-const cdn = new aws.cloudfront.Distribution('cdn', distributionArgs);
+const cdn = new aws.cloudfront.Distribution(`${projectName}-cdn`, distributionArgs);
 
 // Split a domain name into its subdomain and parent domain names.
 // e.g. "www.example.com" => "www", "example.com".
