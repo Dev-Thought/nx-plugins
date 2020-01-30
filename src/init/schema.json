@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "NgInitIaC",
+  "id": "NgInitDeployUniversal",
   "title": "Add IaC cloud configuration for an application",
   "type": "object",
   "properties": {

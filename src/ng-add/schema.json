@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "NgAddIaC",
-  "title": "Add and install dependecies for the IaC plugin",
+  "id": "NgAddDeployUniversal",
+  "title": "Add and install dependecies for the ng-deploy-universal plugin",
   "type": "object",
   "properties": {}
 }

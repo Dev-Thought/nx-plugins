@@ -1,21 +1,32 @@
 {
-  "name": "@dev-thought/iac",
+  "name": "@dev-thought/ng-deploy-universal",
   "version": "0.0.1",
   "description": "A schematics",
+  "homepage": "https://www.npmjs.com/package/ng-deploy-universal",
+  "repository": "https://github.com/dev-thought/ng-deploy-universal",
+  "bugs": {
+    "url": "https://github.com/dev-thought/ng-deploy-universal/issues",
+    "email": "mitko@dev-thought.cool"
+  },
+  "author": "Mitko Tschimev <mitko@dev-thought.cool>",
+  "license": "MIT",
+  "keywords": [
+    "pulumi",
+    "Infrastructure as code",
+    "infrastructure-as-code",
+    "IaC",
+    "terraform",
+    "schematics",
+    "ng-deploy",
+    "nx",
+    "angular",
+    "nestjs"
+  ],
   "scripts": {
     "prebuild": "rimraf build",
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && jest src/**/*_spec.ts"
   },
-  "keywords": [
-    "pulumi",
-    "Infrastructure as code",
-    "IaC",
-    "terraform",
-    "schematics"
-  ],
-  "author": "Mitko Tschimev",
-  "license": "MIT",
   "builders": "./src/builders.json",
   "schematics": "./src/collection.json",
   "dependencies": {
