@@ -9,7 +9,7 @@ import * as path from 'path';
 // so that different Pulumi Stacks can be brought up using the same code.
 
 const projectName = '<%= projectName %>';
-const stackConfig = new pulumi.Config(`${projectName}-static-website`);
+const stackConfig = new pulumi.Config();
 const config = {
   // pathToWebsiteContents is a relativepath to the website's contents.
   pathToWebsiteContents: '<%= buildPath %>',
@@ -26,7 +26,7 @@ const contentBucket = new aws.s3.Bucket(`${projectName}-contentBucket`, {
   // requests for "foo/" to "foo/index.html".
   website: {
     indexDocument: 'index.html',
-    errorDocument: '404.html'
+    errorDocument: 'index.html'
   }
 });
 
@@ -72,8 +72,6 @@ crawlDirectory(webContentsRootPath, (filePath: string) => {
 
 // logsBucket is an S3 bucket that will contain the CDN's request logs.
 const logsBucket = new aws.s3.Bucket(`${projectName}-requestLogs`, {
-  // TODO: how to connect the replica / do we need this?
-  // bucket: `${config.targetDomain}-logs`,
   acl: 'private',
   forceDestroy: true
 });

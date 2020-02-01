@@ -197,7 +197,10 @@ export function updateProject(
         }
         project.architect['deploy'] = {
           builder: '@dev-thought/ng-deploy-universal:deploy',
-          options: architectOptions
+          options: architectOptions,
+          configurations: {
+            production: {}
+          }
         };
         return json;
       }),
@@ -211,7 +214,10 @@ export function updateProject(
         }
         project.architect['destroy'] = {
           builder: '@dev-thought/ng-deploy-universal:destroy',
-          options: architectOptions
+          options: architectOptions,
+          configurations: {
+            production: {}
+          }
         };
         return json;
       }),

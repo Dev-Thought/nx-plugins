@@ -5,6 +5,7 @@ import { getPulumiBinaryPath } from '../../../utils/workspace';
 import { resolve, dirname } from 'path';
 
 export async function deploy(context: BuilderContext, options: DeployOptions) {
+  const configuration = context!.target!.configuration || 'dev';
   if (!options.noBuild) {
     context.logger.info('Build project');
 
@@ -25,9 +26,9 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
       resolve(context.workspaceRoot, targetOptions.main as string)
     );
 
-    createStackIfNotExist(cwd, options.configuration);
+    createStackIfNotExist(cwd, configuration);
 
-    return up(cwd, options);
+    return up(cwd, options, configuration);
   }
 
   return { success: false };
@@ -52,9 +53,9 @@ function createStackIfNotExist(cwd: string, configuration: string) {
   }
 }
 
-async function up(cwd: string, options: DeployOptions) {
+async function up(cwd: string, options: DeployOptions, configuration: string) {
   return await new Promise((resolve, reject) => {
-    const args = ['up', '--cwd', cwd, '--stack', options.configuration];
+    const args = ['up', '--cwd', cwd, '--stack', configuration];
     if (options.nonInteractive) {
       args.push('--non-interactive', '--yes');
     }

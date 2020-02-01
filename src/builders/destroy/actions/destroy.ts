@@ -9,31 +9,32 @@ export async function destroy(
   options: DestroyOptions
 ) {
   if (context.target) {
+    const configuration = context!.target!.configuration || 'dev';
     const targetOptions = await context.getTargetOptions(context.target);
     const cwd = dirname(
       resolve(context.workspaceRoot, targetOptions.main as string)
     );
 
-    return down(cwd, options);
+    return down(cwd, options, configuration);
   }
 
   return { success: false };
 }
 
-async function down(cwd: string, options: DestroyOptions) {
+async function down(
+  cwd: string,
+  options: DestroyOptions,
+  configuration: string
+) {
   return await new Promise((resolve, reject) => {
-    const args = ['destroy', '--cwd', cwd, '--stack', options.configuration];
+    const args = ['destroy', '--cwd', cwd, '--stack', configuration];
     if (options.nonInteractive) {
       args.push('--non-interactive', '--yes');
     }
-    const up = spawn(
-      getPulumiBinaryPath(),
-      args,
-      {
-        env: process.env,
-        stdio: 'inherit'
-      }
-    );
+    const up = spawn(getPulumiBinaryPath(), args, {
+      env: process.env,
+      stdio: 'inherit'
+    });
 
     up.on('close', code => {
       if (code !== 0) {
