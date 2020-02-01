@@ -74,12 +74,13 @@ crawlDirectory(webContentsRootPath, (filePath: string) => {
 const logsBucket = new aws.s3.Bucket(`${projectName}-requestLogs`, {
   // TODO: how to connect the replica / do we need this?
   // bucket: `${config.targetDomain}-logs`,
-  acl: 'private'
+  acl: 'private',
+  forceDestroy: true
 });
 
 const tenMinutes = 60 * 10;
 
-let certificateArn: pulumi.Input<string> = config.certificateArn!;
+let certificateArn: pulumi.Input<string> = config.certificateArn;
 
 /**
  * Only provision a certificate (and related resources) if a certificateArn is _not_ provided via configuration.
@@ -147,7 +148,7 @@ const distributionArgs: aws.cloudfront.DistributionArgs = {
   enabled: true,
   // Alternate aliases the CloudFront distribution can be reached at, in addition to https://xxxx.cloudfront.net.
   // Required if you want to access the distribution via config.targetDomain as well.
-  aliases: [config.targetDomain],
+  aliases: config.targetDomain ? [config.targetDomain] : undefined,
 
   // We only specify one origin for this distribution, the S3 content bucket.
   origins: [
@@ -204,17 +205,21 @@ const distributionArgs: aws.cloudfront.DistributionArgs = {
 
   viewerCertificate: {
     acmCertificateArn: certificateArn, // Per AWS, ACM certificate must be in the us-east-1 region.
+    cloudfrontDefaultCertificate: certificateArn ? false : true,
     sslSupportMethod: 'sni-only'
   },
 
   loggingConfig: {
     bucket: logsBucket.bucketDomainName,
     includeCookies: false,
-    prefix: `${config.targetDomain}/`
+    prefix: config.targetDomain ? `${config.targetDomain}/` : ''
   }
 };
 
-const cdn = new aws.cloudfront.Distribution(`${projectName}-cdn`, distributionArgs);
+const cdn = new aws.cloudfront.Distribution(
+  `${projectName}-cdn`,
+  distributionArgs
+);
 
 // Split a domain name into its subdomain and parent domain names.
 // e.g. "www.example.com" => "www", "example.com".

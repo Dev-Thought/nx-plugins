@@ -18,6 +18,11 @@
       "type": "boolean",
       "default": false,
       "description": "Skip build process during deployment"
+    },
+    "nonInteractive": {
+      "type": "boolean",
+      "default": false,
+      "description": "Changes will apply without user input"
     }
   }
 }

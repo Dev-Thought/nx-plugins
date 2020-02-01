@@ -27,7 +27,7 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
 
     createStackIfNotExist(cwd, options.configuration);
 
-    return up(cwd, options.configuration);
+    return up(cwd, options);
   }
 
   return { success: false };
@@ -52,17 +52,16 @@ function createStackIfNotExist(cwd: string, configuration: string) {
   }
 }
 
-async function up(cwd: string, configuration: string) {
+async function up(cwd: string, options: DeployOptions) {
   return await new Promise((resolve, reject) => {
-    console.log('before up');
-    const up = spawn(
-      getPulumiBinaryPath(),
-      ['up', '--cwd', cwd, '--stack', configuration],
-      {
-        env: process.env,
-        stdio: 'inherit'
-      }
-    );
+    const args = ['up', '--cwd', cwd, '--stack', options.configuration];
+    if (options.nonInteractive) {
+      args.push('--non-interactive', '--yes');
+    }
+    const up = spawn(getPulumiBinaryPath(), args, {
+      env: process.env,
+      stdio: 'inherit'
+    });
 
     up.on('close', code => {
       if (code !== 0) {

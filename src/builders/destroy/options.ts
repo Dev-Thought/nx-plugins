@@ -1,6 +1,5 @@
-export type DeployOptions = {
+export type DestroyOptions = {
   configuration: string;
-  noBuild: boolean;
   secretProvider: string;
   nonInteractive: boolean;
 };
