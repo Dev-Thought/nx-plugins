@@ -11,7 +11,7 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
     const build = await context.scheduleTarget({
       target: 'build',
       project: context!.target!.project,
-      configuration: options.configuration
+      configuration: context!.target!.configuration || ''
     });
 
     await build.result;

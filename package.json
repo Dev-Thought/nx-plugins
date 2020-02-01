@@ -25,6 +25,7 @@
   "scripts": {
     "prebuild": "rimraf build",
     "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc -p tsconfig.json --watch",
     "test": "npm run build && jest src/**/*_spec.ts"
   },
   "builders": "./src/builders.json",
@@ -32,7 +33,7 @@
   "dependencies": {
     "@angular-devkit/core": "8.3.14",
     "@angular-devkit/schematics": "8.3.14",
-    "@nrwl/workspace": "^8.11.2",
+    "@nrwl/workspace": "8.11.2",
     "@types/jasmine": "^3.3.9",
     "@types/node": "^8.0.31",
     "jasmine": "^3.3.1",
