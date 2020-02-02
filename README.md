@@ -40,10 +40,28 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
    The project will be built with the development configuration.
    In development you will be asked to confirm the changes of your infrastructure
 
-## Feature set:
+## Application / Feature Lists
 
-| Application | Features                          | Azure   | AWS     | Google Cloud Platform |
-| ----------- | --------------------------------- | ------- | ------- | --------------------- |
-| Angular     | static hosting, cdn | x       | x       | not yet               |
-| NestJS      | serverless, server instance       | not yet | not yet | not yet               |
-|             |                                   |         |         |                       |
+Legend
+
+- :white_check_mark: is implemented
+- :soon: in development
+- :calendar: in planning
+- :x: is not supported
+
+### Angular Application
+
+| Feature        |       Azure        |        AWS         | Google Cloud Platform |
+| -------------- | :----------------: | :----------------: | :-------------------: |
+| static hosting | :white_check_mark: | :white_check_mark: |        :soon:         |
+| cdn            | :white_check_mark: | :white_check_mark: |        :soon:         |
+| custom domain  |     :calendar:     |     :calendar:     |      :calendar:       |
+
+### NestJS (in planning)
+
+| Feature         |   Azure    |    AWS     | Google Cloud Platform |
+| --------------- | :--------: | :--------: | :-------------------: |
+| serverless      | :calendar: | :calendar: |      :calendar:       |
+| server instance | :calendar: | :calendar: |      :calendar:       |
+
+If you use the nx workspace or angular workspace with other types of applications and you want to have them supported by ng-deploy-universal, please feel free and create a new Issue and of course ;) -> Contributions are welcome!
