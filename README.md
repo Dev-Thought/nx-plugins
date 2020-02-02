@@ -31,7 +31,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 
 1. You may be prompted you to anwser some questions for the setup.
 
-1. Deploy your project to Azure.
+1. Deploy your project to your cloud provider.
 
    ```sh
    ng run hello-world:deploy
