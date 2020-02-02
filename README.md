@@ -1,28 +1,47 @@
-# Getting Started With Schematics
+# @dev-thought/ng-deploy-universal
 
-This repository is a basic Schematic implementation that serves as a starting point to create and publish Schematics to NPM.
+[![npm version](https://badge.fury.io/js/%40dev-thought%2Fng-deploy-universal.svg)](https://www.npmjs.com/package/@dev-thought/ng-deploy-universal)
+[![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?color=blue&style=flat-square)](http://opensource.org/licenses/MIT)
 
-### Testing
+**Deploy applications in nx / angular workspaces to the cloud using a provider of your Choice (Azure, AWS, Google Cloud Platform)**
 
-To test locally, install `@angular-devkit/schematics-cli` globally and use the `schematics` command line tool. That tool acts the same as the `generate` command of the Angular CLI, but also has a debug mode.
+We are using under the hood the code as infrastructure tool [Pulumi](https://www.pulumi.com/). It gives you the possibility to have every piece of code under your control. You can extend it to your requirements (VPN, ...) and still able to use the schematics for deployment.
 
-Check the documentation with
-```bash
-schematics --help
-```
+## Quick-start <a name="quickstart"></a>
 
-### Unit Testing
+1. Create a new project with the angular cli (>= 8.3.0) or nx cli.
 
-`npm run test` will run the unit tests, using Jasmine as a runner and test framework.
+   ```sh
+   npm install -g @angular/cli
+   ng new hello-world --defaults
+   cd hello-world
+   ```
 
-### Publishing
+1. Add `ng-deploy-universal` to your project.
 
-To publish, simply do:
+   ```sh
+   ng add @dev-thought/ng-deploy-universal
+   ```
 
-```bash
-npm run build
-npm publish
-```
+1. Initialize the infrastructure as code for your project.
 
-That's it!
- 
+   ```sh
+   ng g @dev-thought/ng-deploy-universal:init
+   ```
+
+1. You may be prompted you to anwser some questions for the setup.
+
+1. Deploy your project to Azure.
+
+   ```sh
+   ng run hello-world:deploy
+   ```
+
+   The project will be built with the development configuration.
+   In development you will be asked to confirm the changes of your infrastructure
+
+Supported applications:
+
+- angular (static hosting) : Azure, AWS
+- NestJs (serverless) : not yet
+- NestJs (server) : not yet
