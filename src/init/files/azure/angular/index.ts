@@ -1,19 +1,17 @@
 import * as azure from '@pulumi/azure';
 import * as pulumi from '@pulumi/pulumi';
 import { StorageStaticWebsite } from './static-website.resource';
-import { join } from 'path';
 import { StorageSyncResource } from './storage-sync.resource';
 
-const projectName = '<%= projectName %>';
 const stackConfig = new pulumi.Config();
 const config = {
-  // pathToWebsiteContents is a relativepath to the website's contents.
-  pathToWebsiteContents: '<%= buildPath %>',
-  // (Optional) targetDomain is the domain/host to serve content at.
-  targetDomain: stackConfig.get('targetDomain'),
-  // (Optional) ACM certificate ARN for the target domain; must be in the us-east-1 region. If omitted, an ACM certificate will be created.
-  certificateArn: stackConfig.get('certificateArn')
+  // ===== DONT'T TOUCH THIS -> CONFIG REQUIRED BY NG-DEPLOY-UNIVERSAL ======
+  projectName: stackConfig.get('projectName'),
+  distPath: stackConfig.get('distPath'),
+  useCdn: stackConfig.getBoolean('useCdn')
+  // ===== END ======
 };
+const projectName = config.projectName;
 
 // Create an Azure Resource Group
 const resourceGroup = new azure.core.ResourceGroup(`${projectName}-rg`);
@@ -33,16 +31,14 @@ const staticWebsiteResource = new StorageStaticWebsite(`static`, {
 });
 
 // Sync the contents of the source directory with the azure blob storage, which will in-turn show up on the CDN.
-const webContentsRootPath = join(process.cwd(), config.pathToWebsiteContents);
-
 const syncFiles = new StorageSyncResource('sync', {
   accountName: storageAccount.name,
-  distPath: webContentsRootPath,
+  distPath: config.distPath,
   blobContainer: staticWebsiteResource.webContainerName
 });
 
 let cdnEndpointResource: azure.cdn.Endpoint;
-if (config.targetDomain) {
+if (config.useCdn) {
   // Optionally, we can add a CDN in front of the website
   const cdn = new azure.cdn.Profile(`pr-cdn`, {
     resourceGroupName: resourceGroup.name,
@@ -63,6 +59,6 @@ if (config.targetDomain) {
 }
 
 export const staticEndpoint = staticWebsiteResource.endpoint;
-export const cdnEndpoint = cdnEndpointResource
-  ? pulumi.interpolate`https://${cdnEndpointResource.hostName}/`
-  : undefined;
+export const cdnEndpoint =
+  cdnEndpointResource &&
+  pulumi.interpolate`https://${cdnEndpointResource.hostName}/`;

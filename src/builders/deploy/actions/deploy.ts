@@ -3,6 +3,8 @@ import { DeployOptions } from '../options';
 import { spawnSync, spawn } from 'child_process';
 import { getPulumiBinaryPath } from '../../../utils/workspace';
 import { resolve, dirname } from 'path';
+import { DeployTargetOptions } from './target-options';
+import { readWorkspaceConfigPath } from '@nrwl/workspace';
 
 export async function deploy(context: BuilderContext, options: DeployOptions) {
   const configuration = context!.target!.configuration || 'dev';
@@ -21,14 +23,24 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
   }
 
   if (context.target) {
-    const targetOptions = await context.getTargetOptions(context.target);
+    const targetOptions = (await context.getTargetOptions(
+      context.target
+    )) as DeployTargetOptions;
     const cwd = dirname(
       resolve(context.workspaceRoot, targetOptions.main as string)
     );
 
     createStackIfNotExist(cwd, configuration);
 
-    return up(cwd, options, configuration);
+    const distributationPath = await getDistributionPath(context);
+    return up(
+      cwd,
+      options,
+      configuration,
+      targetOptions.useCdn,
+      distributationPath,
+      context.target.project
+    );
   }
 
   return { success: false };
@@ -53,12 +65,22 @@ function createStackIfNotExist(cwd: string, configuration: string) {
   }
 }
 
-async function up(cwd: string, options: DeployOptions, configuration: string) {
+async function up(
+  cwd: string,
+  options: DeployOptions,
+  configuration: string,
+  useCdn: boolean = false,
+  distPath: string,
+  projectName: string
+) {
   return await new Promise((resolve, reject) => {
     const args = ['up', '--cwd', cwd, '--stack', configuration];
     if (options.nonInteractive) {
       args.push('--non-interactive', '--yes');
     }
+    args.push('-c', `useCdn=${useCdn}`);
+    args.push('-c', `distPath=${distPath}`);
+    args.push('-c', `projectName=${projectName}`);
     const up = spawn(getPulumiBinaryPath(), args, {
       env: process.env,
       stdio: 'inherit'
@@ -72,4 +94,15 @@ async function up(cwd: string, options: DeployOptions, configuration: string) {
       resolve({ success: true });
     });
   });
+}
+
+// TODO: Not sure if this is the best approach to get the outputPath
+async function getDistributionPath(context: BuilderContext) {
+  const workspaceConfig = readWorkspaceConfigPath();
+
+  return resolve(
+    context.workspaceRoot,
+    workspaceConfig.projects[context.target!.project].architect.build.options
+      .outputPath
+  );
 }
