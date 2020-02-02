@@ -39,6 +39,12 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 
    The project will be built with the development configuration.
    In development you will be asked to confirm the changes of your infrastructure
+   
+1. Everything is done and you want to remove your whole infrastructure. No problem ;) Just do
+
+   ```sh
+   ng run hello-world:destroy
+   ```
 
 ## Application / Feature Lists
 
