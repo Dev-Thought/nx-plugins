@@ -1,9 +1,8 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 
-import * as fs from 'fs';
-import * as mime from 'mime';
 import * as path from 'path';
+import { S3SyncResource } from './s3-sync.resource';
 
 // Load the Pulumi program configuration. These act as the "parameters" to the Pulumi program,
 // so that different Pulumi Stacks can be brought up using the same code.
@@ -33,44 +32,15 @@ const contentBucketResource = new aws.s3.Bucket(
   }
 );
 
-// crawlDirectory recursive crawls the provided directory, applying the provided function
-// to every file it contains. Doesn't handle cycles from symlinks.
-function crawlDirectory(dir: string, f: (_: string) => void) {
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
-    const filePath = `${dir}/${file}`;
-    const stat = fs.statSync(filePath);
-    if (stat.isDirectory()) {
-      crawlDirectory(filePath, f);
-    }
-    if (stat.isFile()) {
-      f(filePath);
-    }
-  }
-}
-
 // Sync the contents of the source directory with the S3 bucket, which will in-turn show up on the CDN.
 const webContentsRootPath = path.join(
   process.cwd(),
   config.pathToWebsiteContents
 );
-console.log('Syncing contents from local disk at', webContentsRootPath);
-crawlDirectory(webContentsRootPath, (filePath: string) => {
-  const relativeFilePath = filePath.replace(webContentsRootPath + '/', '');
-  const contentFile = new aws.s3.BucketObject(
-    relativeFilePath,
-    {
-      key: relativeFilePath,
 
-      acl: 'public-read',
-      bucket: contentBucketResource,
-      contentType: mime.getType(filePath) || undefined,
-      source: new pulumi.asset.FileAsset(filePath)
-    },
-    {
-      parent: contentBucketResource
-    }
-  );
+const s3Sync = new S3SyncResource(`${projectName}-s3-sync`, {
+  bucketPath: contentBucketResource.bucket,
+  distPath: webContentsRootPath
 });
 
 // logsBucket is an S3 bucket that will contain the CDN's request logs.
