@@ -28,7 +28,7 @@ const storageAccount = new azure.storage.Account(`account`, {
 
 // There's currently no way to enable the Static Web Site feature of a storage account via ARM
 // Therefore, we created a custom resource which wraps corresponding Azure CLI commands
-const staticWebsite = new StorageStaticWebsite(`static`, {
+const staticWebsiteResource = new StorageStaticWebsite(`static`, {
   accountName: storageAccount.name
 });
 
@@ -38,13 +38,10 @@ const webContentsRootPath = join(process.cwd(), config.pathToWebsiteContents);
 const syncFiles = new StorageSyncResource('sync', {
   accountName: storageAccount.name,
   distPath: webContentsRootPath,
-  blobContainer: staticWebsite.webContainerName
+  blobContainer: staticWebsiteResource.webContainerName
 });
 
-// Web endpoint to the website
-export const staticEndpoint = staticWebsite.endpoint;
-
-let endpoint: azure.cdn.Endpoint;
+let cdnEndpointResource: azure.cdn.Endpoint;
 if (config.targetDomain) {
   // Optionally, we can add a CDN in front of the website
   const cdn = new azure.cdn.Profile(`pr-cdn`, {
@@ -52,21 +49,20 @@ if (config.targetDomain) {
     sku: 'Standard_Microsoft'
   });
 
-  endpoint = new azure.cdn.Endpoint(`cdn-ep`, {
+  cdnEndpointResource = new azure.cdn.Endpoint(`cdn-ep`, {
     resourceGroupName: resourceGroup.name,
     profileName: cdn.name,
-    originHostHeader: staticWebsite.hostName,
+    originHostHeader: staticWebsiteResource.hostName,
     origins: [
       {
         name: 'blobstorage',
-        hostName: staticWebsite.hostName
+        hostName: staticWebsiteResource.hostName
       }
     ]
   });
 }
 
-// CDN endpoint to the website.
-// Allow it some time after the deployment to get ready.
-export const cdnEndpoint = endpoint
-  ? pulumi.interpolate`https://${endpoint.hostName}/`
+export const staticEndpoint = staticWebsiteResource.endpoint;
+export const cdnEndpoint = cdnEndpointResource
+  ? pulumi.interpolate`https://${cdnEndpointResource.hostName}/`
   : undefined;
