@@ -180,7 +180,8 @@ export function updateProject(
   return async (host: Tree, _context: SchematicContext) => {
     const architectOptions = {
       main: join(project.root, 'infrastructure', 'index.ts'),
-      provider: options.provider
+      provider: options.provider,
+      useCdn: false
     };
     return chain([
       updateJsonInTree(getWorkspacePath(host), json => {
@@ -195,7 +196,9 @@ export function updateProject(
           builder: '@dev-thought/ng-deploy-universal:deploy',
           options: architectOptions,
           configurations: {
-            production: {}
+            production: {
+              useCdn: true
+            }
           }
         };
         return json;
