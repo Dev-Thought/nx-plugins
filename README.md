@@ -59,7 +59,7 @@ Legend
 
 | Feature        |       Azure        |        AWS         |    GCP     | activated in dev (default) | activated in prod (default) |
 | -------------- | :----------------: | :----------------: | :--------: | :------------------------: | :-------------------------: |
-| static hosting | :white_check_mark: | :white_check_mark: |   :soon:   |             no             |             yes             |
+| static hosting | :white_check_mark: | :white_check_mark: |   :soon:   |             yes            |             yes             |
 | cdn            | :white_check_mark: | :white_check_mark: |   :soon:   |             no             |             yes             |
 | custom domain  |     :calendar:     |     :calendar:     | :calendar: |             no             |             no              |
 
