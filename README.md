@@ -39,7 +39,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 
    The project will be built with the development configuration.
    In development you will be asked to confirm the changes of your infrastructure
-   
+
 1. Everything is done and you want to remove your whole infrastructure. No problem ;) Just do
 
    ```sh
@@ -57,11 +57,11 @@ Legend
 
 ### Angular Application
 
-| Feature        |       Azure        |        AWS         |    GCP     |
-| -------------- | :----------------: | :----------------: | :--------: |
-| static hosting | :white_check_mark: | :white_check_mark: |   :soon:   |
-| cdn            | :white_check_mark: | :white_check_mark: |   :soon:   |
-| custom domain  |     :calendar:     |     :calendar:     | :calendar: |
+| Feature        |       Azure        |        AWS         |    GCP     | activated in dev (default) | activated in prod (default) |
+| -------------- | :----------------: | :----------------: | :--------: | :------------------------: | :-------------------------: |
+| static hosting | :white_check_mark: | :white_check_mark: |   :soon:   |             no             |             yes             |
+| cdn            | :white_check_mark: | :white_check_mark: |   :soon:   |             no             |             yes             |
+| custom domain  |     :calendar:     |     :calendar:     | :calendar: |             no             |             no              |
 
 ### NestJS (in planning)
 
