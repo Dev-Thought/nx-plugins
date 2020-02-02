@@ -134,10 +134,6 @@ function addDependenciesFromPulumiProjectToPackageJson(
       }
     }
 
-    if (options.provider === PROVIDER.AWS) {
-      dependencyList.push({ name: 'mime', version: '2.4.4' });
-    }
-
     if (!dependencyList.length) {
       return noop();
     }
