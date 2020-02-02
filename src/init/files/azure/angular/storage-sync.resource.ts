@@ -99,14 +99,7 @@ export class StorageSyncResource extends Resource {
     args: StorageSyncProviderArgs,
     opts?: CustomResourceOptions
   ) {
-    super(
-      new StorageSyncProvider(),
-      name,
-      {
-        ...args
-      },
-      opts
-    );
+    super(new StorageSyncProvider(), name, args, opts);
   }
 }
 
@@ -141,12 +134,8 @@ function createSum(distPath: string) {
   return hashSum;
 }
 
-function checksum(
-  str: string,
-  algorithm: string = 'sha1',
-  encoding: 'latin1' | 'hex' | 'base64' = 'hex'
-) {
-  return createHash(algorithm)
+function checksum(str: string) {
+  return createHash('sha1')
     .update(str, 'utf8')
-    .digest(encoding);
+    .digest('hex');
 }
