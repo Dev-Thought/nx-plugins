@@ -5,7 +5,7 @@
 
 **Deploy applications in nx / angular workspaces to the cloud using a provider of your Choice (Azure, AWS, Google Cloud Platform)**
 
-We are using under the hood the code as infrastructure tool [Pulumi](https://www.pulumi.com/). It gives you the possibility to have every piece of code under your control. You can extend it to your requirements (VPN, ...) and still able to use the schematics for deployment.
+We are using under the hood the code as infrastructure tool [Pulumi](https://www.pulumi.com/). It gives you the possibility to have every piece of code under your control. You can extend it for your requirements (VPN, ...) and still able to use the schematics for deployment.
 
 ## Quick-start <a name="quickstart"></a>
 
@@ -44,6 +44,6 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 
 | Application | Features                          | Azure   | AWS     | Google Cloud Platform |
 | ----------- | --------------------------------- | ------- | ------- | --------------------- |
-| Angular     | static hosting, cdn, customDomain | x       | x       | not yet               |
+| Angular     | static hosting, cdn | x       | x       | not yet               |
 | NestJS      | serverless, server instance       | not yet | not yet | not yet               |
 |             |                                   |         |         |                       |
