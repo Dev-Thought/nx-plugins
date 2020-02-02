@@ -20,15 +20,18 @@ const config = {
 };
 
 // contentBucket is the S3 bucket that the website's contents will be stored in.
-const contentBucket = new aws.s3.Bucket(`${projectName}-contentBucket`, {
-  acl: 'public-read',
-  // Configure S3 to serve bucket contents as a website. This way S3 will automatically convert
-  // requests for "foo/" to "foo/index.html".
-  website: {
-    indexDocument: 'index.html',
-    errorDocument: 'index.html'
+const contentBucketResource = new aws.s3.Bucket(
+  `${projectName}-contentBucket`,
+  {
+    acl: 'public-read',
+    // Configure S3 to serve bucket contents as a website. This way S3 will automatically convert
+    // requests for "foo/" to "foo/index.html".
+    website: {
+      indexDocument: 'index.html',
+      errorDocument: 'index.html'
+    }
   }
-});
+);
 
 // crawlDirectory recursive crawls the provided directory, applying the provided function
 // to every file it contains. Doesn't handle cycles from symlinks.
@@ -60,12 +63,12 @@ crawlDirectory(webContentsRootPath, (filePath: string) => {
       key: relativeFilePath,
 
       acl: 'public-read',
-      bucket: contentBucket,
+      bucket: contentBucketResource,
       contentType: mime.getType(filePath) || undefined,
       source: new pulumi.asset.FileAsset(filePath)
     },
     {
-      parent: contentBucket
+      parent: contentBucketResource
     }
   );
 });
@@ -151,8 +154,8 @@ const distributionArgs: aws.cloudfront.DistributionArgs = {
   // We only specify one origin for this distribution, the S3 content bucket.
   origins: [
     {
-      originId: contentBucket.arn,
-      domainName: contentBucket.websiteEndpoint,
+      originId: contentBucketResource.arn,
+      domainName: contentBucketResource.websiteEndpoint,
       customOriginConfig: {
         // Amazon S3 doesn't support HTTPS connections when using an S3 bucket configured as a website endpoint.
         // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesOriginProtocolPolicy
@@ -169,7 +172,7 @@ const distributionArgs: aws.cloudfront.DistributionArgs = {
   // A CloudFront distribution can configure different cache behaviors based on the request path.
   // Here we just specify a single, default cache behavior which is just read-only requests to S3.
   defaultCacheBehavior: {
-    targetOriginId: contentBucket.arn,
+    targetOriginId: contentBucketResource.arn,
 
     viewerProtocolPolicy: 'redirect-to-https',
     allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
@@ -271,9 +274,8 @@ if (config.targetDomain) {
 
 // Export properties from this stack. This prints them at the end of `pulumi up` and
 // makes them easier to access from the pulumi.com.
-export const contentBucketUri = pulumi.interpolate`s3://${contentBucket.bucket}`;
-export const contentBucketWebsiteEndpoint = contentBucket.websiteEndpoint;
-export const cloudFrontDomain = cdn.domainName;
-export const targetDomainEndpoint = config.targetDomain
+export const staticEndpoint = contentBucketResource.websiteEndpoint;
+export const cdnEndpoint = cdn.domainName;
+export const customDomainEndpoint = config.targetDomain
   ? `https://${config.targetDomain}/`
-  : 'no domain set';
+  : undefined;
