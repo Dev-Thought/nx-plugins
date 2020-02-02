@@ -51,17 +51,17 @@ Legend
 
 ### Angular Application
 
-| Feature        |       Azure        |        AWS         | Google Cloud Platform |
-| -------------- | :----------------: | :----------------: | :-------------------: |
-| static hosting | :white_check_mark: | :white_check_mark: |        :soon:         |
-| cdn            | :white_check_mark: | :white_check_mark: |        :soon:         |
-| custom domain  |     :calendar:     |     :calendar:     |      :calendar:       |
+| Feature        |       Azure        |        AWS         |    GCP     |
+| -------------- | :----------------: | :----------------: | :--------: |
+| static hosting | :white_check_mark: | :white_check_mark: |   :soon:   |
+| cdn            | :white_check_mark: | :white_check_mark: |   :soon:   |
+| custom domain  |     :calendar:     |     :calendar:     | :calendar: |
 
 ### NestJS (in planning)
 
-| Feature         |   Azure    |    AWS     | Google Cloud Platform |
-| --------------- | :--------: | :--------: | :-------------------: |
-| serverless      | :calendar: | :calendar: |      :calendar:       |
-| server instance | :calendar: | :calendar: |      :calendar:       |
+| Feature         |   Azure    |    AWS     |    GCP     |
+| --------------- | :--------: | :--------: | :--------: |
+| serverless      | :calendar: | :calendar: | :calendar: |
+| server instance | :calendar: | :calendar: | :calendar: |
 
 If you use the nx workspace or angular workspace with other types of applications and you want to have them supported by ng-deploy-universal, please feel free and create a new Issue and of course ;) -> Contributions are welcome!
