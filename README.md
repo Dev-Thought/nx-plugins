@@ -40,8 +40,10 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
    The project will be built with the development configuration.
    In development you will be asked to confirm the changes of your infrastructure
 
-Supported applications:
+## Feature set:
 
-- angular (static hosting) : Azure, AWS
-- NestJs (serverless) : not yet
-- NestJs (server) : not yet
+| Application | Features                          | Azure   | AWS     | Google Cloud Platform |
+| ----------- | --------------------------------- | ------- | ------- | --------------------- |
+| Angular     | static hosting, cdn, customDomain | x       | x       | not yet               |
+| NestJS      | serverless, server instance       | not yet | not yet | not yet               |
+|             |                                   |         |         |                       |
