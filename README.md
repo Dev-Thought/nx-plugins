@@ -55,11 +55,17 @@ Legend
 - :calendar: in planning
 - :x: is not supported
 
+### Workspaces
+
+| Nx workspace (native) | Nx workspace (angular) |  angular   |
+| :-------------------: | :--------------------: | :--------: |
+|      :calendar:       |   :white_check_mark:   | :calendar: |
+
 ### Angular Application
 
 | Feature        |       Azure        |        AWS         |    GCP     | activated in dev (default) | activated in prod (default) |
 | -------------- | :----------------: | :----------------: | :--------: | :------------------------: | :-------------------------: |
-| static hosting | :white_check_mark: | :white_check_mark: |   :soon:   |             yes            |             yes             |
+| static hosting | :white_check_mark: | :white_check_mark: |   :soon:   |            yes             |             yes             |
 | cdn            | :white_check_mark: | :white_check_mark: |   :soon:   |             no             |             yes             |
 | custom domain  |     :calendar:     |     :calendar:     | :calendar: |             no             |             no              |
 
