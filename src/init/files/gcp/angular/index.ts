@@ -50,7 +50,7 @@ function crawlDirectory(dir: string, f: (_: string) => void) {
   }
 }
 
-// Sync the contents of the source directory with the S3 bucket, which will in-turn show up on the CDN.
+// Sync the contents of the source directory with the GCP bucket.
 crawlDirectory(config.distPath, (filePath: string) => {
   const relativeFilePath = filePath.replace(config.distPath + '/', '');
   const file = new gcp.storage.BucketObject(
