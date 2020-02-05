@@ -1,7 +1,8 @@
 import { PROVIDER } from '../utils/provider';
 
-export interface InitOptions {
+export interface ArchitectOptions {
+  main: string;
   provider: PROVIDER;
-  project: string;
+  useCdn: boolean;
   customDomainName?: string;
 }

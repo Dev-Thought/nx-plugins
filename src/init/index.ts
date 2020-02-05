@@ -35,11 +35,27 @@ import {
   ProjectDefinition,
   TargetDefinition
 } from '@angular-devkit/core/src/workspace';
+import { prompt } from 'enquirer';
+import { ArchitectOptions } from './architect-options';
 
 export default function(options: InitOptions) {
   return async (host: Tree, context: SchematicContext): Promise<Rule> => {
     const workspace = await getWorkspace(host);
     const project = workspace.projects.get(options.project);
+
+    if (
+      options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM &&
+      !options.customDomainName
+    ) {
+      const result = await prompt<{ customDomainName: string }>({
+        type: 'input',
+        name: 'customDomainName',
+        message:
+          'GCP requires a customDomainName which needs to be set up by you. Find more in the documentation.',
+        initial: 'www.example.com'
+      });
+      options.customDomainName = result.customDomainName;
+    }
 
     if (project) {
       return chain([
@@ -134,6 +150,10 @@ function addDependenciesFromPulumiProjectToPackageJson(
       }
     }
 
+    if (options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
+      dependencyList.push({ name: 'mime', version: '2.4.4' });
+    }
+
     if (!dependencyList.length) {
       return noop();
     }
@@ -178,11 +198,14 @@ export function updateProject(
   options: InitOptions
 ): Rule {
   return async (host: Tree, _context: SchematicContext) => {
-    const architectOptions = {
+    const architectOptions: ArchitectOptions = {
       main: join(project.root, 'infrastructure', 'index.ts'),
       provider: options.provider,
       useCdn: false
     };
+    if (options.customDomainName) {
+      architectOptions.customDomainName = options.customDomainName;
+    }
     return chain([
       updateJsonInTree(getWorkspacePath(host), json => {
         const project = json.projects[options.project];

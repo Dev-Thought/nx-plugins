@@ -5,4 +5,5 @@ export interface DeployTargetOptions extends JsonObject {
   useCdn: boolean;
   main: string;
   provider: PROVIDER;
+  customDomainName: string;
 }

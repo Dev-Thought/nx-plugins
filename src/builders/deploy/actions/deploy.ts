@@ -39,7 +39,8 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
       configuration,
       targetOptions.useCdn,
       distributationPath,
-      context.target.project
+      context.target.project,
+      targetOptions.customDomainName
     );
   }
 
@@ -71,12 +72,16 @@ async function up(
   configuration: string,
   useCdn: boolean = false,
   distPath: string,
-  projectName: string
+  projectName: string,
+  customDomainName: string
 ) {
   return await new Promise((resolve, reject) => {
     const args = ['up', '--cwd', cwd, '--stack', configuration];
     if (options.nonInteractive) {
       args.push('--non-interactive', '--yes');
+    }
+    if (customDomainName) {
+      args.push('-c', `customDomainName=${customDomainName}`);
     }
     args.push('-c', `useCdn=${useCdn}`);
     args.push('-c', `distPath=${distPath}`);
