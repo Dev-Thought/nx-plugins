@@ -26,6 +26,7 @@
     "prebuild": "rimraf build",
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json --watch",
+    "prepublish": "npm run build",
     "test": "npm run build && jest src/**/*_spec.ts"
   },
   "builders": "./src/builders.json",
