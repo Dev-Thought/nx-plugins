@@ -32,6 +32,10 @@
           }
         ]
       }
+    },
+    "customDomainName": {
+      "type": "string",
+      "description": "Your custom domain which will be mapped to the static website / cdn"
     }
   },
   "required": ["provider"]
