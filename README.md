@@ -7,16 +7,6 @@
 
 We are using under the hood the code as infrastructure tool [Pulumi](https://www.pulumi.com/). It gives you the possibility to have every piece of code under your control. You can extend it for your requirements (VPN, ...) and still able to use the schematics for deployment.
 
-## :bangbang: Cloud provider setup
-
-ng-deploy-universal is only working with already configured cloud providers. If you need to know how to set up them, please follow the first steps in the [Pulumi Quickstart](https://www.pulumi.com/docs/get-started/) for your provider.
-
-## Infrastructure as code and their state
-
-As many things in development, infrastructure as code needs to hold a state somewhere. This is how the tools can check if something has changed and to do only updates where it is necessary. Pulumi provides different ways to hold the state.
-The simplest way at the beginning is to hold it local. It's perfect for your local development. Since you want to share it with multiple colleagues or to feel better if it is not only on your disk, you might think about a persistent solution in the cloud with your provider, which you can choose here or with Pulumi self. You can read more about it [here](https://www.pulumi.com/docs/reference/cli/pulumi_login/).
-ng-deploy-universal installs pulumi as binary in your node_modules folder so you can use it with `npx` easy.
-
 ## Quick-start <a name="quickstart"></a>
 
 1. Create a new project with the angular cli (>= 8.3.0) or nx cli.
@@ -61,6 +51,33 @@ ng-deploy-universal installs pulumi as binary in your node_modules folder so you
    ```sh
    ng run hello-world:destroy
    ```
+   
+## Requirements
+
+You will need the Angular CLI, an Angular project, and an Azure Subscription to deploy to Azure. Details of these requirements are in this section.
+
+## :bangbang: Cloud provider setup
+
+ng-deploy-universal is only working with already configured cloud providers. If you need to know how to set up them, please follow the first steps in the [Pulumi Quickstart](https://www.pulumi.com/docs/get-started/) for your provider.
+
+## Infrastructure as code and their state
+
+As many things in development, infrastructure as code needs to hold a state somewhere. This is how the tools can check if something has changed and to do only updates where it is necessary. Pulumi provides different ways to hold the state.
+The simplest way at the beginning is to hold it local. It's perfect for your local development. Since you want to share it with multiple colleagues or to feel better if it is not only on your disk, you might think about a persistent solution in the cloud with your provider, which you can choose here or with Pulumi self. You can read more about it [here](https://www.pulumi.com/docs/reference/cli/pulumi_login/).
+ng-deploy-universal installs pulumi as binary in your node_modules folder so you can use it with `npx` easy.
+
+### Azure
+
+If you don't have an Azure subscription, [create your Azure free account from this link](https://azure.microsoft.com/en-us/free/?WT.mc_id=ng_deploy_azure-github-cxa).
+https://www.pulumi.com/docs/intro/cloud-providers/azure/setup/
+
+### AWS
+
+https://www.pulumi.com/docs/intro/cloud-providers/aws/setup/
+
+### Google cloud platform
+
+https://www.pulumi.com/docs/intro/cloud-providers/gcp/setup/
 
 ## Application / Feature Lists
 
