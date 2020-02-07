@@ -109,6 +109,8 @@ Custom domains need some manual configuration step. You need to verify them for 
 To verify your custom domain you need to create a CNAME record in your DNS settings. You can read about more about it [here](https://docs.microsoft.com/en-us/azure/cdn/cdn-map-content-to-custom-domain#map-the-permanent-custom-domain).
 Azure only allows a set of characters. So the `.` in your custom domain name will be replaced with a `-`. If your custom domain is `www.example.com` then your cdn name will be `www-example-com.azureedge.net`.
 
+HINT: Current limitation: domain name must have maximum 50 characters
+
 #### GCP custom domain setup
 
 Google makes it really easy. You can use the [google webmaster](https://www.google.com/webmasters/verification/home).
