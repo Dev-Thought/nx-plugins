@@ -51,7 +51,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
    ```sh
    ng run hello-world:destroy
    ```
-   
+
 ## Requirements
 
 You will need the Angular CLI, an Angular project, and an Azure Subscription to deploy to Azure. Details of these requirements are in this section.
@@ -101,6 +101,17 @@ Legend
 | static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) |            yes             |             yes             |
 | cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |             no             |             yes             |
 | custom domain  |     :calendar:     |     :calendar:     |              :white_check_mark:              |        no (GCP yes)        |             no              |
+
+Custom domains need some manual configuration step. You need to verify them for the providers.
+
+#### Azure custom domain setup
+
+To verify your custom domain you need to create a CNAME record in your DNS settings. You can read about more about it [here](https://docs.microsoft.com/en-us/azure/cdn/cdn-map-content-to-custom-domain#map-the-permanent-custom-domain).
+Azure only allows a set of characters. So the `.` in your custom domain name will be replaced with a `-`. If your custom domain is `www.example.com` then your cdn name will be `www-example-com.azureedge.net`.
+
+#### GCP custom domain setup
+
+Google makes it really easy. You can use the [google webmaster](https://www.google.com/webmasters/verification/home).
 
 ### Angular Universal Application
 
