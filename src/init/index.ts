@@ -154,6 +154,10 @@ function addDependenciesFromPulumiProjectToPackageJson(
       dependencyList.push({ name: 'mime', version: '2.4.4' });
     }
 
+    if (options.provider === PROVIDER.AZURE) {
+      dependencyList.push({ name: '@azure/arm-cdn', version: '^4.2.0' });
+    }
+
     if (!dependencyList.length) {
       return noop();
     }
