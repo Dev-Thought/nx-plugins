@@ -85,7 +85,14 @@ Legend
 | cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |             no             |             yes             |
 | custom domain  |     :calendar:     |     :calendar:     |              :white_check_mark:              |        no (GCP yes)        |             no              |
 
-### NestJS (in planning)
+### Angular Universal Application
+
+| Feature    |   Azure    |    AWS     |    GCP     | activated in dev (default) | activated in prod (default) |
+| ---------- | :--------: | :--------: | :--------: | :------------------------: | :-------------------------: |
+| server     | :calendar: | :calendar: | :calendar: |            yes             |             yes             |
+| serverless | :calendar: | :calendar: | :calendar: |            yes             |             yes             |
+
+### NestJS
 
 | Feature         |   Azure    |    AWS     |    GCP     |
 | --------------- | :--------: | :--------: | :--------: |
