@@ -42,15 +42,16 @@ const syncFiles = new StorageSyncResource('sync', {
 let cdnEndpointResource: azure.cdn.Endpoint;
 let cdnCustomDomainResource: CDNCustomDomainResource;
 if (config.useCdn) {
-  // Optionally, we can add a CDN in front of the website
   const cdnProfile = new azure.cdn.Profile(`pr-cdn`, {
     resourceGroupName: resourceGroup.name,
     sku: 'Standard_Microsoft'
   });
 
   cdnEndpointResource = new azure.cdn.Endpoint(`cdn-ep`, {
+    // TODO: handle long custom domains max characters 50
     name:
-      (config.customDomainName && config.customDomainName.replace('.', '-')) ||
+      (config.customDomainName &&
+        config.customDomainName.replace(/\./gi, '-')) ||
       undefined,
     resourceGroupName: resourceGroup.name,
     profileName: cdnProfile.name,
