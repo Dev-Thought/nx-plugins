@@ -100,7 +100,7 @@ Legend
 | -------------- | :----------------: | :----------------: | :------------------------------------------: | :------------------------: | :-------------------------: |
 | static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) |            yes             |             yes             |
 | cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |             no             |             yes             |
-| custom domain  |     :calendar:     |     :calendar:     |              :white_check_mark:              |        no (GCP yes)        |             no              |
+| custom domain  |     :white_check_mark:     |     :calendar:     |              :white_check_mark:              |        no (GCP yes)        |             no              |
 
 Custom domains need some manual configuration step. You need to verify them for the providers.
 
