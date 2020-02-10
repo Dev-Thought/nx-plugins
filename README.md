@@ -100,7 +100,7 @@ Legend
 | -------------- | :----------------: | :----------------: | :------------------------------------------: | :------------------------: | :-------------------------: |
 | static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) |            yes             |             yes             |
 | cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |             no             |             yes             |
-| custom domain  |     :white_check_mark:     |     :calendar:     |              :white_check_mark:              |        no (GCP yes)        |             no              |
+| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |        no (GCP yes)        |             no              |
 
 Custom domains need some manual configuration step. You need to verify them for the providers.
 
@@ -114,6 +114,11 @@ HINT: Current limitation: domain name must have maximum 50 characters
 #### GCP custom domain setup
 
 Google makes it really easy. You can use the [google webmaster](https://www.google.com/webmasters/verification/home).
+
+#### AWS custom domain setup
+
+For AWS we need to create first a hosted zone with the domain name e.g.: if your deomain is `www.my-domain.com` than use the name `my-domain.com` for the hosted zone. After this is done you get name servers. Now you can replace the name servers from your domain with the one from aws and you have everything under conrtol via AWS route 53. The rest will be done by ng-deploy-it. It will create the ssl certification and validates if you are the owner of the domain.
+You can create the hosted zone in the [Route53](https://console.aws.amazon.com/route53/home#hosted-zones:) Service
 
 ### Angular Universal Application
 

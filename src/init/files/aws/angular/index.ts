@@ -1,16 +1,22 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 
-import { S3SyncResource } from './s3-sync.resource';
 import { createCdn } from './cdn';
 import { Distribution } from '@pulumi/aws/cloudfront';
+import { Output } from '@pulumi/pulumi';
+import { createCertificate } from './certificate';
+import { crawlDirectory, getDomainAndSubdomain } from './utils';
+import * as mime from 'mime';
+import { route53 } from '@pulumi/aws';
+import { Zone, GetZoneResult } from '@pulumi/aws/route53';
 
 const stackConfig = new pulumi.Config();
 const config = {
   // ===== DONT'T TOUCH THIS -> CONFIG REQUIRED BY NG-DEPLOY-UNIVERSAL ======
   projectName: stackConfig.get('projectName'),
   distPath: stackConfig.get('distPath'),
-  useCdn: stackConfig.getBoolean('useCdn')
+  useCdn: stackConfig.getBoolean('useCdn'),
+  customDomainName: stackConfig.get('customDomainName')
   // ===== END ======
 };
 const projectName = config.projectName;
@@ -28,17 +34,38 @@ const contentBucket = new aws.s3.Bucket(`${projectName}-contentBucket`, {
 });
 
 // Sync the contents of the source directory with the S3 bucket, which will in-turn show up on the CDN.
-const s3Sync = new S3SyncResource(`${projectName}-s3-sync`, {
-  bucketPath: contentBucket.bucket,
-  distPath: config.distPath
+crawlDirectory(config.distPath, (filePath: string) => {
+  const relativeFilePath = filePath.replace(config.distPath + '/', '');
+  const contentFile = new aws.s3.BucketObject(
+    relativeFilePath,
+    {
+      key: relativeFilePath,
+
+      acl: 'public-read',
+      bucket: contentBucket,
+      contentType: mime.getType(filePath) || undefined,
+      source: new pulumi.asset.FileAsset(filePath)
+    },
+    {
+      parent: contentBucket
+    }
+  );
 });
 
 let cdn: Distribution;
 if (config.useCdn) {
-  cdn = createCdn(config, contentBucket);
+  let certificateArn: Output<string>;
+  if (config.customDomainName) {
+    certificateArn = createCertificate(config.customDomainName);
+  }
+
+  cdn = createCdn(config, contentBucket, certificateArn);
 }
 
 // Export properties from this stack. This prints them at the end of `pulumi up` and
 // makes them easier to access from the pulumi.com.
 export const staticEndpoint = contentBucket.websiteEndpoint;
 export const cdnEndpoint = cdn && cdn.domainName;
+export const cdnCustomDomain =
+  config.customDomainName &&
+  pulumi.interpolate`https://${config.customDomainName}`;
