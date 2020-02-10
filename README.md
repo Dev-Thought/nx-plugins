@@ -1,4 +1,4 @@
-# @dev-thought/ng-deploy-universal
+# :exclamation::exclamation::exclamation: The package maintainance is continued under the new name is @ng-deploy-it :exclamation::exclamation::exclamation:
 
 [![npm version](https://badge.fury.io/js/%40dev-thought%2Fng-deploy-universal.svg)](https://www.npmjs.com/package/@dev-thought/ng-deploy-universal)
 [![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?color=blue&style=flat-square)](http://opensource.org/licenses/MIT)
