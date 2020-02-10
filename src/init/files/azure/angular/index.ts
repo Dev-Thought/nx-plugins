@@ -6,7 +6,7 @@ import { CDNCustomDomainResource } from './cdnCustomDomain';
 
 const stackConfig = new pulumi.Config();
 const config = {
-  // ===== DONT'T TOUCH THIS -> CONFIG REQUIRED BY NG-DEPLOY-UNIVERSAL ======
+  // ===== DONT'T TOUCH THIS -> CONFIG REQUIRED BY ng-deploy-it ======
   projectName: stackConfig.get('projectName'),
   distPath: stackConfig.get('distPath'),
   useCdn: stackConfig.getBoolean('useCdn'),

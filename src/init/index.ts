@@ -220,7 +220,7 @@ export function updateProject(
           );
         }
         project.architect['deploy'] = {
-          builder: '@dev-thought/ng-deploy-universal:deploy',
+          builder: '@dev-thought/ng-deploy-it:deploy',
           options: architectOptions,
           configurations: {
             production: {
@@ -239,7 +239,7 @@ export function updateProject(
           );
         }
         project.architect['destroy'] = {
-          builder: '@dev-thought/ng-deploy-universal:destroy',
+          builder: '@dev-thought/ng-deploy-it:destroy',
           options: architectOptions,
           configurations: {
             production: {}

@@ -1,11 +1,11 @@
 {
-  "name": "@dev-thought/ng-deploy-universal",
+  "name": "@dev-thought/ng-deploy-it",
   "version": "0.1.0",
   "description": "A schematics",
-  "homepage": "https://www.npmjs.com/package/ng-deploy-universal",
-  "repository": "https://github.com/dev-thought/ng-deploy-universal",
+  "homepage": "https://www.npmjs.com/package/ng-deploy-it",
+  "repository": "https://github.com/dev-thought/ng-deploy-it",
   "bugs": {
-    "url": "https://github.com/dev-thought/ng-deploy-universal/issues",
+    "url": "https://github.com/dev-thought/ng-deploy-it/issues",
     "email": "mitko@dev-thought.cool"
   },
   "author": "Mitko Tschimev <mitko@dev-thought.cool>",
