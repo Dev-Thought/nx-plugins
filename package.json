@@ -1,6 +1,6 @@
 {
   "name": "@dev-thought/ng-deploy-it",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A schematics",
   "homepage": "https://www.npmjs.com/package/ng-deploy-it",
   "repository": "https://github.com/dev-thought/ng-deploy-it",
