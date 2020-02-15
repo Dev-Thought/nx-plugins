@@ -137,6 +137,7 @@ function addDependenciesFromPulumiProjectToPackageJson(
   return (host: Tree): Rule => {
     const packageJson = readJsonInTree(host, 'package.json');
     const dependencyList: { name: string; version: string }[] = [];
+    const applicationType = getApplicationType(project);
 
     for (const name in pulumiCloudProviderDependencies) {
       if (pulumiCloudProviderDependencies.hasOwnProperty(name)) {
@@ -156,6 +157,21 @@ function addDependenciesFromPulumiProjectToPackageJson(
 
     if (options.provider === PROVIDER.AZURE) {
       dependencyList.push({ name: '@azure/arm-cdn', version: '^4.2.0' });
+      /**
+       * TODO: currently we just support nestjs but if we want to support more we need to differenciate between
+       * different types of node applications
+       */
+      switch (applicationType) {
+        case 'node':
+          dependencyList.push({
+            name: '@nestjs/azure-func-http',
+            version: '^0.4.2'
+          });
+          break;
+
+        default:
+          break;
+      }
     }
 
     if (!dependencyList.length) {
@@ -178,23 +194,46 @@ function generateInfrastructureCode(
 ) {
   return (host: Tree, context: SchematicContext) => {
     const applicationType = getApplicationType(project);
-    const buildTarget = project.targets.get('build') as TargetDefinition;
     const templateSource = apply(
       url(`./files/${options.provider}/${applicationType}`),
-      [
-        template({
-          buildPath: join(
-            `../../../${(buildTarget.options as JsonObject).outputPath}`
-          ),
-          projectName: options.project
-        }),
-        move(join(project.root, 'infrastructure'))
-      ]
+      [getApplicationTypeTemplate(project, options), move(join(project.root))]
     );
 
     const rule = chain([branchAndMerge(chain([mergeWith(templateSource)]))]);
     return rule(host, context);
   };
+}
+
+function getApplicationTypeTemplate(
+  project: ProjectDefinition,
+  options: InitOptions
+) {
+  const target = project.targets.get('build');
+  if (target) {
+    switch (target.builder) {
+      case '@angular-devkit/build-angular:browser':
+        const buildTarget = project.targets.get('build') as TargetDefinition;
+        return template({
+          buildPath: join(
+            `../../../${(buildTarget.options as JsonObject).outputPath}`
+          ),
+          projectName: options.project
+        });
+        break;
+      case '@nrwl/node:build':
+        return template({
+          rootDir: 'src',
+          getRootDirectory: () => 'src',
+          stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
+          getRootModuleName: () => 'AppModule',
+          getRootModulePath: () => 'src/app.module',
+          projectName: options.project
+        });
+    }
+  }
+
+  // TODO: List supported build targets in documentation
+  throw new Error(`Can't find a supported build target for the project`);
 }
 
 export function updateProject(
