@@ -32,6 +32,5 @@ export function getApplicationType(project: ProjectDefinition) {
     }
   }
 
-  // TODO: List supported build targets in documentation
   throw new Error(`Can't find a supported build target for the project`);
 }
