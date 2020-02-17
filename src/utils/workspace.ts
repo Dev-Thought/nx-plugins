@@ -1,6 +1,9 @@
 import { resolve, join } from 'path';
 import { SchematicContext, Tree } from '@angular-devkit/schematics';
-import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
+import {
+  ProjectDefinition,
+  TargetDefinition
+} from '@angular-devkit/core/src/workspace';
 
 export function getRealWorkspacePath() {
   // TODO!: get better way
@@ -21,9 +24,8 @@ export function hasAlreadyInfrastructureProject(project: ProjectDefinition) {
   };
 }
 
-export function getApplicationType(project: ProjectDefinition) {
-  const target = project.targets.get('build');
-  if (target) {
+export function getApplicationType(target: TargetDefinition) {
+  if (target && target.builder) {
     switch (target.builder) {
       case '@angular-devkit/build-angular:browser':
         return 'angular';

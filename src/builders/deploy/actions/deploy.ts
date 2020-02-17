@@ -1,23 +1,60 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { DeployOptions } from '../options';
 import { spawnSync, spawn } from 'child_process';
-import { getPulumiBinaryPath } from '../../../utils/workspace';
+import {
+  getPulumiBinaryPath,
+  getApplicationType
+} from '../../../utils/workspace';
 import { resolve, dirname } from 'path';
 import { DeployTargetOptions } from './target-options';
 import { readWorkspaceConfigPath } from '@nrwl/workspace';
+import * as ncc from '@zeit/ncc';
+import { writeFileSync } from 'fs';
+import { ensureDirSync, ensureFileSync } from 'fs-extra';
 
 export async function deploy(context: BuilderContext, options: DeployOptions) {
   const configuration = context!.target!.configuration || 'dev';
   if (!options.noBuild) {
     context.logger.info('Build project');
 
-    const build = await context.scheduleTarget({
-      target: 'build',
-      project: context!.target!.project,
-      configuration: context!.target!.configuration || ''
-    });
+    const project = await getProjectConfig(context);
+    const applicationType = getApplicationType(project.architect.build);
+    if (applicationType === 'node') {
+      const infrastructureFolder = resolve(
+        context.workspaceRoot,
+        project.root,
+        'infrastructure'
+      );
+      const { code, map, assets } = await ncc(
+        resolve(infrastructureFolder, 'functions/main/index.ts'),
+        {
+          cache: resolve(infrastructureFolder, 'buildcache')
+        }
+      );
+      ensureDirSync(resolve(infrastructureFolder, 'functions/dist'));
+      // compiled javascript
+      writeFileSync(
+        resolve(infrastructureFolder, 'functions/dist/index.js'),
+        code
+      );
+      // assets
+      for (const file in assets) {
+        const content = assets[file];
+        ensureFileSync(resolve(infrastructureFolder, `functions/dist/${file}`));
+        writeFileSync(
+          resolve(infrastructureFolder, `functions/dist/${file}`),
+          content.source.toString()
+        );
+      }
+    } else {
+      const build = await context.scheduleTarget({
+        target: 'build',
+        project: context!.target!.project,
+        configuration: context!.target!.configuration || ''
+      });
 
-    await build.result;
+      await build.result;
+    }
 
     context.logger.info('Build done');
   }
@@ -101,13 +138,18 @@ async function up(
   });
 }
 
+async function getProjectConfig(context: BuilderContext) {
+  const workspaceConfig = readWorkspaceConfigPath();
+
+  return workspaceConfig.projects[context.target!.project];
+}
+
 // TODO: Not sure if this is the best approach to get the outputPath
 async function getDistributionPath(context: BuilderContext) {
-  const workspaceConfig = readWorkspaceConfigPath();
+  const project = await getProjectConfig(context);
 
   return resolve(
     context.workspaceRoot,
-    workspaceConfig.projects[context.target!.project].architect.build.options
-      .outputPath
+    project.architect.build.options.outputPath
   );
 }

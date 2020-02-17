@@ -16,7 +16,9 @@ const nodeApp = new azure.appservice.ArchiveFunctionApp(
   `${projectName}-functions`,
   {
     resourceGroup,
-    archive: new pulumi.asset.FileArchive('./functions')
+    archive: new pulumi.asset.FileArchive('./functions'),
+    version: '~3',
+    nodeVersion: '~10'
   }
 );
 

@@ -137,7 +137,8 @@ function addDependenciesFromPulumiProjectToPackageJson(
   return (host: Tree): Rule => {
     const packageJson = readJsonInTree(host, 'package.json');
     const dependencyList: { name: string; version: string }[] = [];
-    const applicationType = getApplicationType(project);
+    const target = project.targets.get('build')!;
+    const applicationType = getApplicationType(target);
 
     for (const name in pulumiCloudProviderDependencies) {
       if (pulumiCloudProviderDependencies.hasOwnProperty(name)) {
@@ -163,10 +164,16 @@ function addDependenciesFromPulumiProjectToPackageJson(
        */
       switch (applicationType) {
         case 'node':
-          dependencyList.push({
-            name: '@nestjs/azure-func-http',
-            version: '^0.4.2'
-          });
+          dependencyList.push(
+            {
+              name: '@nestjs/azure-func-http',
+              version: '^0.4.2'
+            },
+            {
+              name: '@azure/functions',
+              version: '^1.2.0'
+            }
+          );
           break;
 
         default:
@@ -193,7 +200,8 @@ function generateInfrastructureCode(
   options: InitOptions
 ) {
   return (host: Tree, context: SchematicContext) => {
-    const applicationType = getApplicationType(project);
+    const target = project.targets.get('build')!;
+    const applicationType = getApplicationType(target);
     const templateSource = apply(
       url(`./files/${options.provider}/${applicationType}`),
       [getApplicationTypeTemplate(project, options), move(join(project.root))]
