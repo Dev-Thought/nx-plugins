@@ -5,10 +5,8 @@ import { createCdn } from './cdn';
 import { Distribution } from '@pulumi/aws/cloudfront';
 import { Output } from '@pulumi/pulumi';
 import { createCertificate } from './certificate';
-import { crawlDirectory, getDomainAndSubdomain } from './utils';
+import { crawlDirectory } from './utils';
 import * as mime from 'mime';
-import { route53 } from '@pulumi/aws';
-import { Zone, GetZoneResult } from '@pulumi/aws/route53';
 
 const stackConfig = new pulumi.Config();
 const config = {

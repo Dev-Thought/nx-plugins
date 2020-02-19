@@ -96,7 +96,7 @@ function generateNewTempPulumiProject(
         '--name',
         options.project,
         '--stack',
-        'dev',
+        `dev-${options.project}`,
         '--dir',
         resolve(join(project.root, 'infrastructure')),
         '--description',
@@ -152,7 +152,10 @@ function addDependenciesFromPulumiProjectToPackageJson(
       }
     }
 
-    if (options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
+    if (
+      options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM ||
+      options.provider === PROVIDER.AWS
+    ) {
       dependencyList.push({ name: 'mime', version: '2.4.4' });
     }
 

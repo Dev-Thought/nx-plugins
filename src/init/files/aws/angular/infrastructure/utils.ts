@@ -1,6 +1,7 @@
 import { Distribution } from '@pulumi/aws/cloudfront';
 import { Record } from '@pulumi/aws/route53';
 import { route53 } from '@pulumi/aws';
+import { readdirSync, statSync } from 'fs';
 
 export function getDomainAndSubdomain(
   domain: string
@@ -43,4 +44,18 @@ export function createAliasRecord(
       }
     ]
   });
+}
+
+export function crawlDirectory(dir: string, f: (_: string) => void) {
+  const files = readdirSync(dir);
+  for (const file of files) {
+    const filePath = `${dir}/${file}`;
+    const stat = statSync(filePath);
+    if (stat.isDirectory()) {
+      crawlDirectory(filePath, f);
+    }
+    if (stat.isFile()) {
+      f(filePath);
+    }
+  }
 }
