@@ -234,7 +234,7 @@ function getApplicationTypeTemplate(
           getRootDirectory: () => 'src',
           stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
           getRootModuleName: () => 'AppModule',
-          getRootModulePath: () => 'src/app.module',
+          getRootModulePath: () => 'app/app.module',
           projectName: options.project
         });
     }

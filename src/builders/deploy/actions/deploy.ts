@@ -25,24 +25,29 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
         project.root,
         'infrastructure'
       );
+      const processCwd = process.cwd();
+      process.chdir(infrastructureFolder);
       const { code, map, assets } = await ncc(
         resolve(infrastructureFolder, 'functions/main/index.ts'),
         {
           cache: resolve(infrastructureFolder, 'buildcache')
         }
       );
-      ensureDirSync(resolve(infrastructureFolder, 'functions/dist'));
+      process.chdir(processCwd);
+      ensureDirSync(resolve(infrastructureFolder, 'functions/dist/main'));
       // compiled javascript
       writeFileSync(
-        resolve(infrastructureFolder, 'functions/dist/index.js'),
+        resolve(infrastructureFolder, 'functions/dist/main/index.js'),
         code
       );
       // assets
       for (const file in assets) {
         const content = assets[file];
-        ensureFileSync(resolve(infrastructureFolder, `functions/dist/${file}`));
+        ensureFileSync(
+          resolve(infrastructureFolder, `functions/dist/main/${file}`)
+        );
         writeFileSync(
-          resolve(infrastructureFolder, `functions/dist/${file}`),
+          resolve(infrastructureFolder, `functions/dist/main/${file}`),
           content.source.toString()
         );
       }
