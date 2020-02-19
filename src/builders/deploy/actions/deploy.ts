@@ -72,7 +72,7 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
       resolve(context.workspaceRoot, targetOptions.main as string)
     );
 
-    createStackIfNotExist(cwd, configuration);
+    createStackIfNotExist(cwd, configuration, context.target.project);
 
     const distributationPath = await getDistributionPath(context);
     return up(
@@ -89,8 +89,19 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
   return { success: false };
 }
 
-function spawnStack(cwd: string, configuration: string, withInit = false) {
-  const args = ['stack', '--stack', configuration, '--cwd', cwd];
+function spawnStack(
+  cwd: string,
+  configuration: string,
+  projectName: string,
+  withInit = false
+) {
+  const args = [
+    'stack',
+    '--stack',
+    `${configuration}-${projectName}`,
+    '--cwd',
+    cwd
+  ];
   if (withInit) {
     args.splice(1, 0, 'init');
   }
@@ -101,10 +112,14 @@ function spawnStack(cwd: string, configuration: string, withInit = false) {
   });
 }
 
-function createStackIfNotExist(cwd: string, configuration: string) {
-  const result = spawnStack(cwd, configuration);
+function createStackIfNotExist(
+  cwd: string,
+  configuration: string,
+  projectName: string
+) {
+  const result = spawnStack(cwd, configuration, projectName);
   if (result.stderr && result.stderr.toString().includes('no stack named')) {
-    spawnStack(cwd, configuration, true);
+    spawnStack(cwd, configuration, projectName, true);
   }
 }
 
@@ -118,7 +133,13 @@ async function up(
   customDomainName: string
 ) {
   return await new Promise((resolve, reject) => {
-    const args = ['up', '--cwd', cwd, '--stack', configuration];
+    const args = [
+      'up',
+      '--cwd',
+      cwd,
+      '--stack',
+      `${configuration}-${projectName}`
+    ];
     if (options.nonInteractive) {
       args.push('--non-interactive', '--yes');
     }
