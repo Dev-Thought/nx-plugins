@@ -15,7 +15,7 @@ export async function destroy(
       resolve(context.workspaceRoot, targetOptions.main as string)
     );
 
-    return down(cwd, options, configuration);
+    return down(cwd, options, configuration, context.target.project);
   }
 
   return { success: false };
@@ -24,10 +24,17 @@ export async function destroy(
 async function down(
   cwd: string,
   options: DestroyOptions,
-  configuration: string
+  configuration: string,
+  projectName: string
 ) {
   return await new Promise((resolve, reject) => {
-    const args = ['destroy', '--cwd', cwd, '--stack', configuration];
+    const args = [
+      'destroy',
+      '--cwd',
+      cwd,
+      '--stack',
+      `${configuration}-${projectName}`
+    ];
     if (options.nonInteractive) {
       args.push('--non-interactive', '--yes');
     }
