@@ -42,19 +42,30 @@ export default function(options: InitOptions) {
   return async (host: Tree, context: SchematicContext): Promise<Rule> => {
     const workspace = await getWorkspace(host);
     const project = workspace.projects.get(options.project);
+    const applicationType = getApplicationType(project!.targets.get('build')!);
 
-    if (
-      options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM &&
-      !options.customDomainName
-    ) {
-      const result = await prompt<{ customDomainName: string }>({
-        type: 'input',
-        name: 'customDomainName',
-        message:
-          'GCP requires a customDomainName which needs to be set up by you. Find more in the documentation.',
-        initial: 'www.example.com'
-      });
-      options.customDomainName = result.customDomainName;
+    // TODO: extract into abstract class
+    // google cloud provider
+    if (options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
+      if (!options.customDomainName && applicationType === 'angular') {
+        const result = await prompt<{ customDomainName: string }>({
+          type: 'input',
+          name: 'customDomainName',
+          message:
+            'GCP requires a customDomainName which needs to be set up by you. Find more in the documentation.',
+          initial: 'www.example.com'
+        });
+        options.customDomainName = result.customDomainName;
+      }
+      if (applicationType === 'node') {
+        const result = await prompt<{ region: string }>({
+          type: 'input',
+          name: 'region',
+          message: 'Where do you want to deploy your google cloud function.',
+          initial: 'us-west1'
+        });
+        options.region = result.region;
+      }
     }
 
     if (project) {
@@ -87,23 +98,25 @@ function generateNewTempPulumiProject(
 ): Rule {
   return (host: Tree): Rule => {
     let template = getCloudTemplateName(options.provider);
+    const args = [
+      'new',
+      template,
+      '--name',
+      options.project,
+      '--stack',
+      `dev-${options.project}`,
+      '--dir',
+      resolve(join(project.root, 'infrastructure')),
+      '--description',
+      'Infrastructure as Code based on Pulumi'
+    ];
 
-    spawnSync(
-      getPulumiBinaryPath(),
-      [
-        'new',
-        template,
-        '--name',
-        options.project,
-        '--stack',
-        `dev-${options.project}`,
-        '--dir',
-        resolve(join(project.root, 'infrastructure')),
-        '--description',
-        'Infrastructure as Code based on Pulumi'
-      ],
-      { stdio: 'inherit' }
-    );
+    // TODO: extract into abstract class
+    if (options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM && options.region) {
+      args.push('-c', `gcp:region=${options.region}`);
+    }
+
+    spawnSync(getPulumiBinaryPath(), args, { stdio: 'inherit' });
 
     return addDependenciesFromPulumiProjectToPackageJson(project, options);
   };
@@ -152,6 +165,7 @@ function addDependenciesFromPulumiProjectToPackageJson(
       }
     }
 
+    // TODO: extract into abstract class
     if (
       options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM ||
       options.provider === PROVIDER.AWS
