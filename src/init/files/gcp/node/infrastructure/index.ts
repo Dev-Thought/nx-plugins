@@ -4,8 +4,7 @@ import * as pulumi from '@pulumi/pulumi';
 const stackConfig = new pulumi.Config();
 const config = {
   // ===== DONT'T TOUCH THIS -> CONFIG REQUIRED BY ng-deploy-it ======
-  projectName: stackConfig.get('projectName'),
-  distPath: stackConfig.get('distPath')
+  projectName: stackConfig.get('projectName')
   // ===== END ======
 };
 const projectName = config.projectName;
