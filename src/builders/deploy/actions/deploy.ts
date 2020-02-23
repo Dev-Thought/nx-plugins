@@ -80,10 +80,9 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
       cwd,
       options,
       configuration,
-      targetOptions.useCdn,
+      targetOptions,
       distributationPath,
-      context.target.project,
-      targetOptions.customDomainName
+      context.target.project
     );
   }
 
@@ -128,10 +127,9 @@ async function up(
   cwd: string,
   options: DeployOptions,
   configuration: string,
-  useCdn: boolean = false,
+  targetOptions: DeployTargetOptions,
   distPath: string,
-  projectName: string,
-  customDomainName: string
+  projectName: string
 ) {
   return await new Promise((resolve, reject) => {
     const args = [
@@ -144,10 +142,15 @@ async function up(
     if (options.nonInteractive) {
       args.push('--non-interactive', '--yes');
     }
-    if (customDomainName) {
-      args.push('-c', `customDomainName=${customDomainName}`);
+
+    if (targetOptions.pulumi) {
+      for (const key in targetOptions.pulumi) {
+        if (targetOptions.pulumi.hasOwnProperty(key)) {
+          const config = targetOptions.pulumi[key];
+          args.push('-c', `${key}=${config}`);
+        }
+      }
     }
-    args.push('-c', `useCdn=${useCdn}`);
     args.push('-c', `distPath=${distPath}`);
     args.push('-c', `projectName=${projectName}`);
     const up = spawn(getPulumiBinaryPath(), args, {
