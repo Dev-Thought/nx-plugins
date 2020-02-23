@@ -1,16 +1,17 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { DeployOptions } from '../options';
 import { spawnSync, spawn } from 'child_process';
-import {
-  getPulumiBinaryPath,
-  getApplicationType
-} from '../../../utils/workspace';
+import { getPulumiBinaryPath } from '../../../utils/workspace';
 import { resolve, dirname } from 'path';
 import { DeployTargetOptions } from './target-options';
 import { readWorkspaceConfigPath } from '@nrwl/workspace';
 import * as ncc from '@zeit/ncc';
 import { writeFileSync } from 'fs';
 import { ensureDirSync, ensureFileSync } from 'fs-extra';
+import {
+  getApplicationType,
+  ApplicationType
+} from '../../../utils/application-type';
 
 export async function deploy(context: BuilderContext, options: DeployOptions) {
   const configuration = context!.target!.configuration || 'dev';
@@ -19,7 +20,7 @@ export async function deploy(context: BuilderContext, options: DeployOptions) {
 
     const project = await getProjectConfig(context);
     const applicationType = getApplicationType(project.architect.build);
-    if (applicationType === 'node') {
+    if (applicationType === ApplicationType.NESTJS) {
       const infrastructureFolder = resolve(
         context.workspaceRoot,
         project.root,
