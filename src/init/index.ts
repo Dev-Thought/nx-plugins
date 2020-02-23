@@ -10,7 +10,6 @@ import {
   move,
   SchematicContext,
   branchAndMerge,
-  template,
   SchematicsException
 } from '@angular-devkit/schematics';
 import {
@@ -23,135 +22,86 @@ import {
 import { spawnSync } from 'child_process';
 import { resolve, join } from 'path';
 import { getCloudTemplateName, PROVIDER } from '../utils/provider';
-import {
-  getPulumiBinaryPath,
-  hasAlreadyInfrastructureProject,
-  getApplicationType
-} from '../utils/workspace';
+import { getPulumiBinaryPath, getAdapter } from '../utils/workspace';
 import { readFileSync, unlinkSync } from 'fs';
 import * as rimraf from 'rimraf';
-import { JsonObject } from '@angular-devkit/core';
-import {
-  ProjectDefinition,
-  TargetDefinition
-} from '@angular-devkit/core/src/workspace';
-import { prompt } from 'enquirer';
-import { ArchitectOptions } from './architect-options';
+import { BaseAdapter } from './adapter/base.adapter';
 
 export default function(options: InitOptions) {
   return async (host: Tree, context: SchematicContext): Promise<Rule> => {
     const workspace = await getWorkspace(host);
     const project = workspace.projects.get(options.project);
-    const applicationType = getApplicationType(project!.targets.get('build')!);
 
-    // TODO: extract into abstract class
-    // google cloud provider
-    if (options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
-      if (!options.customDomainName && applicationType === 'angular') {
-        const result = await prompt<{ customDomainName: string }>({
-          type: 'input',
-          name: 'customDomainName',
-          message:
-            'GCP requires a customDomainName which needs to be set up by you. Find more in the documentation.',
-          initial: 'www.example.com'
-        });
-        options.customDomainName = result.customDomainName;
-      }
-      if (applicationType === 'node') {
-        const result = await prompt<{ region: string }>({
-          type: 'input',
-          name: 'region',
-          message: 'Where do you want to deploy your google cloud function.',
-          initial: 'us-west1'
-        });
-        options.region = result.region;
-      }
+    if (!project) {
+      context.logger.error(`Project doesn't exist`);
+      return chain([]);
     }
 
-    if (project) {
-      return chain([
-        hasAlreadyInfrastructureProject(project),
-        initializeCloudProviderApplication(project, options)
-      ]);
+    if (host.exists(join(project.root, 'infrastructure', 'Pulumi.yaml'))) {
+      context.logger.error(`This project already has an infrastructure`);
+      return chain([]);
     }
 
-    context.logger.error(`Project doesn't exist`);
-    return chain([]);
+    const adapter = getAdapter(project, options);
+    await adapter.extendOptionsByUserInput();
+
+    return chain([initializeCloudProviderApplication(adapter)]);
   };
 }
 
-function initializeCloudProviderApplication(
-  project: ProjectDefinition,
-  options: InitOptions
-) {
+function initializeCloudProviderApplication(adapter: BaseAdapter) {
   return chain([
-    generateNewTempPulumiProject(project, options),
-    generateInfrastructureCode(project, options),
-    updateProject(project, options),
-    cleanupTempPulumiProject(project)
+    generateNewPulumiProject(adapter),
+    generateInfrastructureCode(adapter),
+    updateProject(adapter),
+    cleanupTempPulumiProject(adapter)
   ]);
 }
 
-function generateNewTempPulumiProject(
-  project: ProjectDefinition,
-  options: InitOptions
-): Rule {
+function generateNewPulumiProject(adapter: BaseAdapter): Rule {
   return (host: Tree): Rule => {
-    let template = getCloudTemplateName(options.provider);
+    let template = getCloudTemplateName(adapter.options.provider);
     const args = [
       'new',
       template,
       '--name',
-      options.project,
-      '--stack',
-      `dev-${options.project}`,
+      adapter.options.project,
       '--dir',
-      resolve(join(project.root, 'infrastructure')),
+      resolve(join(adapter.project.root, 'infrastructure')),
       '--description',
-      'Infrastructure as Code based on Pulumi'
+      'Infrastructure as Code based on Pulumi',
+      '--generate-only'
     ];
 
-    // TODO: extract into abstract class
-    if (options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM && options.region) {
-      args.push('-c', `gcp:region=${options.region}`);
-    }
-
-    spawnSync(getPulumiBinaryPath(), args, { stdio: 'inherit' });
-
-    return addDependenciesFromPulumiProjectToPackageJson(project, options);
+    spawnSync(getPulumiBinaryPath(), args);
+    return addDependenciesFromPulumiProjectToPackageJson(adapter);
   };
 }
 
-function cleanupTempPulumiProject(project: ProjectDefinition) {
+function cleanupTempPulumiProject(adapter: BaseAdapter) {
   return (host: Tree) => {
-    unlinkSync(resolve(join(project.root, 'infrastructure'), '.gitignore'));
-    unlinkSync(resolve(join(project.root, 'infrastructure'), 'index.ts'));
-    unlinkSync(resolve(join(project.root, 'infrastructure'), 'tsconfig.json'));
-    unlinkSync(resolve(join(project.root, 'infrastructure'), 'package.json'));
-    unlinkSync(
-      resolve(join(project.root, 'infrastructure'), 'package-lock.json')
-    );
-    rimraf.sync(resolve(join(project.root, 'infrastructure'), 'node_modules'));
+    const infraDir = join(adapter.project.root, 'infrastructure');
+    unlinkSync(resolve(infraDir, '.gitignore'));
+    unlinkSync(resolve(infraDir, 'index.ts'));
+    unlinkSync(resolve(infraDir, 'tsconfig.json'));
+    unlinkSync(resolve(infraDir, 'package.json'));
 
     return host;
   };
 }
 
 function addDependenciesFromPulumiProjectToPackageJson(
-  project: ProjectDefinition,
-  options: InitOptions
+  adapter: BaseAdapter
 ): Rule {
   const pulumiCloudProviderDependencies = JSON.parse(
     readFileSync(
-      resolve(join(project.root, 'infrastructure'), 'package.json')
+      resolve(join(adapter.project.root, 'infrastructure'), 'package.json')
     ).toString()
   ).dependencies;
 
   return (host: Tree): Rule => {
     const packageJson = readJsonInTree(host, 'package.json');
     const dependencyList: { name: string; version: string }[] = [];
-    const target = project.targets.get('build')!;
-    const applicationType = getApplicationType(target);
 
     for (const name in pulumiCloudProviderDependencies) {
       if (pulumiCloudProviderDependencies.hasOwnProperty(name)) {
@@ -165,38 +115,7 @@ function addDependenciesFromPulumiProjectToPackageJson(
       }
     }
 
-    // TODO: extract into abstract class
-    if (
-      options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM ||
-      options.provider === PROVIDER.AWS
-    ) {
-      dependencyList.push({ name: 'mime', version: '2.4.4' });
-    }
-
-    if (options.provider === PROVIDER.AZURE) {
-      dependencyList.push({ name: '@azure/arm-cdn', version: '^4.2.0' });
-      /**
-       * TODO: currently we just support nestjs but if we want to support more we need to differenciate between
-       * different types of node applications
-       */
-      switch (applicationType) {
-        case 'node':
-          dependencyList.push(
-            {
-              name: '@nestjs/azure-func-http',
-              version: '^0.4.2'
-            },
-            {
-              name: '@azure/functions',
-              version: '^1.2.0'
-            }
-          );
-          break;
-
-        default:
-          break;
-      }
-    }
+    dependencyList.push(...adapter.addRequiredDependencies());
 
     if (!dependencyList.length) {
       return noop();
@@ -212,16 +131,15 @@ function addDependenciesFromPulumiProjectToPackageJson(
   };
 }
 
-function generateInfrastructureCode(
-  project: ProjectDefinition,
-  options: InitOptions
-) {
+function generateInfrastructureCode(adapter: BaseAdapter) {
   return (host: Tree, context: SchematicContext) => {
-    const target = project.targets.get('build')!;
-    const applicationType = getApplicationType(target);
+    const template = adapter.getApplicationTypeTemplate();
+    if (!template) {
+      throw new Error(`Can't find a supported build target for the project`);
+    }
     const templateSource = apply(
-      url(`./files/${options.provider}/${applicationType}`),
-      [getApplicationTypeTemplate(project, options), move(join(project.root))]
+      url(`./files/${adapter.options.provider}/${adapter.applicationType}`),
+      [adapter.getApplicationTypeTemplate(), move(join(adapter.project.root))]
     );
 
     const rule = chain([branchAndMerge(chain([mergeWith(templateSource)]))]);
@@ -229,100 +147,37 @@ function generateInfrastructureCode(
   };
 }
 
-function getApplicationTypeTemplate(
-  project: ProjectDefinition,
-  options: InitOptions
-) {
-  const target = project.targets.get('build');
-  if (target) {
-    switch (target.builder) {
-      case '@angular-devkit/build-angular:browser':
-        const buildTarget = project.targets.get('build') as TargetDefinition;
-        return template({
-          buildPath: join(
-            `../../../${(buildTarget.options as JsonObject).outputPath}`
-          ),
-          projectName: options.project
-        });
-        break;
-      case '@nrwl/node:build':
-        return template({
-          rootDir: 'src',
-          getRootDirectory: () => 'src',
-          stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
-          getRootModuleName: () => 'AppModule',
-          getRootModulePath: () => 'app/app.module',
-          projectName: options.project
-        });
-    }
-  }
-
-  // TODO: List supported build targets in documentation
-  throw new Error(`Can't find a supported build target for the project`);
-}
-
-export function updateProject(
-  project: ProjectDefinition,
-  options: InitOptions
-): Rule {
+export function updateProject(adapter: BaseAdapter): Rule {
   return async (host: Tree, _context: SchematicContext) => {
-    const architectOptions: ArchitectOptions = {
-      main: join(project.root, 'infrastructure', 'index.ts'),
-      provider: options.provider,
-      useCdn: false
-    };
-    if (options.customDomainName) {
-      architectOptions.customDomainName = options.customDomainName;
-    }
     return chain([
       updateJsonInTree(getWorkspacePath(host), json => {
-        const project = json.projects[options.project];
+        const project = json.projects[adapter.options.project];
 
         if (!project || !project.architect) {
           throw new SchematicsException(
             'An error has occured during modification of angular.json'
           );
         }
-        project.architect['deploy'] = {
-          builder: '@dev-thought/ng-deploy-it:deploy',
-          options: architectOptions,
-          configurations: {
-            production: {
-              useCdn: true
-            }
-          }
-        };
+        project.architect.deploy = adapter.getDeployActionConfiguration();
+        project.architect.destroy = adapter.getDestroyActionConfiguration();
         return json;
       }),
-      updateJsonInTree(getWorkspacePath(host), json => {
-        const project = json.projects[options.project];
 
-        if (!project || !project.architect) {
-          throw new SchematicsException(
-            'An error has occured during modification of angular.json'
-          );
-        }
-        project.architect['destroy'] = {
-          builder: '@dev-thought/ng-deploy-it:destroy',
-          options: architectOptions,
-          configurations: {
-            production: {}
+      // TODO: this is nx angular specific -> add angular and nx native compatibility
+      updateJsonInTree(
+        join(adapter.project.root, 'tsconfig.app.json'),
+        json => {
+          const exclude: string[] = json.exclude;
+          const excludePaths = 'infrastructure/**/*.ts';
+
+          if (!exclude) {
+            json.exclude = [excludePaths];
+          } else {
+            exclude.push(excludePaths);
           }
-        };
-        return json;
-      }),
-      // TODO: this is nx specific -> add angular compatibility
-      updateJsonInTree(join(project.root, 'tsconfig.app.json'), json => {
-        const exclude: string[] = json.exclude;
-        const excludePaths = 'infrastructure/**/*.ts';
-
-        if (!exclude) {
-          json.exclude = [excludePaths];
-        } else {
-          exclude.push(excludePaths);
+          return json;
         }
-        return json;
-      })
+      )
     ]);
   };
 }
