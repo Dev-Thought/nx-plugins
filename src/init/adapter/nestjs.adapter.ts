@@ -17,6 +17,10 @@ export class NestJSAdapter extends BaseAdapter {
       questions.push(QUESTIONS.awsProfile);
     }
 
+    if (this.options.provider === PROVIDER.AZURE) {
+      questions.push(QUESTIONS.azureLocation);
+    }
+
     const anwsers = await prompt(questions);
     this.options = {
       ...this.options,
@@ -65,7 +69,7 @@ export class NestJSAdapter extends BaseAdapter {
   }
 
   getDestroyActionConfiguration(): any {
-    const config = super.getDeployActionConfiguration();
+    const config = super.getDestroyActionConfiguration();
     return config;
   }
 }
