@@ -27,6 +27,10 @@ export class BaseAdapter {
       questions.push(QUESTIONS.azureLocation);
     }
 
+    if (this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
+      questions.push(QUESTIONS.gcpProjectId);
+    }
+
     const anwsers = await prompt(questions);
     this.options = {
       ...this.options,

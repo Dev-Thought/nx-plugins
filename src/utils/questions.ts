@@ -47,6 +47,12 @@ export const QUESTIONS = {
     ]
   },
 
+  gcpProjectId: {
+    type: 'input',
+    name: 'gcp:project',
+    message: 'Your google project ID where all the resources will be deployed'
+  },
+
   // get list with: az account list-locations | jq ".[] | .name"
   azureLocation: {
     type: 'autocomplete',
