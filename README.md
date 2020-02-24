@@ -92,15 +92,15 @@ Legend
 
 | Nx workspace (native) | Nx workspace (angular) | angular |
 | :-------------------: | :--------------------: | :-----: |
-|          Nx           |          NxNg          |   Ng    |
+|    not planned now    |          NxNg          |   Ng    |
 
 ### Angular Application
 
-| Feature        |       Azure        |        AWS         |                     GCP                      |  Workspace   | activated in dev (default) | activated in prod (default) |
-| -------------- | :----------------: | :----------------: | :------------------------------------------: | :----------: | :------------------------: | :-------------------------: |
-| static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) | Nx, NxNg, Ng |            yes             |             yes             |
-| cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | Nx, NxNg, Ng |             no             |             yes             |
-| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | Nx, NxNg, Ng |        no (GCP yes)        |             no              |
+| Feature        |       Azure        |        AWS         |                     GCP                      | Workspace | activated in dev (default) | activated in prod (default) |
+| -------------- | :----------------: | :----------------: | :------------------------------------------: | :-------: | :------------------------: | :-------------------------: |
+| static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) | NxNg, Ng  |            yes             |             yes             |
+| cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | NxNg, Ng  |             no             |             yes             |
+| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | NxNg, Ng  |        no (GCP yes)        |             no              |
 
 Custom domains need some manual configuration step. You need to verify them for the providers.
 
