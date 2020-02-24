@@ -100,7 +100,7 @@ Legend
 | -------------- | :----------------: | :----------------: | :------------------------------------------: | :-------: | :------------------------: | :-------------------------: |
 | static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) | NxNg, Ng  |            yes             |             yes             |
 | cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | NxNg, Ng  |             no             |             yes             |
-| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | NxNg, Ng  |        no (GCP yes)        |             no              |
+| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | NxNg, Ng  |        no (GCP yes)        |        no (GCP yes)         |
 
 Custom domains need some manual configuration step. You need to verify them for the providers.
 
