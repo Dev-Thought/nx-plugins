@@ -107,8 +107,7 @@ function spawnStack(
   }
 
   return spawnSync(getPulumiBinaryPath(), args, {
-    env: process.env,
-    stdio: 'inherit'
+    env: process.env
   });
 }
 

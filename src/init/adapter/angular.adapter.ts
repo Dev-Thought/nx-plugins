@@ -23,9 +23,9 @@ export class AngularAdapter extends BaseAdapter {
       questions.push(QUESTIONS.awsProfile);
     }
 
-    // if (this.options.provider === PROVIDER.AZURE) {
-    //   questions.push(QUESTIONS.azureLocation);
-    // }
+    if (this.options.provider === PROVIDER.AZURE) {
+      questions.push(QUESTIONS.azureLocation);
+    }
 
     const anwsers = await prompt(questions);
     this.options = {
@@ -71,7 +71,7 @@ export class AngularAdapter extends BaseAdapter {
   }
 
   getDestroyActionConfiguration(): any {
-    const config = super.getDeployActionConfiguration();
+    const config = super.getDestroyActionConfiguration();
     return config;
   }
 }
