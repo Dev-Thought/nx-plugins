@@ -90,17 +90,17 @@ Legend
 
 ### Workspaces
 
-| Nx workspace (native) | Nx workspace (angular) |  angular   |
-| :-------------------: | :--------------------: | :--------: |
-|      :calendar:       |   :white_check_mark:   | :calendar: |
+| Nx workspace (native) | Nx workspace (angular) | angular |
+| :-------------------: | :--------------------: | :-----: |
+|          Nx           |          NxNg          |   Ng    |
 
 ### Angular Application
 
-| Feature        |       Azure        |        AWS         |                     GCP                      | activated in dev (default) | activated in prod (default) |
-| -------------- | :----------------: | :----------------: | :------------------------------------------: | :------------------------: | :-------------------------: |
-| static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) |            yes             |             yes             |
-| cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |             no             |             yes             |
-| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |        no (GCP yes)        |             no              |
+| Feature        |       Azure        |        AWS         |                     GCP                      |  Workspace   | activated in dev (default) | activated in prod (default) |
+| -------------- | :----------------: | :----------------: | :------------------------------------------: | :----------: | :------------------------: | :-------------------------: |
+| static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) | Nx, NxNg, Ng |            yes             |             yes             |
+| cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | Nx, NxNg, Ng |             no             |             yes             |
+| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | Nx, NxNg, Ng |        no (GCP yes)        |             no              |
 
 Custom domains need some manual configuration step. You need to verify them for the providers.
 
@@ -117,21 +117,21 @@ Google makes it really easy. You can use the [google webmaster](https://www.goog
 
 #### AWS custom domain setup
 
-For AWS we need to create first a hosted zone with the domain name e.g.: if your deomain is `www.my-domain.com` than use the name `my-domain.com` for the hosted zone. After this is done you get name servers. Now you can replace the name servers from your domain with the one from aws and you have everything under conrtol via AWS route 53. The rest will be done by ng-deploy-it. It will create the ssl certification and validates if you are the owner of the domain.
+For AWS we need to create first a hosted zone with the domain name e.g.: if your domain is `www.my-domain.com` than use the name `my-domain.com` for the hosted zone. After this is done you get name servers. Now you can replace the name servers from your domain with the one from aws and you have everything under conrtol via AWS route 53. The rest will be done by ng-deploy-it. It will create the ssl certification and validates if you are the owner of the domain.
 You can create the hosted zone in the [Route53](https://console.aws.amazon.com/route53/home#hosted-zones:) Service
 
 ### Angular Universal Application
 
-| Feature         |   Azure    |    AWS     |    GCP     | activated in dev (default) | activated in prod (default) |
-| --------------- | :--------: | :--------: | :--------: | :------------------------: | :-------------------------: |
-| serverless      | :calendar: | :calendar: | :calendar: |            yes             |             yes             |
-| server instance | :calendar: | :calendar: | :calendar: |            yes             |             yes             |
+| Feature         |   Azure    |    AWS     |    GCP     | Workspace | activated in dev (default) | activated in prod (default) |
+| --------------- | :--------: | :--------: | :--------: | :-------: | :------------------------: | :-------------------------: |
+| serverless      | :calendar: | :calendar: | :calendar: |           |            yes             |             yes             |
+| server instance | :calendar: | :calendar: | :calendar: |           |            yes             |             yes             |
 
 ### NestJS
 
-| Feature         |                    Azure                    |    AWS     |        GCP         |
-| --------------- | :-----------------------------------------: | :--------: | :----------------: |
-| serverless      | :white_check_mark: (with azure VSC support) | :calendar: | :white_check_mark: |
-| server instance |                 :calendar:                  | :calendar: |     :calendar:     |
+| Feature         |                    Azure                    |    AWS     |        GCP         | Workspace |
+| --------------- | :-----------------------------------------: | :--------: | :----------------: | :-------: |
+| serverless      | :white_check_mark: (with azure VSC support) | :calendar: | :white_check_mark: |   NxNg    |
+| server instance |                 :calendar:                  | :calendar: |     :calendar:     | :calendar |
 
 If you use the nx workspace or angular workspace with other types of applications and you want to have them supported by ng-deploy-it, please feel free and create a new Issue and of course ;) -> Contributions are welcome!
