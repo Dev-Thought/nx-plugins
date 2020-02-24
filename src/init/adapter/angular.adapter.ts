@@ -9,6 +9,7 @@ import { QUESTIONS } from '../../utils/questions';
 
 export class AngularAdapter extends BaseAdapter {
   async extendOptionsByUserInput() {
+    await super.extendOptionsByUserInput();
     const questions: any[] = [];
 
     if (
@@ -16,15 +17,6 @@ export class AngularAdapter extends BaseAdapter {
       !this.options.customDomainName
     ) {
       questions.push(QUESTIONS.customDomainName);
-    }
-
-    if (this.options.provider === PROVIDER.AWS) {
-      questions.push(QUESTIONS.awsRegion);
-      questions.push(QUESTIONS.awsProfile);
-    }
-
-    if (this.options.provider === PROVIDER.AZURE) {
-      questions.push(QUESTIONS.azureLocation);
     }
 
     const anwsers = await prompt(questions);

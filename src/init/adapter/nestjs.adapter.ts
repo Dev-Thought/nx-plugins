@@ -6,19 +6,11 @@ import { QUESTIONS } from '../../utils/questions';
 
 export class NestJSAdapter extends BaseAdapter {
   async extendOptionsByUserInput() {
+    await super.extendOptionsByUserInput();
     const questions: any[] = [];
 
     if (this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
       questions.push(QUESTIONS.gcpRegionCloudFunctions);
-    }
-
-    if (this.options.provider === PROVIDER.AWS) {
-      questions.push(QUESTIONS.awsRegion);
-      questions.push(QUESTIONS.awsProfile);
-    }
-
-    if (this.options.provider === PROVIDER.AZURE) {
-      questions.push(QUESTIONS.azureLocation);
     }
 
     const anwsers = await prompt(questions);

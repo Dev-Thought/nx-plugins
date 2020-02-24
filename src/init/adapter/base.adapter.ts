@@ -5,6 +5,8 @@ import { ApplicationType } from '../../utils/application-type';
 import { ArchitectOptions } from '../architect-options';
 import { join } from 'path';
 import { PROVIDER } from '../../utils/provider';
+import { QUESTIONS } from '../../utils/questions';
+import { prompt } from 'enquirer';
 
 export class BaseAdapter {
   constructor(
@@ -14,7 +16,22 @@ export class BaseAdapter {
   ) {}
 
   async extendOptionsByUserInput(): Promise<void> {
-    throw new Error('implement me');
+    const questions: any[] = [];
+
+    if (this.options.provider === PROVIDER.AWS) {
+      questions.push(QUESTIONS.awsRegion);
+      questions.push(QUESTIONS.awsProfile);
+    }
+
+    if (this.options.provider === PROVIDER.AZURE) {
+      questions.push(QUESTIONS.azureLocation);
+    }
+
+    const anwsers = await prompt(questions);
+    this.options = {
+      ...this.options,
+      ...anwsers
+    };
   }
 
   addRequiredDependencies(): { name: string; version: string }[] {
