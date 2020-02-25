@@ -9,7 +9,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 
 ## Quick-start <a name="quickstart"></a>
 
-1. Create a new project with the angular cli (>= 8.3.0) or nx cli.
+1. Create a new project with the nx cli.
 
    ```sh
    npx create-nx-workspace@latest hello-world --preset "angular-nest" --appName "hello-world" --style="scss"
