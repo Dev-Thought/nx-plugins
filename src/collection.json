@@ -1,11 +1,12 @@
 {
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "ng-add": {
-      "description": "Install infrastructur as code dependencies",
-      "factory": "./ng-add/index",
-      "schema": "./ng-add/schema.json",
-      "hidden": true
+    "predictive-setup": {
+      "description": "Search and asks you which applications can be setup by ng-deploy-it",
+      "factory": "./predictive-setup/index",
+      "schema": "./predictive-setup/schema.json",
+      "hidden": true,
+      "aliases": ["ng-add"]
     },
     "init": {
       "description": "Initialize infrastructure as code for an application",
