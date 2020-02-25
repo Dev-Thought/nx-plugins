@@ -12,15 +12,14 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 1. Create a new project with the angular cli (>= 8.3.0) or nx cli.
 
    ```sh
-   npm install -g @angular/cli
-   ng new hello-world --defaults
+   npx create-nx-workspace@latest hello-world --preset "angular-nest" --appName "hello-world" --style="scss"
    cd hello-world
    ```
 
 1. Add `ng-deploy-it` to your project.
 
    ```sh
-   ng add @dev-thought/ng-deploy-it
+   npx ng add @dev-thought/ng-deploy-it
    ```
 
 1. Switch to local state management.
@@ -32,7 +31,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 1. Initialize the infrastructure as code for your project.
 
    ```sh
-   ng g @dev-thought/ng-deploy-it:init
+   npx ng g @dev-thought/ng-deploy-it:init
    ```
 
 1. You may be prompted to answer some questions for the setup.
@@ -40,7 +39,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 1. Deploy your project to your cloud provider.
 
    ```sh
-   ng run hello-world:deploy
+   npx ng run hello-world:deploy
    ```
 
    The project will be built with the development configuration.
@@ -49,7 +48,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 1. Everything is done and you want to remove your whole infrastructure. No problem ;) Just do it with
 
    ```sh
-   ng run hello-world:destroy
+   npx ng run hello-world:destroy
    ```
 
 ## Requirements

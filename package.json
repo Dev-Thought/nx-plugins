@@ -34,6 +34,7 @@
   "dependencies": {
     "@angular-devkit/core": "8.3.14",
     "@angular-devkit/schematics": "8.3.14",
+    "@dev-thought/pulumi-npm": "^1.1.4",
     "@nrwl/workspace": "8.11.2",
     "@types/jasmine": "^3.3.9",
     "@types/node": "^8.0.31",
