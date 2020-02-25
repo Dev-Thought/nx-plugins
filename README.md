@@ -89,17 +89,17 @@ Legend
 
 ### Workspaces
 
-| Nx workspace (native) | Nx workspace (angular) | angular |
-| :-------------------: | :--------------------: | :-----: |
-|    not planned now    |          NxNg          |   Ng    |
+| Nx workspace (native & angular) | angular |
+| :-----------------------------: | :-----: |
+|               Nx                |   Ng    |
 
 ### Angular Application
 
 | Feature        |       Azure        |        AWS         |                     GCP                      | Workspace | activated in dev (default) | activated in prod (default) |
 | -------------- | :----------------: | :----------------: | :------------------------------------------: | :-------: | :------------------------: | :-------------------------: |
-| static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) | NxNg, Ng  |            yes             |             yes             |
-| cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | NxNg, Ng  |             no             |             yes             |
-| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              | NxNg, Ng  |        no (GCP yes)        |        no (GCP yes)         |
+| static hosting | :white_check_mark: | :white_check_mark: | :white_check_mark: (only with custom domain) |  Nx, Ng   |            yes             |             yes             |
+| cdn            | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |  Nx, Ng   |             no             |             yes             |
+| custom domain  | :white_check_mark: | :white_check_mark: |              :white_check_mark:              |  Nx, Ng   |        no (GCP yes)        |        no (GCP yes)         |
 
 Custom domains need some manual configuration step. You need to verify them for the providers.
 
@@ -130,7 +130,7 @@ You can create the hosted zone in the [Route53](https://console.aws.amazon.com/r
 
 | Feature         |                    Azure                    |    AWS     |        GCP         | Workspace  |
 | --------------- | :-----------------------------------------: | :--------: | :----------------: | :--------: |
-| serverless      | :white_check_mark: (with azure VSC support) | :calendar: | :white_check_mark: |    NxNg    |
+| serverless      | :white_check_mark: (with azure VSC support) | :calendar: | :white_check_mark: |     Nx     |
 | server instance |                 :calendar:                  | :calendar: |     :calendar:     | :calendar: |
 
 If you use the nx workspace or angular workspace with other types of applications and you want to have them supported by ng-deploy-it, please feel free and create a new Issue and of course ;) -> Contributions are welcome!
