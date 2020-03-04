@@ -9,7 +9,10 @@ export class NestJSAdapter extends BaseAdapter {
     await super.extendOptionsByUserInput();
     const questions: any[] = [];
 
-    if (this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
+    if (
+      this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM &&
+      !this.options['gcp:region']
+    ) {
       questions.push(QUESTIONS.gcpRegionCloudFunctions);
     }
 

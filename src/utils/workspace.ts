@@ -1,6 +1,9 @@
 import { resolve, join } from 'path';
 import { SchematicContext, Tree } from '@angular-devkit/schematics';
-import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
+import {
+  ProjectDefinition,
+  WorkspaceDefinition
+} from '@angular-devkit/core/src/workspace';
 import { BaseAdapter } from '../init/adapter/base.adapter';
 import { getApplicationType, ApplicationType } from './application-type';
 import { InitOptions } from '../init/schema';
@@ -32,4 +35,24 @@ export function getAdapter(
   throw new Error(
     `Can't recognize application type. Supported list can be found here: https://github.com/Dev-Thought/ng-deploy-it`
   );
+}
+
+export function getApplications(
+  workspace: WorkspaceDefinition
+): { projectName: string; applicationType: ApplicationType }[] {
+  const applications: {
+    projectName: string;
+    applicationType: ApplicationType;
+  }[] = [];
+  workspace.projects.forEach((project, projectName) => {
+    const buildTarget = project.targets.get('build');
+    if (buildTarget) {
+      applications.push({
+        projectName,
+        applicationType: getApplicationType(buildTarget)
+      });
+    }
+  });
+
+  return applications;
 }

@@ -21,10 +21,9 @@ import {
 } from '@nrwl/workspace';
 import { spawnSync } from 'child_process';
 import { resolve, join } from 'path';
-import { getCloudTemplateName, PROVIDER } from '../utils/provider';
+import { getCloudTemplateName } from '../utils/provider';
 import { getPulumiBinaryPath, getAdapter } from '../utils/workspace';
 import { readFileSync, unlinkSync } from 'fs';
-import * as rimraf from 'rimraf';
 import { BaseAdapter } from './adapter/base.adapter';
 
 export default function(options: InitOptions) {

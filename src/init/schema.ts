@@ -4,5 +4,8 @@ export interface InitOptions {
   provider: PROVIDER;
   project: string;
   customDomainName?: string;
-  region?: string;
+  'azure:location'?: string;
+  'aws:region'?: string;
+  'aws:profile'?: string;
+  'gcp:projectId'?: string;
 }

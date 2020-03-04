@@ -1,3 +1,5 @@
+import { PROVIDER } from './provider';
+
 export const QUESTIONS = {
   // get list with: aws ec2 describe-regions --profile cli-dev-thought | jq ".Regions[] | .RegionName"
   awsRegion: {
@@ -116,5 +118,25 @@ export const QUESTIONS = {
     name: 'aws:profile',
     message:
       'Do you want to use a specific aws profile? Just skip if you want to use the default one.'
-  }
+  },
+
+  setupApplications: {
+    type: 'MultiSelect',
+    name: 'setupApplications',
+    message:
+      "Please select the applications you want to setup. If you don't select one, you will skip this process and you can do it later again."
+  },
+
+  whichProvider: {
+    type: 'select',
+    name: 'provider',
+    choices: [
+      { name: 'AWS', value: PROVIDER.AWS },
+      { name: 'Azure', value: PROVIDER.AZURE },
+      { name: 'Google Cloud Platform', value: PROVIDER.GOOGLE_CLOUD_PLATFORM }
+    ],
+    result: function(r: string) {
+      return Object.values(this.map(r))[0];
+    }
+  } as any
 };
