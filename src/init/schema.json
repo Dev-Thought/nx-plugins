@@ -36,6 +36,10 @@
     "customDomainName": {
       "type": "string",
       "description": "Your custom domain which will be mapped to the static website / cdn"
+    },
+    "azure:location": {
+      "type": "string",
+      "description": "Azure deployment location"
     }
   },
   "required": ["provider"]

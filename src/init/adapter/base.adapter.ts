@@ -19,15 +19,25 @@ export class BaseAdapter {
     const questions: any[] = [];
 
     if (this.options.provider === PROVIDER.AWS) {
-      questions.push(QUESTIONS.awsRegion);
-      questions.push(QUESTIONS.awsProfile);
+      if (!this.options['aws:region']) {
+        questions.push(QUESTIONS.awsRegion);
+      }
+      if (!this.options['aws:profile']) {
+        questions.push(QUESTIONS.awsProfile);
+      }
     }
 
-    if (this.options.provider === PROVIDER.AZURE) {
+    if (
+      this.options.provider === PROVIDER.AZURE &&
+      !this.options['azure:location']
+    ) {
       questions.push(QUESTIONS.azureLocation);
     }
 
-    if (this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
+    if (
+      this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM &&
+      !this.options['gcp:project']
+    ) {
       questions.push(QUESTIONS.gcpProjectId);
     }
 
