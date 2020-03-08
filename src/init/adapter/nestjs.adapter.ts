@@ -35,6 +35,12 @@ export class NestJSAdapter extends BaseAdapter {
         }
       );
     }
+    if (this.options.provider === PROVIDER.AWS) {
+      dependencies.push({
+        name: 'aws-serverless-express',
+        version: '^3.3.6'
+      });
+    }
     return dependencies;
   }
 

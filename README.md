@@ -128,9 +128,9 @@ You can create the hosted zone in the [Route53](https://console.aws.amazon.com/r
 
 ### NestJS
 
-| Feature         |                    Azure                    |    AWS     |        GCP         | Workspace  |
-| --------------- | :-----------------------------------------: | :--------: | :----------------: | :--------: |
-| serverless      | :white_check_mark: (with azure VSC support) | :calendar: | :white_check_mark: |     Nx     |
-| server instance |                 :calendar:                  | :calendar: |     :calendar:     | :calendar: |
+| Feature         |                    Azure                    |        AWS         |        GCP         | Workspace  |
+| --------------- | :-----------------------------------------: | :----------------: | :----------------: | :--------: |
+| serverless      | :white_check_mark: (with azure VSC support) | :white_check_mark: | :white_check_mark: |     Nx     |
+| server instance |                 :calendar:                  |     :calendar:     |     :calendar:     | :calendar: |
 
 If you use the nx workspace or angular workspace with other types of applications and you want to have them supported by ng-deploy-it, please feel free and create a new Issue and of course ;) -> Contributions are welcome!
