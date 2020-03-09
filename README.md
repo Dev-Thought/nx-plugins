@@ -16,7 +16,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
    cd hello-world
    ```
 
-1. Add `ng-deploy-it` to your project.
+1. Add `ng-deploy-it` to your project. The tool will search for supported applications and ask you which one of them you want to setup. You may be prompted to answer some questions for the setup.
 
    ```sh
    npx ng add @dev-thought/ng-deploy-it
@@ -27,14 +27,6 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
    ```sh
    npx pulumi login --local
    ```
-
-1. Initialize the infrastructure as code for your project.
-
-   ```sh
-   npx ng g @dev-thought/ng-deploy-it:init
-   ```
-
-1. You may be prompted to answer some questions for the setup.
 
 1. Deploy your project to your cloud provider.
 
@@ -49,6 +41,12 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 
    ```sh
    npx ng run hello-world:destroy
+   ```
+   
+You can initialize any time infrastructure as code for your project if you skipped the setup on ng add.
+
+   ```sh
+   npx ng g @dev-thought/ng-deploy-it:init
    ```
 
 ## Requirements
