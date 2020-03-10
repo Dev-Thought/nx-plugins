@@ -5,6 +5,8 @@
 
 **Deploy applications in nx / angular workspaces to the cloud using a provider of your Choice (Azure, AWS, Google Cloud Platform)**
 
+![AWS example](/docs/ng-deploy-it-aws.gif?raw=true)
+
 We are using under the hood the code as infrastructure tool [Pulumi](https://www.pulumi.com/). It gives you the possibility to have every piece of code under your control. You can extend it with your requirements (VPN, ...) and still able to use the schematics for deployment.
 
 ## Quick-start <a name="quickstart"></a>
@@ -42,12 +44,12 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
    ```sh
    npx ng run hello-world:destroy
    ```
-   
+
 You can initialize any time infrastructure as code for your project if you skipped the setup on ng add.
 
-   ```sh
-   npx ng g @dev-thought/ng-deploy-it:init
-   ```
+```sh
+npx ng g @dev-thought/ng-deploy-it:init
+```
 
 ## Requirements
 
