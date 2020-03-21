@@ -1,0 +1,32 @@
+{
+  "name": "@dev-thought/nx-deploy-it",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "schematics": "./collection.json",
+  "builders": "./builders.json",
+  "homepage": "https://www.npmjs.com/package/nx-deploy-it",
+  "repository": "https://github.com/dev-thought/nx-plugins",
+  "bugs": {
+    "url": "https://github.com/dev-thought/nx-plugins/issues",
+    "email": "mitko@dev-thought.cool"
+  },
+  "author": "Mitko Tschimev <mitko@dev-thought.cool>",
+  "license": "MIT",
+  "keywords": [
+    "pulumi",
+    "Infrastructure as code",
+    "infrastructure-as-code",
+    "IaC",
+    "terraform",
+    "schematics",
+    "ng-deploy",
+    "nx",
+    "angular",
+    "nestjs"
+  ],
+  "dependencies": {
+    "@dev-thought/pulumi-npm": "^1.2.0",
+    "@zeit/ncc": "^0.21.1",
+    "enquirer": "^2.3.4"
+  }
+}

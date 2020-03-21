@@ -1,22 +1,23 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "tsconfig",
-    "lib": ["es2018", "dom"],
-    "declaration": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noEmitOnError": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitThis": true,
-    "rootDir": "src/",
-    "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
+    "rootDir": ".",
     "sourceMap": true,
-    "strictNullChecks": true,
-    "target": "es6",
-    "types": ["jasmine", "node"],
-    "resolveJsonModule": true
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@dev-thought/nx-deploy-it": ["libs/nx-deploy-it/src/index.ts"]
+    }
   },
-  "include": ["src/**/*", "src/**/*.json"],
-  "exclude": ["src/*/files/**/*"]
+  "exclude": ["node_modules", "tmp"]
 }
