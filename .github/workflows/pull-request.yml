@@ -2,10 +2,10 @@ name: PR on master
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
     branches:
-    - master
+      - master
     types: [opened, reopened, synchronize]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -17,31 +17,48 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-    - name: setup correct base
-      shell: bash
-      run: |
-        if [[ $GITHUB_BASE_REF ]]
-        then
-          export NX_BASE=remotes/origin/$GITHUB_BASE_REF
-        else
-          export NX_BASE=$(git rev-parse HEAD~1)
-        fi
-        echo "Base => $NX_BASE"
+      - name: Install environment
+        run: npm install
 
-    - name: Install environment
-      run: npm install
+      - name: Format check
+        run: |
+          if [[ $GITHUB_BASE_REF ]]
+          then
+            export NX_BASE=remotes/origin/$GITHUB_BASE_REF
+          else
+            export NX_BASE=$(git rev-parse HEAD~1)
+          fi
+          npm run format:check -- --base=$NX_BASE
 
-    - name: Format check
-      run: npm run format:check -- --base=$NX_BASE
+      - name: Linter
+        run: |
+          if [[ $GITHUB_BASE_REF ]]
+          then
+            export NX_BASE=remotes/origin/$GITHUB_BASE_REF
+          else
+            export NX_BASE=$(git rev-parse HEAD~1)
+          fi
+          npm run affected:lint -- --base=$NX_BASE
 
-    - name: Linter
-      run: npm run affected:lint -- --base=$NX_BASE
+      - name: Unit / Integration Tests
+        run: |
+          if [[ $GITHUB_BASE_REF ]]
+          then
+            export NX_BASE=remotes/origin/$GITHUB_BASE_REF
+          else
+            export NX_BASE=$(git rev-parse HEAD~1)
+          fi
+          npm run affected:test -- --base=$NX_BASE
 
-    - name: Unit / Integration Tests
-      run: npm run affected:test -- --base=$NX_BASE
-
-    - name: E2E Tests
-      run: npm run affected:e2e -- --base=$NX_BASE
+      - name: E2E Tests
+        run: |
+          if [[ $GITHUB_BASE_REF ]]
+          then
+            export NX_BASE=remotes/origin/$GITHUB_BASE_REF
+          else
+            export NX_BASE=$(git rev-parse HEAD~1)
+          fi
+          npm run affected:e2e -- --base=$NX_BASE
