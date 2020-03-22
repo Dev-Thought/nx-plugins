@@ -28,7 +28,7 @@ If applicable, add logs to help explain your problem.
 [] Azure
 [] Google Cloud Platform
 
-**ng-deploy-it version**
+**nx-deploy-it version**
 0.2.2
 
 **Additional context**
