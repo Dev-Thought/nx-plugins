@@ -10,7 +10,7 @@ import { WebappAdapter } from '../schematics/init/adapter/webapp.adapter';
 import { NestJSAdapter } from '../schematics/init/adapter/nestjs.adapter';
 
 export function getRealWorkspacePath() {
-  // TODO!: get better way
+  // TODO!: find a better way
   return process.cwd();
 }
 
