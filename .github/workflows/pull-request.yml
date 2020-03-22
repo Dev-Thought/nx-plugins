@@ -29,10 +29,10 @@ jobs:
         run: npm run format:check
 
       - name: Linter
-        run: npm run affected:lint -- --base=$NX_BASE
+        run: npm run affected:lint
 
       - name: Unit / Integration Tests
-        run: npm run affected:test -- --base=$NX_BASE
+        run: npm run affected:test
 
       - name: E2E Tests
-        run: npm run affected:e2e -- --base=$NX_BASE
+        run: npm run affected:e2e
