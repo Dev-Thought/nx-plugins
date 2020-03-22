@@ -26,21 +26,13 @@ jobs:
         run: npm install
 
       - name: Format check
-        run: npm run format:check
-        env:
-          CI: true
+        run: npm run format:check -- --base=master
 
       - name: Linter
         run: npm run affected:lint
-        env:
-          CI: true
 
       - name: Unit / Integration Tests
         run: npm run affected:test
-        env:
-          CI: true
 
       - name: E2E Tests
         run: npm run affected:e2e
-        env:
-          CI: true
