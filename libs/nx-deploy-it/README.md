@@ -134,3 +134,11 @@ You can create the hosted zone in the [Route53](https://console.aws.amazon.com/r
 | server instance |                 :calendar:                  |     :calendar:     |     :calendar:     | :calendar: |
 
 If you use the nx workspace or angular workspace with other types of applications and you want to have them supported by nx-deploy-it, please feel free and create a new Issue and of course ;) -> Contributions are welcome!
+
+### Migration from old ng-deploy-it
+
+1. Remove the old package `npm uninstall @dev-thought/ng-deploy-it` from your package.json
+
+2. Install the new package `npm i @dev-thought/nx-deploy-it -D` and skip the auto scan of the applications by not selecting an application
+
+3. Rename everything in your repository from `ng-deploy-it` to `nx-deploy-it`.
