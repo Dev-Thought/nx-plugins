@@ -20,14 +20,27 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    - name: setup correct base
+      shell: bash
+      run: |
+        if [[ $GITHUB_BASE_REF ]]
+        then
+          export NX_BASE=remotes/origin/$GITHUB_BASE_REF
+        else
+          export NX_BASE=$(git rev-parse HEAD~1)
+        fi
+        echo "Base => $NX_BASE"
+        npm run format:check -- --base=$NX_BASE
+        npm run affected:lint -- --base=$NX_BASE
+
     - name: Install environment
       run: npm install
-        
+
     - name: Linter
-      run: npm run affected:lint
-    
+      run: npm run affected:lint -- --base=$NX_BASE
+
     - name: Unit / Integration Tests
-      run: npm run affected:test
+      run: npm run affected:test -- --base=$NX_BASE
 
     - name: E2E Tests
-      run: npm run affected:apps
+      run: npm run affected:e2e -- --base=$NX_BASE
