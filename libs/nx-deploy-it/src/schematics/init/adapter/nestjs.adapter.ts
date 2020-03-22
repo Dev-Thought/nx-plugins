@@ -60,6 +60,10 @@ export class NestJSAdapter extends BaseAdapter {
     });
   }
 
+  getApplicationTemplatePath() {
+    return `${super.getApplicationTemplatePath()}/nestjs/`;
+  }
+
   getDeployActionConfiguration(): any {
     const config = super.getDeployActionConfiguration();
 

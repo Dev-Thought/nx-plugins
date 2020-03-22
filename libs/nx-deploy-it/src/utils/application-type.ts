@@ -2,18 +2,41 @@ import { TargetDefinition } from '@angular-devkit/core/src/workspace';
 
 export enum ApplicationType {
   ANGULAR = 'angular',
+  REACT = 'react',
   NESTJS = 'nestjs'
 }
 
-export function getApplicationType(target: TargetDefinition) {
-  if (target && target.builder) {
-    switch (target.builder) {
-      case '@angular-devkit/build-angular:browser':
-        return ApplicationType.ANGULAR;
-      case '@nrwl/node:build':
-        return ApplicationType.NESTJS;
-    }
+function isAngular(target: TargetDefinition): boolean {
+  return target.builder === '@angular-devkit/build-angular:browser';
+}
+
+function isNestJS(target: TargetDefinition): boolean {
+  return target.builder === '@nrwl/node:build';
+}
+
+function isReact(target: TargetDefinition): boolean {
+  return (
+    target.builder === '@nrwl/web:build' &&
+    target.options.webpackConfig.toString().startsWith('@nrwl/react') &&
+    target.options.main.toString().endsWith('.tsx')
+  );
+}
+
+export function getApplicationType(target: TargetDefinition): ApplicationType {
+  if (!target) {
+    return null;
   }
 
-  throw new Error(`Can't find a supported build target for the project`);
+  if (isAngular(target)) {
+    return ApplicationType.ANGULAR;
+  }
+  if (isReact(target)) {
+    return ApplicationType.REACT;
+  }
+
+  if (isNestJS(target)) {
+    return ApplicationType.NESTJS;
+  }
+
+  return null;
 }

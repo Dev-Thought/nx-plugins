@@ -19,6 +19,7 @@ export default function(): Rule {
     const questions: any[] = [];
 
     if (applications.length === 0) {
+      console.log('no applications');
       return chain([]);
     }
 
@@ -70,7 +71,7 @@ export default function(): Rule {
     const options = await prompt(questions);
 
     return chain(
-      applications.map(application => {
+      choosenApplications.setupApplications.map(application => {
         return externalSchematic('@dev-thought/nx-deploy-it', 'init', {
           ...options,
           provider,
