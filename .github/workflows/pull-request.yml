@@ -26,7 +26,7 @@ jobs:
         run: npm install
 
       - name: Format check
-        run: npm run format:check -- --base=master
+        run: npm run format:check -- --base=origin/master
 
       - name: Linter
         run: npm run affected:lint
