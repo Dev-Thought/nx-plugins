@@ -93,7 +93,7 @@ Legend
 | :-----------------------------: | :-----: |
 |               Nx                |   Ng    |
 
-### Angular Application
+### Angular / React Application
 
 | Feature        |       Azure        |        AWS         |                     GCP                      | Workspace | activated in dev (default) | activated in prod (default) |
 | -------------- | :----------------: | :----------------: | :------------------------------------------: | :-------: | :------------------------: | :-------------------------: |
