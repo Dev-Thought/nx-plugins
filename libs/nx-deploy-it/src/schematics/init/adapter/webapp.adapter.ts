@@ -7,7 +7,7 @@ import { join } from 'path';
 import { JsonObject } from '@angular-devkit/core';
 import { QUESTIONS } from '../../../utils/questions';
 
-export class AngularAdapter extends BaseAdapter {
+export class WebappAdapter extends BaseAdapter {
   async extendOptionsByUserInput() {
     await super.extendOptionsByUserInput();
     const questions: any[] = [];
@@ -50,6 +50,10 @@ export class AngularAdapter extends BaseAdapter {
       ),
       projectName: this.options.project
     });
+  }
+
+  getApplicationTemplatePath() {
+    return `${super.getApplicationTemplatePath()}/webapp/`;
   }
 
   getDeployActionConfiguration(): any {

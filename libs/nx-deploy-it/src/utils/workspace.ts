@@ -6,7 +6,7 @@ import {
 import { BaseAdapter } from '../schematics/init/adapter/base.adapter';
 import { getApplicationType, ApplicationType } from './application-type';
 import { NxDeployItInitSchematicSchema } from '../schematics/init/schema';
-import { AngularAdapter } from '../schematics/init/adapter/angular.adapter';
+import { WebappAdapter } from '../schematics/init/adapter/webapp.adapter';
 import { NestJSAdapter } from '../schematics/init/adapter/nestjs.adapter';
 
 export function getRealWorkspacePath() {
@@ -22,10 +22,11 @@ export function getAdapter(
   project: ProjectDefinition,
   options: NxDeployItInitSchematicSchema
 ): BaseAdapter {
-  const applicationType = getApplicationType(project.targets!.get('build')!);
+  const applicationType = getApplicationType(project.targets.get('build'));
   switch (applicationType) {
     case ApplicationType.ANGULAR:
-      return new AngularAdapter(project, options, applicationType);
+    case ApplicationType.REACT:
+      return new WebappAdapter(project, options, applicationType);
     case ApplicationType.NESTJS:
       return new NestJSAdapter(project, options, applicationType);
     default:
@@ -44,11 +45,11 @@ export function getApplications(
     applicationType: ApplicationType;
   }[] = [];
   workspace.projects.forEach((project, projectName) => {
-    const buildTarget = project.targets.get('build');
-    if (buildTarget) {
+    const applicationType = getApplicationType(project.targets.get('build'));
+    if (applicationType) {
       applications.push({
         projectName,
-        applicationType: getApplicationType(buildTarget)
+        applicationType
       });
     }
   });

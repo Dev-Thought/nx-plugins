@@ -58,6 +58,10 @@ export class BaseAdapter {
     throw new Error('implement me');
   }
 
+  getApplicationTemplatePath(): string {
+    return `${this.options.provider}/`;
+  }
+
   getDeployActionConfiguration(): any {
     const architectOptions: ArchitectOptions = {
       main: join(this.project.root, 'infrastructure', 'index.ts'),

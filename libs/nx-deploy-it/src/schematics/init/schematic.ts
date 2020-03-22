@@ -138,7 +138,7 @@ function generateInfrastructureCode(adapter: BaseAdapter) {
       throw new Error(`Can't find a supported build target for the project`);
     }
     const templateSource = apply(
-      url(`./files/${adapter.options.provider}/${adapter.applicationType}/`),
+      url(`./files/${adapter.getApplicationTemplatePath()}`),
       [template, move(join(adapter.project.root))]
     );
 
