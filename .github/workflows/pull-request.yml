@@ -25,11 +25,13 @@ jobs:
       - name: Install environment
         run: npm install
 
-      - name: Format check
-        run: npm run format:check
+      # - name: Format check
+      #   run: npm run format:check
 
       - name: Linter
-        run: npm run affected:lint -- --base=origin/master
+        run: |
+          export NX_BASE_TEMP=$(git log --format=%H -n 1 origin/${{ github.base_ref }})
+          npm run affected:lint -- --base=$NX_BASE_TEMP
 
       - name: Unit / Integration Tests
         run: npm run affected:test
