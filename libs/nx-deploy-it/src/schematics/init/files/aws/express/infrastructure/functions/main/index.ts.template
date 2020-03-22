@@ -1,0 +1,20 @@
+import * as serverless from 'aws-serverless-express';
+import { Server } from 'http';
+import { expressApp } from '../../../<%= getRootDirectory() %>/main.aws';
+
+let cachedServer: Server;
+
+async function bootstrapServer(): Promise<Server> {
+  return serverless.createServer(expressApp);
+}
+
+export const handler = (event, context) => {
+  if (!cachedServer) {
+    bootstrapServer().then(server => {
+      cachedServer = server;
+      serverless.proxy(server, event, context);
+    });
+  } else {
+    serverless.proxy(cachedServer, event, context);
+  }
+};

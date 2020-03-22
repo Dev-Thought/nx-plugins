@@ -122,7 +122,10 @@ function buildProject(context: BuilderContext): Observable<BuilderOutput> {
 
   const project = getProjectConfig(context);
   const applicationType = getApplicationType(project.architect.build);
-  if (applicationType === ApplicationType.NESTJS) {
+  if (
+    applicationType === ApplicationType.NESTJS ||
+    applicationType === ApplicationType.EXPRESS
+  ) {
     const infrastructureFolder = resolve(
       context.workspaceRoot,
       project.root,

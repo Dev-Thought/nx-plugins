@@ -8,6 +8,7 @@ import { getApplicationType, ApplicationType } from './application-type';
 import { NxDeployItInitSchematicSchema } from '../schematics/init/schema';
 import { WebappAdapter } from '../schematics/init/adapter/webapp.adapter';
 import { NestJSAdapter } from '../schematics/init/adapter/nestjs.adapter';
+import { ExpressAdapter } from '../schematics/init/adapter/express.adapter';
 
 export function getRealWorkspacePath() {
   // TODO!: find a better way
@@ -29,6 +30,8 @@ export function getAdapter(
       return new WebappAdapter(project, options, applicationType);
     case ApplicationType.NESTJS:
       return new NestJSAdapter(project, options, applicationType);
+    case ApplicationType.EXPRESS:
+      return new ExpressAdapter(project, options, applicationType);
     default:
   }
 
