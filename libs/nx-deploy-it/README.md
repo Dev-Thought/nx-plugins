@@ -126,7 +126,7 @@ You can create the hosted zone in the [Route53](https://console.aws.amazon.com/r
 | serverless      | :calendar: | :calendar: | :calendar: | :calendar: |            yes             |             yes             |
 | server instance | :calendar: | :calendar: | :calendar: | :calendar: |            yes             |             yes             |
 
-### NestJS
+### NestJS & ExpressJS
 
 | Feature         |                    Azure                    |        AWS         |        GCP         | Workspace  |
 | --------------- | :-----------------------------------------: | :----------------: | :----------------: | :--------: |
