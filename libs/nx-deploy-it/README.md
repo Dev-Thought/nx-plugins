@@ -14,7 +14,7 @@ We are using under the hood the code as infrastructure tool [Pulumi](https://www
 1. Create a new project with the nx cli.
 
    ```sh
-   npx create-nx-workspace@latest hello-world --preset "angular-nest" --appName "hello-world" --style="scss"
+   npx create-nx-workspace@latest hello-world --preset="angular-nest" --appName="hello-world" --style="scss"
    cd hello-world
    ```
 
