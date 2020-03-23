@@ -29,8 +29,8 @@ export class ExpressAdapter extends BaseAdapter {
 
     if (this.options.provider === PROVIDER.AZURE) {
       dependencies.push({
-        name: '@azure/functions',
-        version: '^1.2.0'
+        name: 'azure-aws-serverless-express',
+        version: '^0.1.5'
       });
     }
     if (this.options.provider === PROVIDER.AWS) {

@@ -1,0 +1,3 @@
+import { expressApp } from '../../../<%= getRootDirectory() %>/main.gcp';
+
+export const handler = expressApp;

@@ -1,0 +1,4 @@
+import { createHandler } from 'azure-function-express';
+import { expressApp } from '../../../<%= getRootDirectory() %>/main.azure';
+
+export default createHandler(expressApp);
