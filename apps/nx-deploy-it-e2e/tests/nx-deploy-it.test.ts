@@ -5,16 +5,30 @@ import {
   runNxCommandAsync,
   uniq
 } from '@nrwl/nx-plugin/testing';
-describe('nx-deploy-it e2e', () => {
-  xit('should create nx-deploy-it with aws provider', async done => {
-    const plugin = uniq('nx-deploy-it');
+
+jest.setTimeout(120000);
+
+xdescribe('nx-deploy-it e2e', () => {
+  let project: string;
+  beforeAll(async done => {
     ensureNxProject('@dev-thought/nx-deploy-it', 'dist/libs/nx-deploy-it');
-    await runNxCommandAsync(
-      `generate @dev-thought/nx-deploy-it:init ${plugin} --provider aws`
+    done();
+  });
+
+  beforeEach(async done => {
+    project = uniq('nx-deploy-it');
+    await runNxCommandAsync(`generate @nrwl/nest:application ${project}`);
+    done();
+  });
+
+  it('should create nx-deploy-it with aws provider', async done => {
+    console.log(`generate @dev-thought/nx-deploy-it:init ${project} --provider aws`);
+    const result = await runNxCommandAsync(
+      `generate @dev-thought/nx-deploy-it:init --project ${project} --provider aws`
     );
 
-    const result = await runNxCommandAsync(`deploy ${plugin}`);
-    expect(result.stdout).toContain('Builder ran');
+    expect(result.stderr).not.toBeDefined()
+    expect(result.stdout).toContain('Builder run');
 
     done();
   });

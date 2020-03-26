@@ -60,12 +60,12 @@ export function updateProject(adapter: BaseAdapter): Rule {
 function addDependenciesFromPulumiProjectToPackageJson(
   adapter: BaseAdapter
 ): Rule {
-  const pulumiCloudProviderDependencies = JSON.parse(
-    readFileSync(
-      resolve(join(adapter.project.root, 'infrastructure'), 'package.json')
-    ).toString()
-  ).dependencies;
   return (host: Tree): Rule => {
+    const pulumiCloudProviderDependencies = JSON.parse(
+      host
+        .read(join(adapter.project.root, 'infrastructure', 'package.json'))
+        .toString()
+    ).dependencies;
     const packageJson = readJsonInTree(host, 'package.json');
     const dependencyList: { name: string; version: string }[] = [];
 
@@ -115,6 +115,7 @@ function generateNewPulumiProject(adapter: BaseAdapter): Rule {
     spawnSync(getPulumiBinaryPath(), args, {
       env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' }
     });
+
     return addDependenciesFromPulumiProjectToPackageJson(adapter);
   };
 }
@@ -171,7 +172,7 @@ export default function(options: NxDeployItInitSchematicSchema) {
       return chain([]);
     }
 
-    const adapter = getAdapter(project, options);
+    const adapter = getAdapter(project, options, host);
     await adapter.extendOptionsByUserInput();
 
     return chain([initializeCloudProviderApplication(adapter)]);

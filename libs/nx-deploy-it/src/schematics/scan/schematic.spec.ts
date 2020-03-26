@@ -15,7 +15,7 @@ describe('scan schematic', () => {
     appTree = createEmptyWorkspace(Tree.empty());
   });
 
-  it('should run successfully', async () => {
+  it('should run without findings', async () => {
     await expect(
       testRunner.runSchematicAsync('scan', {}, appTree).toPromise()
     ).resolves.not.toThrowError();

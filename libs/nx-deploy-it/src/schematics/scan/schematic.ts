@@ -19,7 +19,7 @@ export default function(): Rule {
     const questions: any[] = [];
 
     if (applications.length === 0) {
-      console.log('no applications');
+      context.logger.log('info', 'no applications found');
       return chain([]);
     }
 

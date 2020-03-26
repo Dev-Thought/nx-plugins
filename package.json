@@ -38,22 +38,24 @@
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {
+    "@nrwl/eslint-plugin-nx": "9.1.0",
+    "@nrwl/jest": "9.1.0",
+    "@nrwl/nest": "^9.1.2",
     "@nrwl/nx-plugin": "9.1.0",
     "@nrwl/workspace": "9.1.0",
+    "@types/jest": "24.9.1",
     "@types/node": "~8.9.4",
+    "@typescript-eslint/eslint-plugin": "2.19.2",
+    "@typescript-eslint/parser": "2.19.2",
     "dotenv": "6.2.0",
     "eslint": "6.8.0",
+    "eslint-config-prettier": "6.0.0",
+    "jest": "24.9.0",
+    "mock-stdin": "^1.0.0",
     "prettier": "1.19.1",
+    "ts-jest": "24.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.0.0",
-    "typescript": "~3.7.4",
-    "@nrwl/eslint-plugin-nx": "9.1.0",
-    "@typescript-eslint/parser": "2.19.2",
-    "@typescript-eslint/eslint-plugin": "2.19.2",
-    "eslint-config-prettier": "6.0.0",
-    "@nrwl/jest": "9.1.0",
-    "jest": "24.9.0",
-    "@types/jest": "24.9.1",
-    "ts-jest": "24.0.0"
+    "typescript": "~3.7.4"
   }
 }
