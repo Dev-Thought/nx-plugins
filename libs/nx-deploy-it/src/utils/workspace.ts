@@ -9,6 +9,7 @@ import { NxDeployItInitSchematicSchema } from '../schematics/init/schema';
 import { WebappAdapter } from '../schematics/init/adapter/webapp.adapter';
 import { NestJSAdapter } from '../schematics/init/adapter/nestjs.adapter';
 import { ExpressAdapter } from '../schematics/init/adapter/express.adapter';
+import { Tree } from '@angular-devkit/schematics';
 
 export function getRealWorkspacePath() {
   // TODO!: find a better way
@@ -21,9 +22,10 @@ export function getPulumiBinaryPath() {
 
 export function getAdapter(
   project: ProjectDefinition,
-  options: NxDeployItInitSchematicSchema
+  options: NxDeployItInitSchematicSchema,
+  host?: Tree
 ): BaseAdapter {
-  const applicationType = getApplicationType(project.targets.get('build'));
+  const applicationType = getApplicationType(project.targets.get('build'), host);
   switch (applicationType) {
     case ApplicationType.ANGULAR:
     case ApplicationType.REACT:
