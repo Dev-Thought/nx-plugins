@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`init schematic aws provider should extend the project configuration options with aws profile 1`] = `
+Object {
+  "builder": "@dev-thought/nx-deploy-it:deploy",
+  "options": Object {
+    "main": "apps/mock-project/infrastructure/index.ts",
+    "provider": "aws",
+    "pulumi": Object {
+      "aws:profile": "my-aws-profile",
+      "aws:region": "eu-central-1",
+    },
+  },
+}
+`;
+
+exports[`init schematic aws provider should extend the project configuration options with aws profile 2`] = `
+Object {
+  "builder": "@dev-thought/nx-deploy-it:destroy",
+  "options": Object {
+    "main": "apps/mock-project/infrastructure/index.ts",
+    "provider": "aws",
+  },
+}
+`;
+
+exports[`init schematic aws provider should extend the project default configuration options: Deploy Action 1`] = `
+Object {
+  "builder": "@dev-thought/nx-deploy-it:deploy",
+  "options": Object {
+    "main": "apps/mock-project/infrastructure/index.ts",
+    "provider": "aws",
+    "pulumi": Object {
+      "aws:profile": "",
+      "aws:region": "eu-central-1",
+    },
+  },
+}
+`;
+
+exports[`init schematic aws provider should extend the project default configuration options: Destroy Action 1`] = `
+Object {
+  "builder": "@dev-thought/nx-deploy-it:destroy",
+  "options": Object {
+    "main": "apps/mock-project/infrastructure/index.ts",
+    "provider": "aws",
+  },
+}
+`;
+
+exports[`init schematic azure provider should extend the project default configuration options: Deploy Action 1`] = `
+Object {
+  "builder": "@dev-thought/nx-deploy-it:deploy",
+  "options": Object {
+    "main": "apps/mock-project/infrastructure/index.ts",
+    "provider": "azure",
+    "pulumi": Object {
+      "azure:location": "eastasia",
+    },
+  },
+}
+`;
+
+exports[`init schematic azure provider should extend the project default configuration options: Destroy Action 1`] = `
+Object {
+  "builder": "@dev-thought/nx-deploy-it:destroy",
+  "options": Object {
+    "main": "apps/mock-project/infrastructure/index.ts",
+    "provider": "azure",
+  },
+}
+`;
+
+exports[`init schematic google cloud platform provider should extend the project default configuration options: Deploy Action 1`] = `
+Object {
+  "builder": "@dev-thought/nx-deploy-it:deploy",
+  "options": Object {
+    "main": "apps/mock-project/infrastructure/index.ts",
+    "provider": "gcp",
+    "pulumi": Object {
+      "gcp:project": "my-google-project-id",
+      "gcp:region": "europe-west1",
+    },
+  },
+}
+`;
+
+exports[`init schematic google cloud platform provider should extend the project default configuration options: Destroy Action 1`] = `
+Object {
+  "builder": "@dev-thought/nx-deploy-it:destroy",
+  "options": Object {
+    "main": "apps/mock-project/infrastructure/index.ts",
+    "provider": "gcp",
+  },
+}
+`;
