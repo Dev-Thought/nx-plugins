@@ -22,12 +22,14 @@ xdescribe('nx-deploy-it e2e', () => {
   });
 
   it('should create nx-deploy-it with aws provider', async done => {
-    console.log(`generate @dev-thought/nx-deploy-it:init ${project} --provider aws`);
+    console.log(
+      `generate @dev-thought/nx-deploy-it:init ${project} --provider aws`
+    );
     const result = await runNxCommandAsync(
       `generate @dev-thought/nx-deploy-it:init --project ${project} --provider aws`
     );
 
-    expect(result.stderr).not.toBeDefined()
+    expect(result.stderr).not.toBeDefined();
     expect(result.stdout).toContain('Builder run');
 
     done();

@@ -25,7 +25,10 @@ export function getAdapter(
   options: NxDeployItInitSchematicSchema,
   host?: Tree
 ): BaseAdapter {
-  const applicationType = getApplicationType(project.targets.get('build'), host);
+  const applicationType = getApplicationType(
+    project.targets.get('build'),
+    host
+  );
   switch (applicationType) {
     case ApplicationType.ANGULAR:
     case ApplicationType.REACT:

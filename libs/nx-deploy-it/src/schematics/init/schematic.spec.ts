@@ -49,9 +49,9 @@ describe('init schematic', () => {
     appTree = createEmptyWorkspace(Tree.empty());
   });
 
-  afterEach(()=> {
+  afterEach(() => {
     jest.clearAllMocks();
-  })
+  });
 
   describe('pulumi project', () => {
     const options: NxDeployItInitSchematicSchema = {
