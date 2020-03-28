@@ -3,7 +3,7 @@ import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 import { createEmptyWorkspace } from '@nrwl/workspace/testing';
 import { join } from 'path';
 import { NxDeployItInitSchematicSchema } from './schema';
-import { readJsonInTree, readWorkspaceJson } from '@nrwl/workspace';
+import { readJsonInTree } from '@nrwl/workspace';
 import { stdin } from 'mock-stdin';
 
 import { PROVIDER } from '../../utils/provider';
@@ -24,6 +24,18 @@ describe('init schematic', () => {
   const unlinkSync = jest.spyOn(fs, 'unlinkSync');
   const spawnSync = jest.spyOn(childProcess, 'spawnSync');
 
+  const originReadFileSync = fs.readFileSync;
+
+  (fs.readFileSync as any) = jest
+    .fn(originReadFileSync)
+    .mockImplementation((path, options) => {
+      if (path === `apps/${projectName}/infrastructure/Pulumi.yaml`) {
+        return '';
+      }
+
+      return originReadFileSync(path, options);
+    });
+
   const testRunner = new SchematicTestRunner(
     '@dev-thought/nx-deploy-it',
     join(__dirname, '../../../collection.json')
@@ -35,6 +47,64 @@ describe('init schematic', () => {
 
   beforeEach(() => {
     appTree = createEmptyWorkspace(Tree.empty());
+  });
+
+  afterEach(()=> {
+    jest.clearAllMocks();
+  })
+
+  describe('pulumi project', () => {
+    const options: NxDeployItInitSchematicSchema = {
+      project: projectName,
+      provider: 'aws'
+    };
+
+    beforeEach(async () => {
+      appTree = await createApplication(
+        testRunner,
+        projectName,
+        'nest',
+        appTree
+      );
+
+      spawnSync.mockImplementation(() => {
+        createPulumiMockProjectInTree(appTree, PROVIDER.AWS, projectName);
+        return {} as any;
+      });
+      unlinkSync.mockImplementation();
+    });
+
+    it('should be initialized', async () => {
+      answerInitQuestionsAWS(io, null, null);
+
+      const tree = await testRunner
+        .runSchematicAsync('init', options, appTree)
+        .toPromise();
+
+      expect(
+        tree.exists(`apps/${projectName}/infrastructure/Pulumi.yaml`)
+      ).toBeTruthy();
+
+      expect(spawnSync).toHaveBeenCalled();
+      expect(spawnSync.mock.calls[0][1][1]).toContain('aws-typescript');
+      expect(spawnSync.mock.calls[0][1][3]).toBe(projectName);
+      expect(spawnSync.mock.calls[0][1][5]).toContain(
+        `apps/${projectName}/infrastructure`
+      );
+      expect(spawnSync.mock.calls[0][1][7]).toContain(
+        'Infrastructure as Code based on Pulumi - managed by @dev-thought/nx-deploy-it'
+      );
+      expect(unlinkSync).toHaveBeenCalledTimes(5);
+    });
+
+    it('should fail if the project already has an deploy integration', async () => {
+      answerInitQuestionsAWS(io, null, null);
+
+      await testRunner.runSchematicAsync('init', options, appTree).toPromise();
+      await testRunner.runSchematicAsync('init', options, appTree).toPromise();
+
+      expect(spawnSync).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('aws provider', () => {

@@ -108,7 +108,7 @@ function generateNewPulumiProject(adapter: BaseAdapter): Rule {
       '--dir',
       resolve(join(adapter.project.root, 'infrastructure')),
       '--description',
-      'Infrastructure as Code based on Pulumi',
+      'Infrastructure as Code based on Pulumi - managed by @dev-thought/nx-deploy-it',
       '--generate-only'
     ];
 
@@ -120,9 +120,21 @@ function generateNewPulumiProject(adapter: BaseAdapter): Rule {
   };
 }
 
+function mergePulumiProjectIntoTree(adapter: BaseAdapter) {
+  return (host: Tree) => {
+    const infraDir = join(adapter.project.root, 'infrastructure');
+
+    const PulumiFile = join(infraDir, 'Pulumi.yaml');
+    host.create(PulumiFile, readFileSync(PulumiFile));
+
+    return host;
+  };
+}
+
 function cleanupTempPulumiProject(adapter: BaseAdapter) {
   return (host: Tree) => {
     const infraDir = join(adapter.project.root, 'infrastructure');
+    unlinkSync(resolve(infraDir, 'Pulumi.yaml'));
     unlinkSync(resolve(infraDir, '.gitignore'));
     unlinkSync(resolve(infraDir, 'index.ts'));
     unlinkSync(resolve(infraDir, 'tsconfig.json'));
@@ -151,9 +163,10 @@ function generateInfrastructureCode(adapter: BaseAdapter) {
 function initializeCloudProviderApplication(adapter: BaseAdapter) {
   return chain([
     generateNewPulumiProject(adapter),
+    mergePulumiProjectIntoTree(adapter),
+    cleanupTempPulumiProject(adapter),
     generateInfrastructureCode(adapter),
-    updateProject(adapter),
-    cleanupTempPulumiProject(adapter)
+    updateProject(adapter)
   ]);
 }
 
@@ -164,6 +177,13 @@ export default function(options: NxDeployItInitSchematicSchema) {
 
     if (!project) {
       context.logger.error(`Project doesn't exist`);
+      return chain([]);
+    }
+
+    if (project.targets.has('deploy')) {
+      context.logger.error(
+        `Your project is already configured with a deploy job`
+      );
       return chain([]);
     }
 
