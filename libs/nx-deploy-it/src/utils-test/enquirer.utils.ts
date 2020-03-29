@@ -57,3 +57,30 @@ export function answerInitQuestionsGCP(
   };
   setTimeout(() => initQuestions().then(), 5);
 }
+
+export function answerScanQuestionsWithNoApp(io: MockSTDIN) {
+  const initQuestions = async () => {
+    io.send(KEYS.ENTER);
+  };
+  setTimeout(() => initQuestions().then(), 5);
+}
+
+export function answerScanQuestions(io: MockSTDIN, azureLocation: string) {
+  const initQuestions = async () => {
+    io.send(KEYS.SPACE);
+    io.send(KEYS.ENTER);
+
+    await delay(10);
+
+    io.send(KEYS.DOWN);
+    io.send(KEYS.ENTER);
+
+    await delay(10);
+
+    if (azureLocation) {
+      io.send(azureLocation);
+      io.send(KEYS.ENTER);
+    }
+  };
+  setTimeout(() => initQuestions().then(), 5);
+}

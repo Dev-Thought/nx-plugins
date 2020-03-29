@@ -46,14 +46,18 @@ export function getAdapter(
 }
 
 export function getApplications(
-  workspace: WorkspaceDefinition
+  workspace: WorkspaceDefinition,
+  host: Tree
 ): { projectName: string; applicationType: ApplicationType }[] {
   const applications: {
     projectName: string;
     applicationType: ApplicationType;
   }[] = [];
   workspace.projects.forEach((project, projectName) => {
-    const applicationType = getApplicationType(project.targets.get('build'));
+    const applicationType = getApplicationType(
+      project.targets.get('build'),
+      host
+    );
     if (applicationType) {
       applications.push({
         projectName,
