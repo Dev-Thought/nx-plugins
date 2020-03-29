@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`scan schematic should find no applications 1`] = `
+Object {
+  "level": "info",
+  "message": "no applications found",
+  "name": "scan",
+  "path": Array [
+    "test",
+  ],
+}
+`;
+
+exports[`scan schematic with applications should aboard setup because of no selections 1`] = `
+Object {
+  "level": "info",
+  "message": "We found 1 supported applications.",
+  "name": "scan",
+  "path": Array [
+    "test",
+  ],
+}
+`;
+
+exports[`scan schematic with applications should aboard setup because of no selections 2`] = `
+Object {
+  "level": "info",
+  "message": "No applications selected. Skipping setup",
+  "name": "scan",
+  "path": Array [
+    "test",
+  ],
+}
+`;
+
+exports[`scan schematic with applications should setup the selected nest application 1`] = `
+Object {
+  "level": "info",
+  "message": "We found 1 supported applications.",
+  "name": "scan",
+  "path": Array [
+    "test",
+  ],
+}
+`;
+
+exports[`scan schematic with applications should setup the selected nest application 2`] = `
+Array [
+  "@dev-thought/nx-deploy-it",
+  "init",
+  Object {
+    "azure:location": "eastasia",
+    "project": "mock-project",
+    "provider": "azure",
+  },
+]
+`;

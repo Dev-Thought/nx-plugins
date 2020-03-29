@@ -15,7 +15,7 @@ import { PROVIDER } from '../../utils/provider';
 export default function(): Rule {
   return async (host: Tree, context: SchematicContext): Promise<Rule> => {
     const workspace = await getWorkspace(host);
-    const applications = getApplications(workspace);
+    const applications = getApplications(workspace, host);
     const questions: any[] = [];
 
     if (applications.length === 0) {

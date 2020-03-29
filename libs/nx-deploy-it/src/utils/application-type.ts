@@ -21,12 +21,7 @@ function isNestJS(target: TargetDefinition, host: Tree): boolean {
     return false;
   }
   const mainPath = target.options.main.toString();
-  let mainSource: string;
-  if (host) {
-    mainSource = host.read(mainPath).toString('utf-8');
-  } else {
-    mainSource = readFileSync(resolve(mainPath)).toString('utf-8');
-  }
+  const mainSource = host.read(mainPath).toString('utf-8');
   const main = ts.createSourceFile(
     mainPath,
     mainSource,
@@ -62,7 +57,7 @@ function isReact(target: TargetDefinition): boolean {
 
 export function getApplicationType(
   target: TargetDefinition,
-  host?: Tree
+  host: Tree
 ): ApplicationType {
   if (!target) {
     return null;
