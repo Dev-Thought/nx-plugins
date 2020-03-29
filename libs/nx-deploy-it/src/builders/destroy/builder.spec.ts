@@ -1,42 +1,81 @@
-import { Architect } from '@angular-devkit/architect';
-import { TestingArchitectHost } from '@angular-devkit/architect/testing';
-import { schema } from '@angular-devkit/core';
-import { join } from 'path';
 import { NxDeployItDestroyBuilderSchema } from './schema';
-
-const options: NxDeployItDestroyBuilderSchema = {};
+import { MockBuilderContext } from '@nrwl/workspace/testing';
+import { runBuilder } from './builder';
+import { getMockContext } from '../../utils-test/builders.utils';
+import { DestroyTargetOptions } from './target-options';
+import * as childProcess from 'child_process';
 
 describe('Command Runner Builder - Destroy', () => {
-  let architect: Architect;
-  let architectHost: TestingArchitectHost;
+  let context: MockBuilderContext;
+  let options: NxDeployItDestroyBuilderSchema;
+  const spawnSync = jest.spyOn(childProcess, 'spawnSync');
 
   beforeEach(async () => {
-    const registry = new schema.CoreSchemaRegistry();
-    registry.addPostTransform(schema.transforms.addUndefinedDefaults);
+    context = await getMockContext();
 
-    architectHost = new TestingArchitectHost('/root', '/root');
-    architect = new Architect(architectHost, registry);
-
-    // This will either take a Node package name, or a path to the directory
-    // for the package.json file.
-    await architectHost.addBuilderFromPackage(join(__dirname, '../../..'));
+    options = {
+      project: 'project-mock'
+    };
   });
 
-  xit('can run', async () => {
-    // A "run" can have multiple outputs, and contains progress information.
-    const run = await architect.scheduleBuilder(
-      '@dev-thought/nx-deploy-it:destroy',
-      options
+  it('should fail if no target exists', async () => {
+    const result = await runBuilder(options, context).toPromise();
+
+    expect(result).toMatchSnapshot();
+  });
+
+  it('should run destroy', async () => {
+    jest.spyOn(context, 'getTargetOptions').mockResolvedValue({
+      main: 'somewhere.ts'
+    } as DestroyTargetOptions);
+    spawnSync.mockReturnValue({
+      pid: null,
+      output: [''],
+      error: null,
+      signal: null,
+      status: null,
+      stderr: null,
+      stdout: null
+    });
+    await context.addTarget(
+      { project: 'project-mock', configuration: 'dev', target: 'destroy' },
+      'destroy'
     );
-    // The "result" member (of type BuilderOutput) is the next output.
-    const output = await run.result;
+    context.target = {
+      project: 'project-mock',
+      configuration: 'dev',
+      target: 'destroy'
+    };
+    const result = await runBuilder(options, context).toPromise();
 
-    // Stop the builder from running. This stops Architect from keeping
-    // the builder-associated states in memory, since builders keep waiting
-    // to be scheduled.
-    await run.stop();
+    expect(spawnSync.mock.calls[0][1]).toMatchSnapshot('Pulumi arguments');
+    expect(result).toMatchSnapshot('Result of the pulumi script');
+  });
 
-    // Expect that it succeeded.
-    expect(output.success).toBe(true);
+  it('should run destroy and return success: false if pulumi fails', async () => {
+    jest.spyOn(context, 'getTargetOptions').mockResolvedValue({
+      main: 'somewhere.ts'
+    } as DestroyTargetOptions);
+    spawnSync.mockReturnValue({
+      pid: null,
+      output: [''],
+      error: new Error('Pulumi failed'),
+      signal: null,
+      status: null,
+      stderr: null,
+      stdout: null
+    });
+    await context.addTarget(
+      { project: 'project-mock', configuration: 'dev', target: 'destroy' },
+      'destroy'
+    );
+    context.target = {
+      project: 'project-mock',
+      configuration: 'dev',
+      target: 'destroy'
+    };
+
+    const result = await runBuilder(options, context).toPromise();
+    expect(result).toMatchSnapshot('match result');
   });
 });

@@ -3,10 +3,10 @@ import {
   BuilderOutput,
   createBuilder
 } from '@angular-devkit/architect';
-import { Observable, from, Subject, of } from 'rxjs';
+import { Observable, from, throwError, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { NxDeployItDestroyBuilderSchema } from './schema';
-import { spawn } from 'child_process';
+import { spawnSync } from 'child_process';
 import { getPulumiBinaryPath } from '../../utils/workspace';
 import { DestroyTargetOptions } from './target-options';
 import { dirname, resolve } from 'path';
@@ -16,8 +16,7 @@ function down(
   options: NxDeployItDestroyBuilderSchema,
   configuration: string,
   projectName: string
-) {
-  const subject = new Subject<{ success: boolean }>();
+): Observable<BuilderOutput> {
   const args = [
     'destroy',
     '--cwd',
@@ -28,28 +27,23 @@ function down(
   if (options.nonInteractive) {
     args.push('--non-interactive', '--yes');
   }
-  const up = spawn(getPulumiBinaryPath(), args, {
+  const up = spawnSync(getPulumiBinaryPath(), args, {
     env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' },
     stdio: 'inherit'
   });
 
-  up.on('close', code => {
-    if (code !== 0) {
-      console.log(`up process exited with code ${code}`);
-      subject.error({ success: false });
-    }
-    subject.next({ success: true });
-    subject.complete();
-  });
+  if (up.error) {
+    return of({ success: false, error: up.error.message });
+  }
 
-  return subject.asObservable();
+  return of({ success: true });
 }
 
 export function runBuilder(
   options: NxDeployItDestroyBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  if (!context.target) {
+  if (!context.target?.target) {
     return of({ success: false });
   }
 

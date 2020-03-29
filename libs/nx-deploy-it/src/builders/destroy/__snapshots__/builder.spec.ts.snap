@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Command Runner Builder - Destroy should fail if no target exists 1`] = `
+Object {
+  "success": false,
+}
+`;
+
+exports[`Command Runner Builder - Destroy should run destroy and return success: false if pulumi fails: match result 1`] = `
+Object {
+  "error": "Pulumi failed",
+  "success": false,
+}
+`;
+
+exports[`Command Runner Builder - Destroy should run destroy: Pulumi arguments 1`] = `
+Array [
+  "destroy",
+  "--cwd",
+  "/root",
+  "--stack",
+  "dev-project-mock",
+]
+`;
+
+exports[`Command Runner Builder - Destroy should run destroy: Result of the pulumi script 1`] = `
+Object {
+  "success": true,
+}
+`;
