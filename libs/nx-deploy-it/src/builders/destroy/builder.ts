@@ -3,7 +3,7 @@ import {
   BuilderOutput,
   createBuilder
 } from '@angular-devkit/architect';
-import { Observable, from, throwError, of } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { NxDeployItDestroyBuilderSchema } from './schema';
 import { spawnSync } from 'child_process';

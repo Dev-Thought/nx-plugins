@@ -1,4 +1,3 @@
-
 import { Architect } from '@angular-devkit/architect';
 import { TestingArchitectHost } from '@angular-devkit/architect/testing';
 import { schema } from '@angular-devkit/core';
