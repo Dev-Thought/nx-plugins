@@ -13,16 +13,6 @@ Object {
 }
 `;
 
-exports[`Command Runner Builder - Destroy should run destroy: Pulumi arguments 1`] = `
-Array [
-  "destroy",
-  "--cwd",
-  "/root",
-  "--stack",
-  "dev-project-mock",
-]
-`;
-
 exports[`Command Runner Builder - Destroy should run destroy: Result of the pulumi script 1`] = `
 Object {
   "success": true,
