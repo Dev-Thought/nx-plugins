@@ -18,6 +18,12 @@ describe('Command Runner Builder - Destroy', () => {
     };
   });
 
+  it('should fail if no target exists', async () => {
+    const result = await runBuilder(options, context).toPromise();
+
+    expect(result).toMatchSnapshot();
+  });
+
   it('should run destroy', async () => {
     jest.spyOn(context, 'getTargetOptions').mockResolvedValue({
       main: 'somewhere.ts'

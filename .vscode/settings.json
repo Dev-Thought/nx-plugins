@@ -16,5 +16,6 @@
         "statusBar.foreground": "#15202b"
     },
     "peacock.color": "#42b883",
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "jestrunner.jestPath": "npm test --"
 }
