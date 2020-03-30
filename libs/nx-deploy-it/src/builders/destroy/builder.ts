@@ -43,7 +43,7 @@ export function runBuilder(
   options: NxDeployItDestroyBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  if (!context.target || !context.target.target) {
+  if (!context?.target?.target) {
     return of({ success: false });
   }
 
