@@ -1,17 +1,102 @@
 version: 2.1
-orbs:
-  node: circleci/node@1.1.6
-jobs:
-  build-and-test:
-    executor:
-      name: node/default
+executors:
+  default:
+    working_directory: ~/repo
+    environment:
+      # install Cypress in Linux-like cache folder
+      # CYPRESS_CACHE_FOLDER: '~/.cache/Cypress'
+
+    docker:
+      - image: circleci/node:12-browsers
+
+commands:
+  npm_install:
+    description: 'Install Dependencies'
+    steps:
+      - run: npm install
+      - save_cache:
+          key: node-deps-node12-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+  restore_npm_cache:
+    description: 'Restore Cached Dependencies'
+    steps:
+      - restore_cache:
+          keys:
+            - node-deps-node12-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - node-deps-node12-
+  setup:
+    description: 'Setup Executor'
     steps:
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-            - run: npm test
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: ..
+
+jobs:
+  install:
+    executor: default
+    steps:
+      - checkout
+      - restore_npm_cache
+      - npm_install
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: ..
+          # Must be relative path from root
+          paths:
+            - repo/node_modules
+            - .cache/Cypress
+
+  format:
+    executor: default
+    steps:
+      - setup
+      - run:
+          name: Check Formatting
+          command: npm run format:check
+
+  lint:
+    executor: default
+    steps:
+      - setup
+      - run:
+          name: Check Linting
+          command: npm run affected:lint
+
+  unit_integration_tests:
+    executor: default
+    steps:
+      - setup
+      - run:
+          name: Check Unit & Integration tests
+          command: npm run affected:test
+
+  e2e_tests:
+    executor: default
+    steps:
+      - setup
+      - run:
+          name: Check E2E tests
+          command: npm run affected:e2e
+
 workflows:
-    build-and-test:
-      jobs:
-        - build-and-test
+  version: 2.1
+  default_workflow:
+    jobs:
+      - install
+      - format:
+          requires:
+            - install
+      - lint:
+          requires:
+            - install
+      - unit_integration_tests:
+          requires:
+            - install
+      - e2e_tests:
+          requires:
+            - install
