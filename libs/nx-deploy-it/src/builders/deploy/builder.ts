@@ -3,7 +3,7 @@ import {
   BuilderOutput,
   createBuilder
 } from '@angular-devkit/architect';
-import { Observable, Subject, from, of } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { NxDeployItDeployBuilderSchema } from './schema';
 import {
@@ -13,7 +13,7 @@ import {
 import { resolve, dirname } from 'path';
 import * as ncc from '@zeit/ncc';
 import { DeployTargetOptions } from './target-options';
-import { spawnSync, spawn } from 'child_process';
+import { spawnSync } from 'child_process';
 import { getPulumiBinaryPath } from '../../utils/workspace';
 import { readWorkspaceConfigPath } from '@nrwl/workspace';
 import { ensureDirSync, ensureFileSync } from 'fs-extra';
@@ -58,10 +58,8 @@ function up(
   configuration: string,
   targetOptions: DeployTargetOptions,
   distPath: string,
-  projectName: string,
-  context: BuilderContext
+  projectName: string
 ) {
-  const subject = new Subject<{ success: boolean }>();
   const args = [
     'up',
     '--cwd',
@@ -83,22 +81,17 @@ function up(
   }
   args.push('-c', `distPath=${distPath}`);
   args.push('-c', `projectName=${projectName}`);
-  const up = spawn(getPulumiBinaryPath(), args, {
+
+  const up = spawnSync(getPulumiBinaryPath(), args, {
     env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' },
     stdio: 'inherit'
   });
 
-  up.on('close', code => {
-    if (code !== 0) {
-      context.logger.error(`up process exited with code ${code}`);
-      subject.error({ success: false });
-    } else {
-      subject.next({ success: true });
-    }
-    subject.complete();
-  });
+  if (up.error) {
+    return of({ success: false, error: up.error.message });
+  }
 
-  return subject.asObservable();
+  return of({ success: true });
 }
 
 function getProjectConfig(context: BuilderContext) {
@@ -180,6 +173,9 @@ export function runBuilder(
   options: NxDeployItDeployBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
+  if (!context?.target?.project) {
+    return of({ success: false });
+  }
   const configuration = context.target.configuration || 'dev';
 
   return of({ success: true }).pipe(
@@ -200,8 +196,7 @@ export function runBuilder(
             configuration,
             targetOptions,
             distributationPath,
-            context.target.project,
-            context
+            context.target.project
           );
         })
       )

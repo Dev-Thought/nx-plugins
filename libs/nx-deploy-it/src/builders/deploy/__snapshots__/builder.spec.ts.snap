@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Command Runner Builder - Deploy should run deploy for a react app: Result of the pulumi script 1`] = `
+Object {
+  "success": true,
+}
+`;
+
+exports[`Command Runner Builder - Deploy should run deploy for a react app: build schedule target 1`] = `
+Array [
+  Object {
+    "configuration": "dev",
+    "project": "project-mock",
+    "target": "build",
+  },
+]
+`;
+
+exports[`Command Runner Builder - Deploy should run deploy for a react app: create stack if not exists 1`] = `
+Array [
+  "stack",
+  "--stack",
+  "dev-project-mock",
+  "--cwd",
+  "/root",
+]
+`;
+
+exports[`Command Runner Builder - Deploy should run deploy for a react app: deploy with pulumi 1`] = `
+Array [
+  "up",
+  "--cwd",
+  "/root",
+  "--stack",
+  "dev-project-mock",
+  "-c",
+  "distPath=/root/dist/apps/project-mock",
+  "-c",
+  "projectName=project-mock",
+]
+`;
+
+exports[`Command Runner Builder - Deploy should update pulumi properties: deploy with pulumi 1`] = `
+Array [
+  "up",
+  "--cwd",
+  "/root",
+  "--stack",
+  "dev-project-mock",
+  "-c",
+  "aws:region=eu-central-1",
+  "-c",
+  "distPath=/root/dist/apps/project-mock",
+  "-c",
+  "projectName=project-mock",
+]
+`;
