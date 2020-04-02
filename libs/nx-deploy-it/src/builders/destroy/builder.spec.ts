@@ -18,6 +18,10 @@ describe('Command Runner Builder - Destroy', () => {
     };
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should fail if no target exists', async () => {
     const result = await runBuilder(options, context).toPromise();
 
