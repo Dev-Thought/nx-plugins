@@ -1,127 +1,61 @@
 version: 2.1
+
 executors:
   default:
     working_directory: ~/repo
-    environment:
-      # install Cypress in Linux-like cache folder
-      # CYPRESS_CACHE_FOLDER: '~/.cache/Cypress'
-
     docker:
       - image: circleci/node:12-browsers
 
 commands:
-  set_env:
-    description: Setup Environment Variables
-    steps:
-      - run: |
-          if [[ $CIRCLE_PULL_REQUEST ]]
-          then
-            echo 'Fetching Base Commit from GitHub'
-            echo 'export CIRCLE_PR_NUMBER="${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}"' >> $BASH_ENV
-            source $BASH_ENV
-            echo "export CIRCLE_PR_BASE_SHA=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.base.sha'`" >> $BASH_ENV
-            echo 'export AFFECTED_ARGS="--base ${CIRCLE_PR_BASE_SHA}"' >> $BASH_ENV
-          else
-            echo 'Fetching Base Commit from Deploy Cache'
-            if [[ ! -f dist/last-deploy.txt ]]
-            then
-              mkdir dist && git rev-parse HEAD~1 > dist/last-deploy.txt
-            fi
-            echo 'export AFFECTED_ARGS="--base $(cat dist/last-deploy.txt)"' >> $BASH_ENV
-          fi
-          source $BASH_ENV
-          echo $AFFECTED_ARGS
-
   npm_install:
     description: 'Install Dependencies'
     steps:
       - run: npm install
       - save_cache:
-          key: node-deps-node12-{{ checksum "package-lock.json" }}
+          key: node-cache-node12-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-
   restore_npm_cache:
     description: 'Restore Cached Dependencies'
     steps:
       - restore_cache:
           keys:
-            - node-deps-node12-{{ checksum "package-lock.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - node-deps-node12-
+            - node-cache-node12-{{ checksum "package-lock.json" }}
+            - node-cache-node12-
   setup:
     description: 'Setup Executor'
     steps:
       - checkout
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: ..
-
-jobs:
-  install:
-    executor: default
-    steps:
-      - checkout
       - restore_npm_cache
       - npm_install
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
-          root: ..
-          # Must be relative path from root
-          paths:
-            - repo/node_modules
 
-  format:
+jobs:
+  build-master:
     executor: default
     steps:
-      - set_env
       - setup
-      - run:
-          name: Check Formatting
-          command: npm run format:check ${AFFECTED_ARGS}
-
-  lint:
+      - run: npx nx affected --target=lint --base=origin/master~1 --parallel
+      - run: npx nx affected --target=test --base=origin/master~1
+      - run: npx nx affected --target=build --base=origin/master~1 --prod
+  build-pr:
     executor: default
     steps:
-      - set_env
       - setup
-      - run:
-          name: Check Linting
-          command: npm run affected:lint ${AFFECTED_ARGS}
-
-  unit_integration_tests:
-    executor: default
-    steps:
-      - set_env
-      - setup
-      - run:
-          name: Check Unit & Integration tests
-          command: npm run affected:test ${AFFECTED_ARGS}
-
-  e2e_tests:
-    executor: default
-    steps:
-      - set_env
-      - setup
-      - run:
-          name: Check E2E tests
-          command: npm run affected:e2e ${AFFECTED_ARGS}
+      - run: npx nx affected --target=lint --base=origin/master --parallel
+      - run: npx nx affected --target=test --base=origin/master
+      - run: npx nx affected --target=build --base=origin/master --prod
 
 workflows:
   version: 2.1
   default_workflow:
     jobs:
-      - install
-      - format:
-          requires:
-            - install
-      - lint:
-          requires:
-            - install
-      - unit_integration_tests:
-          requires:
-            - install
-      - e2e_tests:
-          requires:
-            - install
+      - build-master:
+          filters:
+            branches:
+              only:
+                - master
+      - build-pr:
+          filters:
+            branches:
+              ignore:
+                - master
