@@ -13,24 +13,24 @@ commands:
   set_env:
     description: Setup Environment Variables
     steps:
-      run: |
-        if [[ $CIRCLE_PULL_REQUEST ]]
-        then
-          echo 'Fetching Base Commit from GitHub'
-          echo 'export CIRCLE_PR_NUMBER="${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}"' >> $BASH_ENV
-          source $BASH_ENV
-          echo "export CIRCLE_PR_BASE_SHA=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.base.sha'`" >> $BASH_ENV
-          echo 'export AFFECTED_ARGS="--base ${CIRCLE_PR_BASE_SHA}"' >> $BASH_ENV
-        else
-          echo 'Fetching Base Commit from Deploy Cache'
-          if [[ ! -f dist/last-deploy.txt ]]
+      - run: |
+          if [[ $CIRCLE_PULL_REQUEST ]]
           then
-            mkdir dist && git rev-parse HEAD~1 > dist/last-deploy.txt
+            echo 'Fetching Base Commit from GitHub'
+            echo 'export CIRCLE_PR_NUMBER="${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}"' >> $BASH_ENV
+            source $BASH_ENV
+            echo "export CIRCLE_PR_BASE_SHA=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.base.sha'`" >> $BASH_ENV
+            echo 'export AFFECTED_ARGS="--base ${CIRCLE_PR_BASE_SHA}"' >> $BASH_ENV
+          else
+            echo 'Fetching Base Commit from Deploy Cache'
+            if [[ ! -f dist/last-deploy.txt ]]
+            then
+              mkdir dist && git rev-parse HEAD~1 > dist/last-deploy.txt
+            fi
+            echo 'export AFFECTED_ARGS="--base $(cat dist/last-deploy.txt)"' >> $BASH_ENV
           fi
-          echo 'export AFFECTED_ARGS="--base $(cat dist/last-deploy.txt)"' >> $BASH_ENV
-        fi
-        source $BASH_ENV
-        echo $AFFECTED_ARGS
+          source $BASH_ENV
+          echo $AFFECTED_ARGS
 
   npm_install:
     description: 'Install Dependencies'
