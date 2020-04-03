@@ -165,6 +165,12 @@ describe('Command Runner Builder - Deploy', () => {
     expect(process.cwd).toHaveBeenCalled();
     expect(process.chdir).toHaveBeenCalledWith('/root/apps/api/infrastructure');
     expect(process.chdir).toHaveBeenCalledWith('mockProcessCwd');
+    expect(
+      ncc
+    ).toHaveBeenCalledWith(
+      '/root/apps/api/infrastructure/functions/main/index.ts',
+      { cache: '/root/apps/api/infrastructure/buildcache' }
+    );
 
     // check if build was written
     expect(fsExtra.ensureDirSync).toHaveBeenCalledWith(
