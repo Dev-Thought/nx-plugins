@@ -38,6 +38,7 @@
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {
+    "@nrwl/angular": "^9.2.2",
     "@nrwl/eslint-plugin-nx": "9.1.0",
     "@nrwl/jest": "9.1.0",
     "@nrwl/nest": "^9.1.2",
@@ -56,6 +57,7 @@
     "ts-jest": "24.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.0.0",
-    "typescript": "~3.7.4"
+    "typescript": "~3.7.4",
+    "yarn": "^1.22.4"
   }
 }

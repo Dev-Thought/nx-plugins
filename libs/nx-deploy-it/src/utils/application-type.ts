@@ -1,4 +1,7 @@
-import { TargetDefinition } from '@angular-devkit/core/src/workspace';
+import {
+  TargetDefinition,
+  TargetDefinitionCollection
+} from '@angular-devkit/core/src/workspace';
 import { resolve } from 'path';
 import * as ts from 'typescript';
 import { readFileSync } from 'fs-extra';
@@ -9,18 +12,57 @@ export enum ApplicationType {
   ANGULAR = 'angular',
   REACT = 'react',
   NESTJS = 'nestjs',
-  EXPRESS = 'express'
+  EXPRESS = 'express',
+  ANGULAR_UNIVERSAL = 'angular-universal'
 }
 
-function isAngular(target: TargetDefinition): boolean {
-  return target.builder === '@angular-devkit/build-angular:browser';
+function getTarget(
+  targets: TargetDefinitionCollection | {},
+  targetName: string
+): TargetDefinition {
+  if (
+    (targets as TargetDefinitionCollection).get &&
+    typeof (targets as TargetDefinitionCollection).get === 'function'
+  ) {
+    return (targets as TargetDefinitionCollection).get(targetName);
+  }
+
+  return targets[targetName];
 }
 
-function isNestJS(target: TargetDefinition, host: Tree): boolean {
-  if (target.builder !== '@nrwl/node:build') {
+function isAngular(targets: TargetDefinitionCollection): boolean {
+  const build = getTarget(targets, 'build');
+  if (!build) {
     return false;
   }
-  const mainPath = target.options.main.toString();
+  return build.builder === '@angular-devkit/build-angular:browser';
+}
+
+function isAngularUniversal(targets: TargetDefinitionCollection): boolean {
+  const build = getTarget(targets, 'build');
+  if (!build) {
+    return false;
+  }
+  const serveSsr = getTarget(targets, 'serve-ssr');
+  const prerender = getTarget(targets, 'prerender');
+  const server = getTarget(targets, 'server');
+  return (
+    build.builder === '@angular-devkit/build-angular:browser' &&
+    !!serveSsr &&
+    !!prerender &&
+    !!server
+  );
+}
+
+function isNestJS(targets: TargetDefinitionCollection, host: Tree): boolean {
+  const build = getTarget(targets, 'build');
+  if (!build) {
+    return false;
+  }
+  if (build.builder !== '@nrwl/node:build') {
+    return false;
+  }
+  const mainPath = build.options.main.toString();
   let mainSource: string;
   if (host) {
     mainSource = host.read(mainPath).toString('utf-8');
@@ -35,11 +77,15 @@ function isNestJS(target: TargetDefinition, host: Tree): boolean {
   return hasImport(main.statements, '@nestjs');
 }
 
-function isExpressJS(target: TargetDefinition): boolean {
-  if (target.builder !== '@nrwl/node:build') {
+function isExpressJS(targets: TargetDefinitionCollection): boolean {
+  const build = getTarget(targets, 'build');
+  if (!build) {
     return false;
   }
-  const mainPath = resolve(target.options.main.toString());
+  if (build.builder !== '@nrwl/node:build') {
+    return false;
+  }
+  const mainPath = resolve(build.options.main.toString());
   const mainSource = readFileSync(mainPath).toString('utf-8');
   const main = ts.createSourceFile(
     mainPath,
@@ -52,34 +98,41 @@ function isExpressJS(target: TargetDefinition): boolean {
   );
 }
 
-function isReact(target: TargetDefinition): boolean {
+function isReact(targets: TargetDefinitionCollection): boolean {
+  const build = getTarget(targets, 'build');
+  if (!build) {
+    return false;
+  }
   return (
-    target.builder === '@nrwl/web:build' &&
-    target.options.webpackConfig.toString().startsWith('@nrwl/react') &&
-    target.options.main.toString().endsWith('.tsx')
+    build.builder === '@nrwl/web:build' &&
+    build.options.webpackConfig.toString().startsWith('@nrwl/react') &&
+    build.options.main.toString().endsWith('.tsx')
   );
 }
 
 export function getApplicationType(
-  target: TargetDefinition,
+  targets: TargetDefinitionCollection,
   host?: Tree
 ): ApplicationType {
-  if (!target) {
+  if (!targets) {
     return null;
   }
 
-  if (isAngular(target)) {
-    return ApplicationType.ANGULAR;
-  }
-  if (isReact(target)) {
-    return ApplicationType.REACT;
-  }
-
-  if (isNestJS(target, host)) {
+  if (isNestJS(targets, host)) {
     return ApplicationType.NESTJS;
   }
-  if (isExpressJS(target)) {
+  if (isExpressJS(targets)) {
     return ApplicationType.EXPRESS;
+  }
+
+  if (isAngularUniversal(targets)) {
+    return ApplicationType.ANGULAR_UNIVERSAL;
+  }
+  if (isAngular(targets)) {
+    return ApplicationType.ANGULAR;
+  }
+  if (isReact(targets)) {
+    return ApplicationType.REACT;
   }
 
   return null;

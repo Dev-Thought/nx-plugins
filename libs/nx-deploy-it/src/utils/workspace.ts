@@ -10,6 +10,7 @@ import { WebappAdapter } from '../schematics/init/adapter/webapp.adapter';
 import { NestJSAdapter } from '../schematics/init/adapter/nestjs.adapter';
 import { ExpressAdapter } from '../schematics/init/adapter/express.adapter';
 import { Tree } from '@angular-devkit/schematics';
+import { AngularUniversalAdapter } from '../schematics/init/adapter/angular-universal.adapter';
 
 export function getRealWorkspacePath() {
   // TODO!: find a better way
@@ -25,10 +26,7 @@ export function getAdapter(
   options: NxDeployItInitSchematicSchema,
   host?: Tree
 ): BaseAdapter {
-  const applicationType = getApplicationType(
-    project.targets.get('build'),
-    host
-  );
+  const applicationType = getApplicationType(project.targets, host);
   switch (applicationType) {
     case ApplicationType.ANGULAR:
     case ApplicationType.REACT:
@@ -37,6 +35,8 @@ export function getAdapter(
       return new NestJSAdapter(project, options, applicationType);
     case ApplicationType.EXPRESS:
       return new ExpressAdapter(project, options, applicationType);
+    case ApplicationType.ANGULAR_UNIVERSAL:
+      return new AngularUniversalAdapter(project, options, applicationType);
     default:
   }
 
@@ -54,10 +54,7 @@ export function getApplications(
     applicationType: ApplicationType;
   }[] = [];
   workspace.projects.forEach((project, projectName) => {
-    const applicationType = getApplicationType(
-      project.targets.get('build'),
-      host
-    );
+    const applicationType = getApplicationType(project.targets, host);
     if (applicationType) {
       applications.push({
         projectName,
