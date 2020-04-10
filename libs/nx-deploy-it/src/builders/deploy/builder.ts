@@ -114,16 +114,16 @@ function buildProject(context: BuilderContext): Observable<BuilderOutput> {
   context.logger.info('Build project');
 
   const project = getProjectConfig(context);
-  const applicationType = getApplicationType(project.architect.build);
+  const applicationType = getApplicationType(project.architect);
+  const infrastructureFolder = resolve(
+    context.workspaceRoot,
+    project.root,
+    'infrastructure'
+  );
   if (
     applicationType === ApplicationType.NESTJS ||
     applicationType === ApplicationType.EXPRESS
   ) {
-    const infrastructureFolder = resolve(
-      context.workspaceRoot,
-      project.root,
-      'infrastructure'
-    );
     const processCwd = process.cwd();
     process.chdir(infrastructureFolder);
     return from(
@@ -158,6 +158,28 @@ function buildProject(context: BuilderContext): Observable<BuilderOutput> {
         }
       )
     );
+  } else if (applicationType === ApplicationType.ANGULAR_UNIVERSAL) {
+    return from(
+      context
+        .scheduleTarget({
+          target: 'build',
+          project: context.target.project,
+          configuration: context.target.configuration || ''
+        })
+        .then(() =>
+          context.scheduleTarget(
+            {
+              target: 'server',
+              project: context.target.project,
+              configuration: context.target.configuration || ''
+            },
+            {
+              main: resolve(infrastructureFolder, 'functions/main/index.ts'),
+              tsConfig: resolve(infrastructureFolder, 'tsconfig.json')
+            }
+          )
+        )
+    ).pipe(switchMap(builderRun => from(builderRun.result)));
   } else {
     return from(
       context.scheduleTarget({

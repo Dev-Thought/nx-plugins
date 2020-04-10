@@ -125,7 +125,9 @@ function mergePulumiProjectIntoTree(adapter: BaseAdapter) {
     const infraDir = join(adapter.project.root, 'infrastructure');
 
     const PulumiFile = join(infraDir, 'Pulumi.yaml');
-    host.create(PulumiFile, readFileSync(PulumiFile));
+    const pulumiContent = readFileSync(PulumiFile);
+    unlinkSync(PulumiFile);
+    host.create(PulumiFile, pulumiContent);
 
     return host;
   };
@@ -134,7 +136,6 @@ function mergePulumiProjectIntoTree(adapter: BaseAdapter) {
 function cleanupTempPulumiProject(adapter: BaseAdapter) {
   return (host: Tree) => {
     const infraDir = join(adapter.project.root, 'infrastructure');
-    unlinkSync(resolve(infraDir, 'Pulumi.yaml'));
     unlinkSync(resolve(infraDir, '.gitignore'));
     unlinkSync(resolve(infraDir, 'index.ts'));
     unlinkSync(resolve(infraDir, 'tsconfig.json'));
