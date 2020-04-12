@@ -1,27 +1,29 @@
-import { BaseAdapter } from './base.adapter';
-import { PROVIDER } from '../../../utils/provider';
+import { BaseAdapter } from '../base.adapter';
+import { PROVIDER } from '../../utils/provider';
 import { prompt } from 'enquirer';
 import { Rule, applyTemplates } from '@angular-devkit/schematics';
 import { TargetDefinition } from '@angular-devkit/core/src/workspace';
 import { join } from 'path';
 import { JsonObject } from '@angular-devkit/core';
-import { QUESTIONS } from '../../../utils/questions';
+import { QUESTIONS } from '../../utils/questions';
+import { NxDeployItInitSchematicSchema } from '../../schematics/init/schema';
 
-export class AngularUniversalAdapter extends BaseAdapter {
+export class WebappAdapter extends BaseAdapter {
   async extendOptionsByUserInput() {
+    const options = this.options as NxDeployItInitSchematicSchema;
     await super.extendOptionsByUserInput();
     const questions: any[] = [];
 
-    if (this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
-      if (!this.options.customDomainName)
-        questions.push(QUESTIONS.customDomainName);
-      if (!this.options['gcp:region'])
-        questions.push(QUESTIONS.gcpRegionCloudFunctions);
+    if (
+      options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM &&
+      !options.customDomainName
+    ) {
+      questions.push(QUESTIONS.customDomainName);
     }
 
     const anwsers = await prompt(questions);
     this.options = {
-      ...this.options,
+      ...options,
       ...anwsers
     };
   }
@@ -36,34 +38,15 @@ export class AngularUniversalAdapter extends BaseAdapter {
       dependencies.push({ name: 'mime', version: '2.4.4' });
     }
 
-    if (this.options.provider === PROVIDER.AWS) {
-      dependencies.push({
-        name: 'aws-serverless-express',
-        version: '^3.3.6'
-      });
-    }
-
     if (this.options.provider === PROVIDER.AZURE) {
-      dependencies.push(
-        { name: '@azure/arm-cdn', version: '^4.2.0' },
-        {
-          name: '@nestjs/azure-func-http',
-          version: '^0.4.2'
-        },
-        {
-          name: '@azure/functions',
-          version: '^1.2.0'
-        }
-      );
+      dependencies.push({ name: '@azure/arm-cdn', version: '^4.2.0' });
     }
-
     return dependencies;
   }
 
   getApplicationTypeTemplate(): Rule {
     const buildTarget = this.project.targets.get('build') as TargetDefinition;
     return applyTemplates({
-      getRootDirectory: () => '',
       buildPath: join(
         `../../../${(buildTarget.options as JsonObject).outputPath}`
       ),
@@ -72,7 +55,7 @@ export class AngularUniversalAdapter extends BaseAdapter {
   }
 
   getApplicationTemplatePath() {
-    return `${super.getApplicationTemplatePath()}/angular-universal/`;
+    return `${super.getApplicationTemplatePath()}/webapp/`;
   }
 
   getDeployActionConfiguration(): any {

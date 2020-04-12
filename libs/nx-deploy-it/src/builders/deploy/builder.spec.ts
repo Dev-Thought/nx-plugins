@@ -9,9 +9,8 @@ import * as utils from '../../utils/application-type';
 import * as ncc from '@zeit/ncc';
 import * as fsExtra from 'fs-extra';
 import * as fs from 'fs';
+import { PROVIDER } from '../../utils/provider';
 jest.mock('@zeit/ncc');
-
-const options: NxDeployItDeployBuilderSchema = {};
 
 describe('Command Runner Builder - Deploy', () => {
   let context: MockBuilderContext;
@@ -22,7 +21,8 @@ describe('Command Runner Builder - Deploy', () => {
     context = await getMockContext();
 
     options = {
-      project: 'project-mock'
+      project: 'project-mock',
+      provider: PROVIDER.AWS
     };
 
     spawnSync.mockReturnValue({

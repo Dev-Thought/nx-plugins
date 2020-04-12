@@ -1,4 +1,5 @@
 import { PROVIDER } from './provider';
+import { ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE } from '../adapter/angular-universal/deployment-type.enum';
 
 export const QUESTIONS = {
   // get list with: aws ec2 describe-regions --profile cli-dev-thought | jq ".Regions[] | .RegionName"
@@ -138,5 +139,24 @@ export const QUESTIONS = {
     result: function(r: string) {
       return Object.values(this.map(r))[0];
     }
-  } as any
+  } as any,
+
+  angularUniversal: {
+    type: 'select',
+    name: 'angularUniversalDeploymentType',
+    message: 'Please select the deployment type of angular universal.',
+    choices: [
+      {
+        name: 'Prerendering',
+        value: ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.PRERENDERING
+      },
+      {
+        name: 'Server Side Rendering',
+        value: ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.SERVER_SIDE_RENDERING
+      }
+    ],
+    result: function(r: string) {
+      return Object.values(this.map(r))[0];
+    }
+  }
 };

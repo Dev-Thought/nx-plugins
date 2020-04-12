@@ -1,8 +1,6 @@
-import { PROVIDER } from '../utils/provider';
+import { NxDeployItBaseOptions } from '../../adapter/base.adapter.model';
 
-export interface NxDeployItInitSchematicSchema {
-  provider: PROVIDER;
-  project: string;
+export interface NxDeployItInitSchematicSchema extends NxDeployItBaseOptions {
   customDomainName?: string;
   'azure:location'?: string;
   'aws:region'?: string;
