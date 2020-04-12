@@ -23,7 +23,7 @@ import { resolve, join } from 'path';
 import { getCloudTemplateName } from '../../utils/provider';
 import { getPulumiBinaryPath, getAdapter } from '../../utils/workspace';
 import { readFileSync, unlinkSync } from 'fs';
-import { BaseAdapter } from './adapter/base.adapter';
+import { BaseAdapter } from '../../adapter/base.adapter';
 
 export function updateProject(adapter: BaseAdapter): Rule {
   return async () => {

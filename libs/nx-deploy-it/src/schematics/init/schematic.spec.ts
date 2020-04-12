@@ -56,7 +56,7 @@ describe('init schematic', () => {
   describe('pulumi project', () => {
     const options: NxDeployItInitSchematicSchema = {
       project: projectName,
-      provider: 'aws'
+      provider: PROVIDER.AWS
     };
 
     beforeEach(async () => {
@@ -110,7 +110,7 @@ describe('init schematic', () => {
   describe('aws provider', () => {
     const options: NxDeployItInitSchematicSchema = {
       project: projectName,
-      provider: 'aws'
+      provider: PROVIDER.AWS
     };
 
     beforeEach(async () => {
@@ -182,7 +182,7 @@ describe('init schematic', () => {
   describe('azure provider', () => {
     const options: NxDeployItInitSchematicSchema = {
       project: projectName,
-      provider: 'azure'
+      provider: PROVIDER.AZURE
     };
 
     beforeEach(async () => {
@@ -232,7 +232,7 @@ describe('init schematic', () => {
   describe('google cloud platform provider', () => {
     const options: NxDeployItInitSchematicSchema = {
       project: projectName,
-      provider: 'gcp'
+      provider: PROVIDER.GOOGLE_CLOUD_PLATFORM
     };
 
     beforeEach(async () => {

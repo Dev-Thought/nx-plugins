@@ -1,6 +1,6 @@
-import { JsonObject } from '@angular-devkit/core';
+import { NxDeployItBaseOptions } from '../../adapter/base.adapter.model';
 
-export interface NxDeployItDeployBuilderSchema extends JsonObject {
+export interface NxDeployItDeployBuilderSchema extends NxDeployItBaseOptions {
   noBuild?: boolean;
   nonInteractive?: boolean;
 }

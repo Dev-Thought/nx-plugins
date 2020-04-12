@@ -8,10 +8,10 @@ module.exports = {
   coverageDirectory: '../../coverage/libs/nx-deploy-it',
   coverageThreshold: {
     global: {
-      branches: 59,
-      functions: 85,
-      lines: 83,
-      statements: 83
+      statements: 76,
+      branches: 53,
+      lines: 75,
+      functions: 76
     }
   }
 };

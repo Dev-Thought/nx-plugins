@@ -3,14 +3,16 @@ import {
   ProjectDefinition,
   WorkspaceDefinition
 } from '@angular-devkit/core/src/workspace';
-import { BaseAdapter } from '../schematics/init/adapter/base.adapter';
+import { BaseAdapter } from '../adapter/base.adapter';
 import { getApplicationType, ApplicationType } from './application-type';
 import { NxDeployItInitSchematicSchema } from '../schematics/init/schema';
-import { WebappAdapter } from '../schematics/init/adapter/webapp.adapter';
-import { NestJSAdapter } from '../schematics/init/adapter/nestjs.adapter';
-import { ExpressAdapter } from '../schematics/init/adapter/express.adapter';
+import { WebappAdapter } from '../adapter/webapp/webapp.adapter';
+import { NestJSAdapter } from '../adapter/nestjs/nestjs.adapter';
+import { ExpressAdapter } from '../adapter/express/express.adapter';
 import { Tree } from '@angular-devkit/schematics';
-import { AngularUniversalAdapter } from '../schematics/init/adapter/angular-universal.adapter';
+import { AngularUniversalAdapter } from '../adapter/angular-universal/angular-universal.adapter';
+import { BuilderContext } from '@angular-devkit/architect';
+import { readWorkspaceConfigPath } from '@nrwl/workspace';
 
 export function getRealWorkspacePath() {
   // TODO!: find a better way
@@ -21,12 +23,11 @@ export function getPulumiBinaryPath() {
   return resolve(getRealWorkspacePath(), 'node_modules/.bin/pulumi');
 }
 
-export function getAdapter(
+export function getAdapterByApplicationType(
+  applicationType: ApplicationType,
   project: ProjectDefinition,
-  options: NxDeployItInitSchematicSchema,
-  host?: Tree
+  options: NxDeployItInitSchematicSchema
 ): BaseAdapter {
-  const applicationType = getApplicationType(project.targets, host);
   switch (applicationType) {
     case ApplicationType.ANGULAR:
     case ApplicationType.REACT:
@@ -42,6 +43,18 @@ export function getAdapter(
 
   throw new Error(
     `Can't recognize application type. Supported list can be found here: https://github.com/Dev-Thought/nx-plugins/libs/nx-deploy-it`
+  );
+}
+
+export function getAdapter(
+  project: ProjectDefinition,
+  options: NxDeployItInitSchematicSchema,
+  host?: Tree
+): BaseAdapter {
+  return getAdapterByApplicationType(
+    getApplicationType(project.targets, host),
+    project,
+    options
   );
 }
 
@@ -64,4 +77,19 @@ export function getApplications(
   });
 
   return applications;
+}
+
+export function getProjectConfig(context: BuilderContext) {
+  const workspaceConfig = readWorkspaceConfigPath();
+
+  return workspaceConfig.projects[context.target.project];
+}
+
+export function getDistributionPath(context: BuilderContext) {
+  const project = getProjectConfig(context);
+
+  return resolve(
+    context.workspaceRoot,
+    project.architect.build.options.outputPath
+  );
 }
