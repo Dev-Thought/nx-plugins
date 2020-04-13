@@ -38,12 +38,7 @@ export class AngularUniversalAdapter extends BaseAdapter {
   addRequiredDependencies() {
     const dependencies = super.addRequiredDependencies();
 
-    if (
-      this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM ||
-      this.options.provider === PROVIDER.AWS
-    ) {
-      dependencies.push({ name: 'mime', version: '2.4.4' });
-    }
+    dependencies.push({ name: 'mime', version: '2.4.4' });
 
     if (this.options.provider === PROVIDER.AWS) {
       dependencies.push({
@@ -56,12 +51,8 @@ export class AngularUniversalAdapter extends BaseAdapter {
       dependencies.push(
         { name: '@azure/arm-cdn', version: '^4.2.0' },
         {
-          name: '@nestjs/azure-func-http',
-          version: '^0.4.2'
-        },
-        {
-          name: '@azure/functions',
-          version: '^1.2.0'
+          name: 'azure-aws-serverless-express',
+          version: '^0.1.5'
         }
       );
     }
@@ -116,6 +107,16 @@ export class AngularUniversalAdapter extends BaseAdapter {
     const deploymentType: ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE =
       targetOptions.pulumi.angularUniversalDeploymentType;
 
+    let baseHref = '/';
+    switch (this.options.provider) {
+      case PROVIDER.AWS:
+        baseHref = `/${context.target.configuration || 'dev'}/`;
+        break;
+
+      default:
+        break;
+    }
+
     switch (deploymentType) {
       case ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.PRERENDERING:
         return from(
@@ -149,7 +150,7 @@ export class AngularUniversalAdapter extends BaseAdapter {
                 configuration: context.target.configuration || undefined
               },
               {
-                baseHref: `${context.target.configuration || 'dev'}/`
+                baseHref
               }
             ),
             context.scheduleTarget(
