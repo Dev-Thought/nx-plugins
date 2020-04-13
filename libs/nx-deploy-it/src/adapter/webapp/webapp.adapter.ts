@@ -31,12 +31,7 @@ export class WebappAdapter extends BaseAdapter {
   addRequiredDependencies() {
     const dependencies = super.addRequiredDependencies();
 
-    if (
-      this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM ||
-      this.options.provider === PROVIDER.AWS
-    ) {
-      dependencies.push({ name: 'mime', version: '2.4.4' });
-    }
+    dependencies.push({ name: 'mime', version: '2.4.4' });
 
     if (this.options.provider === PROVIDER.AZURE) {
       dependencies.push({ name: '@azure/arm-cdn', version: '^4.2.0' });

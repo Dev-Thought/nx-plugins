@@ -1,4 +1,4 @@
-import { createHandler } from 'azure-function-express';
+import * as createHandler from 'azure-aws-serverless-express';
 import { expressApp } from '../../../<%= getRootDirectory() %>/main.azure';
 
 export default createHandler(expressApp);

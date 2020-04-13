@@ -1,12 +1,12 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
-
-import { createCdn } from './cdn';
 import { Distribution } from '@pulumi/aws/cloudfront';
 import { Output } from '@pulumi/pulumi';
+import * as mime from 'mime';
+
+import { createCdn } from './cdn';
 import { createCertificate } from './certificate';
 import { crawlDirectory } from './utils';
-import * as mime from 'mime';
 
 const stackConfig = new pulumi.Config();
 const config = {

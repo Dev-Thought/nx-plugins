@@ -55,24 +55,14 @@ class StorageStaticWebsiteProvider implements pulumi.dynamic.ResourceProvider {
 
     // Update the service properties of the storage account to enable static website and validate the result
     const update = executeToJson(
-      `az storage blob service-properties update --account-name "${accountName}" --static-website --404-document 404.html --index-document index.html`
+      `az storage blob service-properties update --account-name "${accountName}" --static-website --404-document index.html`
     );
     if (!update.staticWebsite.enabled) {
       throw new Error(`Static website update failed: ${update}`);
     }
 
-    // Extract the web endpoint and the hostname from the storage account
-    const endpoint = executeToJson(
-      `az storage account show -n "${accountName}" --query "primaryEndpoints.web"`
-    );
-    const hostName = url.parse(endpoint).hostname;
-
-    // Files for static websites should be stored in a special built-in container called '$web', see https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website
-    const webContainerName = '$web';
-
     return {
-      id: `${accountName}StaticWebsite`,
-      outs: { endpoint, hostName, webContainerName }
+      id: `${accountName}StaticWebsite`
     };
   }
 }

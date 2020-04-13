@@ -1,9 +1,10 @@
 import * as azure from '@pulumi/azure';
 import * as pulumi from '@pulumi/pulumi';
+import * as mime from 'mime';
+
 import { CDNCustomDomainResource } from './cdnCustomDomain';
 import { createAzureFunction } from './server-side-rendering';
 import { crawlDirectory } from './utils';
-import * as mime from 'mime';
 import { StorageStaticWebsite } from './static-website.resource';
 
 const stackConfig = new pulumi.Config();

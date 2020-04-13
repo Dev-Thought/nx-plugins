@@ -1,15 +1,13 @@
+import * as aws from '@pulumi/aws';
+import * as pulumi from '@pulumi/pulumi';
+import * as mime from 'mime';
+
 import { createCdn } from './cdn';
-import { Distribution } from '@pulumi/aws/cloudfront';
-import { Output, Config, getStack, interpolate } from '@pulumi/pulumi';
 import { createCertificate } from './certificate';
 import { crawlDirectory } from './utils';
-import * as mime from 'mime';
 import { createLambda } from './server-side-rendering';
-import { Bucket, BucketObject } from '@pulumi/aws/s3';
-import { requireRegion } from '@pulumi/aws/config';
-import { FileAsset } from '@pulumi/pulumi/asset';
 
-const stackConfig = new Config();
+const stackConfig = new pulumi.Config();
 const config = {
   // ===== DONT'T TOUCH THIS -> CONFIG REQUIRED BY nx-deploy-it ======
   projectName: stackConfig.get('projectName'),
@@ -22,17 +20,17 @@ const config = {
   // ===== END ======
 };
 const projectName = config.projectName;
-const stageName = getStack().split('-')[0];
-const region = requireRegion();
+const stageName = pulumi.getStack().split('-')[0];
+const region = aws.config.requireRegion();
 
-let lambda: { endpoint: Output<string> };
-let contentBucket: Bucket;
-let cdn: Distribution;
+let lambda: { endpoint: pulumi.Output<string> };
+let contentBucket: aws.s3.Bucket;
+let cdn: aws.cloudfront.Distribution;
 if (config.angularUniversalDeploymentType === 'ssr') {
   lambda = createLambda(projectName, stageName, region);
 } else {
   // contentBucket is the S3 bucket that the website's contents will be stored in.
-  contentBucket = new Bucket(`${projectName}-contentBucket`, {
+  contentBucket = new aws.s3.Bucket(`${projectName}-contentBucket`, {
     acl: 'public-read',
     // Configure S3 to serve bucket contents as a website. This way S3 will automatically convert
     // requests for "foo/" to "foo/index.html".
@@ -46,7 +44,7 @@ if (config.angularUniversalDeploymentType === 'ssr') {
   // Sync the contents of the source directory with the S3 bucket, which will in-turn show up on the CDN.
   crawlDirectory(config.distPath, (filePath: string) => {
     const relativeFilePath = filePath.replace(config.distPath + '/', '');
-    const contentFile = new BucketObject(
+    const contentFile = new aws.s3.BucketObject(
       relativeFilePath,
       {
         key: relativeFilePath,
@@ -54,7 +52,7 @@ if (config.angularUniversalDeploymentType === 'ssr') {
         acl: 'public-read',
         bucket: contentBucket,
         contentType: mime.getType(filePath) || undefined,
-        source: new FileAsset(filePath)
+        source: new pulumi.asset.FileAsset(filePath)
       },
       {
         parent: contentBucket
@@ -63,7 +61,7 @@ if (config.angularUniversalDeploymentType === 'ssr') {
   });
 
   if (config.useCdn) {
-    let certificateArn: Output<string>;
+    let certificateArn: pulumi.Output<string>;
     if (config.customDomainName) {
       certificateArn = createCertificate(config.customDomainName);
     }
@@ -77,5 +75,6 @@ if (config.angularUniversalDeploymentType === 'ssr') {
 export const staticEndpoint = contentBucket && contentBucket.websiteEndpoint;
 export const cdnEndpoint = cdn && cdn.domainName;
 export const cdnCustomDomain =
-  config.customDomainName && interpolate`https://${config.customDomainName}`;
+  config.customDomainName &&
+  pulumi.interpolate`https://${config.customDomainName}`;
 export const anuglarUniversalEndpoint = lambda && lambda.endpoint;

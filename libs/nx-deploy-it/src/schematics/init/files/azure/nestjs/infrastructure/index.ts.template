@@ -21,4 +21,6 @@ const nodeApp = new azure.appservice.ArchiveFunctionApp(
   }
 );
 
-export const nodeEndpoint = nodeApp.endpoint;
+export const nodeEndpoint = nodeApp.endpoint.apply((endpoint: string) =>
+  endpoint.replace(/api\/$/, '')
+);
