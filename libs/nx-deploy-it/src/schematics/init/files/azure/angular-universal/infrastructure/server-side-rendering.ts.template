@@ -1,0 +1,27 @@
+import { ResourceGroup } from '@pulumi/azure/core';
+import { ArchiveFunctionApp } from '@pulumi/azure/appservice';
+import { AssetArchive, FileArchive } from '@pulumi/pulumi/asset';
+
+export function createAzureFunction(
+  projectName: string,
+  resourceGroup: ResourceGroup
+) {
+  const nodeApp = new ArchiveFunctionApp(`${projectName}-functions`, {
+    resourceGroup,
+    archive: new AssetArchive({
+      [`dist/${projectName}/browser`]: new FileArchive(
+        `../../../dist/${projectName}/browser`
+      ),
+      'server/': new FileArchive(`../../../dist/${projectName}/server`),
+      '.': new FileArchive(`./functions`)
+    }),
+    version: '~3',
+    nodeVersion: '~10'
+  });
+
+  return {
+    endpoint: nodeApp.endpoint.apply((endpoint: string) =>
+      endpoint.replace(/api\/$/, '')
+    )
+  };
+}

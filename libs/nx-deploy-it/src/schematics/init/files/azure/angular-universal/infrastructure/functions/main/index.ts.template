@@ -1,0 +1,4 @@
+import * as createHandler from 'azure-aws-serverless-express';
+import { app } from '../../../<%= getRootDirectory() %>server';
+
+export default createHandler(app());
