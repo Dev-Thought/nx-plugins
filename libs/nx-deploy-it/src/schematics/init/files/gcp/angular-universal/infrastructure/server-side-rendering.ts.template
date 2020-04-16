@@ -1,0 +1,35 @@
+import * as gcp from '@pulumi/gcp';
+import * as pulumi from '@pulumi/pulumi';
+
+export function createCloudFunction(projectName: string) {
+  const bucket = new gcp.storage.Bucket(`${projectName}_bucket`);
+  const bucketObjectGo = new gcp.storage.BucketObject('zip-archive', {
+    bucket: bucket.name,
+    source: new pulumi.asset.AssetArchive({
+      [`dist/${projectName}/browser`]: new pulumi.asset.FileArchive(
+        `../../../dist/${projectName}/browser`
+      ),
+      '.': new pulumi.asset.FileArchive(`../../../dist/${projectName}/server`)
+    })
+  });
+
+  const cloudFunction = new gcp.cloudfunctions.Function(`${projectName}-func`, {
+    sourceArchiveBucket: bucket.name,
+    runtime: 'nodejs10',
+    sourceArchiveObject: bucketObjectGo.name,
+    entryPoint: 'handler',
+    triggerHttp: true,
+    availableMemoryMb: 128
+  });
+
+  const permission = new gcp.cloudfunctions.FunctionIamMember(
+    `${projectName}-func-role`,
+    {
+      cloudFunction: cloudFunction.name,
+      role: 'roles/cloudfunctions.invoker',
+      member: 'allUsers'
+    }
+  );
+
+  return cloudFunction;
+}
