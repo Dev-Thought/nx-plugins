@@ -112,7 +112,8 @@ HINT: Current limitation: domain name must have maximum 50 characters
 
 #### GCP custom domain setup
 
-Google makes it really easy. You can use the [google webmaster](https://www.google.com/webmasters/verification/home).
+Verify owner: Google makes it really easy. You can use the [google webmaster](https://www.google.com/webmasters/verification/home).
+Add CNAME entry: https://cloud.google.com/storage/docs/hosting-static-website
 
 #### AWS custom domain setup
 

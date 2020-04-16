@@ -112,7 +112,7 @@ export class BaseAdapter {
   ): Observable<BuilderOutput> {
     const distributationPath = getDistributionPath(context);
 
-    return from(
+    const build$: Observable<BuilderOutput> = from(
       context
         .scheduleTarget({
           target: 'build',
@@ -120,7 +120,9 @@ export class BaseAdapter {
           configuration: context.target.configuration || ''
         })
         .then(target => target.result)
-    ).pipe(
+    );
+
+    return build$.pipe(
       switchMap(() =>
         this.up(
           cwd,

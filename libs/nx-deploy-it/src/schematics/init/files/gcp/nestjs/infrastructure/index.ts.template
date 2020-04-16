@@ -29,4 +29,13 @@ const cloudFunction = new gcp.cloudfunctions.Function(
   }
 );
 
+const permission = new gcp.cloudfunctions.FunctionIamMember(
+  `${projectName}-func-role`,
+  {
+    cloudFunction: cloudFunction.name,
+    role: 'roles/cloudfunctions.invoker',
+    member: 'allUsers'
+  }
+);
+
 export const nodeEndpoint = cloudFunction.httpsTriggerUrl;

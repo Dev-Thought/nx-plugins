@@ -93,7 +93,8 @@ export class ExpressAdapter extends BaseAdapter {
 
     const processCwd = process.cwd();
     process.chdir(infrastructureFolder);
-    return from(
+
+    const build$: Observable<BuilderOutput> = from(
       ncc(resolve(infrastructureFolder, 'functions/main/index.ts'), {
         cache: resolve(infrastructureFolder, 'buildcache')
       })
@@ -123,7 +124,10 @@ export class ExpressAdapter extends BaseAdapter {
           }
           return { success: true };
         }
-      ),
+      )
+    );
+
+    return build$.pipe(
       switchMap(() =>
         this.up(
           cwd,

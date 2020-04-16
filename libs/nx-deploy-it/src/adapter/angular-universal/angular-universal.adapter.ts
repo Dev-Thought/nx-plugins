@@ -7,12 +7,13 @@ import { join, resolve } from 'path';
 import { JsonObject } from '@angular-devkit/core';
 import { QUESTIONS } from '../../utils/questions';
 import { BuilderOutput, BuilderContext } from '@angular-devkit/architect';
-import { Observable, from } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { NxDeployItInitSchematicSchema } from '../../schematics/init/schema';
 import { getDistributionPath, getProjectConfig } from '../../utils/workspace';
 import { NxDeployItDeployBuilderSchema } from '../../builders/deploy/schema';
 import { ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE } from './deployment-type.enum';
+import { copyFileSync } from 'fs';
 
 export class AngularUniversalAdapter extends BaseAdapter {
   async extendOptionsByUserInput() {
@@ -117,9 +118,11 @@ export class AngularUniversalAdapter extends BaseAdapter {
         break;
     }
 
+    let build$: Observable<BuilderOutput>;
+
     switch (deploymentType) {
       case ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.PRERENDERING:
-        return from(
+        build$ = from(
           context
             .scheduleTarget({
               target: 'prerender',
@@ -127,21 +130,11 @@ export class AngularUniversalAdapter extends BaseAdapter {
               configuration: context.target.configuration || undefined
             })
             .then(build => build.result)
-        ).pipe(
-          switchMap(() =>
-            this.up(
-              cwd,
-              options,
-              configuration,
-              targetOptions,
-              distributationPath,
-              context.target.project
-            )
-          )
         );
+        break;
 
       case ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.SERVER_SIDE_RENDERING:
-        return from(
+        build$ = from(
           Promise.all([
             context.scheduleTarget(
               {
@@ -168,22 +161,41 @@ export class AngularUniversalAdapter extends BaseAdapter {
             Promise.all([build.result, server.result])
           )
         ).pipe(
-          switchMap(() =>
-            this.up(
-              cwd,
-              options,
-              configuration,
-              targetOptions,
-              distributationPath,
-              context.target.project
-            )
-          )
+          switchMap(() => {
+            if (this.options.provider === PROVIDER.GOOGLE_CLOUD_PLATFORM) {
+              copyFileSync(
+                join(
+                  context.workspaceRoot,
+                  `${project.architect.server.options.outputPath}/main.js`
+                ),
+                join(
+                  context.workspaceRoot,
+                  `${project.architect.server.options.outputPath}/index.js`
+                )
+              );
+            }
+            return of({ success: true });
+          })
         );
+        break;
 
       default:
         throw new Error(
           'Unknown deployment type! Supported types are: ["prerendering", "ssr"]'
         );
     }
+
+    return build$.pipe(
+      switchMap(() =>
+        this.up(
+          cwd,
+          options,
+          configuration,
+          targetOptions,
+          distributationPath,
+          context.target.project
+        )
+      )
+    );
   }
 }

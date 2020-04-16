@@ -5,11 +5,6 @@
   "description": "Deploy the infrastructure for the app",
   "type": "object",
   "properties": {
-    "noBuild": {
-      "type": "boolean",
-      "default": false,
-      "description": "Skip build process during deployment"
-    },
     "nonInteractive": {
       "type": "boolean",
       "default": false,

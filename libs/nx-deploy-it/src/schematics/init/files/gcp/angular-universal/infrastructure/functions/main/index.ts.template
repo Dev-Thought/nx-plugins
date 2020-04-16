@@ -1,0 +1,3 @@
+import { app } from '../../../<%= getRootDirectory() %>server';
+
+export const handler = app();
