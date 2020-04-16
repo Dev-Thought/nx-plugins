@@ -122,10 +122,12 @@ You can create the hosted zone in the [Route53](https://console.aws.amazon.com/r
 
 ### Angular Universal Application
 
-| Feature         |       Azure        |        AWS         |        GCP         | Workspace  | activated in dev (default) | activated in prod (default) |
-| --------------- | :----------------: | :----------------: | :----------------: | :--------: | :------------------------: | :-------------------------: |
-| serverless      | :white_check_mark: | :white_check_mark: | :white_check_mark: |     nx     |            yes             |             yes             |
-| server instance |     :calendar:     |     :calendar:     |     :calendar:     | :calendar: |            yes             |             yes             |
+Only supports native @nguniversal
+
+| Feature         |       Azure        |        AWS         |        GCP         | Workspace  |    Supported integration    |
+| --------------- | :----------------: | :----------------: | :----------------: | :--------: | :-------------------------: |
+| serverless      | :white_check_mark: | :white_check_mark: | :white_check_mark: |     nx     | @nguniversal/express-engine |
+| server instance |     :calendar:     |     :calendar:     |     :calendar:     | :calendar: |                             |
 
 ### NestJS & ExpressJS
 
