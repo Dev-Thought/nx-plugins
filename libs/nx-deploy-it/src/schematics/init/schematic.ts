@@ -61,10 +61,14 @@ function addDependenciesFromPulumiProjectToPackageJson(
   adapter: BaseAdapter
 ): Rule {
   return (host: Tree): Rule => {
+    const pulumiPackageJson = host.read(
+      join(adapter.project.root, 'infrastructure', 'package.json')
+    );
+    if (!pulumiPackageJson) {
+      throw new Error('Can not find generated pulumi package.json');
+    }
     const pulumiCloudProviderDependencies = JSON.parse(
-      host
-        .read(join(adapter.project.root, 'infrastructure', 'package.json'))
-        .toString()
+      pulumiPackageJson.toString()
     ).dependencies;
     const packageJson = readJsonInTree(host, 'package.json');
     const dependencyList: { name: string; version: string }[] = [];
@@ -109,7 +113,8 @@ function generateNewPulumiProject(adapter: BaseAdapter): Rule {
       resolve(join(adapter.project.root, 'infrastructure')),
       '--description',
       'Infrastructure as Code based on Pulumi - managed by @dev-thought/nx-deploy-it',
-      '--generate-only'
+      '--generate-only',
+      '--yes'
     ];
 
     spawnSync(getPulumiBinaryPath(), args, {
