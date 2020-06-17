@@ -16,6 +16,11 @@ export enum ApplicationType {
   ANGULAR_UNIVERSAL = 'angular-universal'
 }
 
+export enum DeploymentType {
+  SERVERLESS = 'serverless',
+  KUBERNETES = 'kubernetes'
+}
+
 function getTarget(
   targets: TargetDefinitionCollection | {},
   targetName: string

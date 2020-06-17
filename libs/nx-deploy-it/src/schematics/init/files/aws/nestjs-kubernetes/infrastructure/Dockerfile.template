@@ -1,0 +1,7 @@
+FROM node:10-alpine
+WORKDIR /usr/src/app
+
+COPY functions/dist/main .
+
+EXPOSE 3000
+CMD ["node", "index.js"]

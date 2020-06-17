@@ -1,5 +1,6 @@
 import { PROVIDER } from './provider';
 import { ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE } from '../adapter/angular-universal/deployment-type.enum';
+import { DeploymentType } from './application-type';
 
 export const QUESTIONS = {
   // get list with: aws ec2 describe-regions --profile cli-dev-thought | jq ".Regions[] | .RegionName"
@@ -154,6 +155,18 @@ export const QUESTIONS = {
         name: 'Server Side Rendering',
         value: ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.SERVER_SIDE_RENDERING
       }
+    ],
+    result: function(r: string) {
+      return Object.values(this.map(r))[0];
+    }
+  },
+
+  deploymentType: {
+    type: 'select',
+    name: 'deploymentType',
+    choices: [
+      { name: 'Serverless', value: DeploymentType.SERVERLESS },
+      { name: 'Kubernetes', value: DeploymentType.KUBERNETES }
     ],
     result: function(r: string) {
       return Object.values(this.map(r))[0];

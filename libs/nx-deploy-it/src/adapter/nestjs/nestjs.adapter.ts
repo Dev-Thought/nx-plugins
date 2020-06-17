@@ -13,8 +13,12 @@ import { resolve } from 'path';
 import * as ncc from '@zeit/ncc';
 import { ensureDirSync, ensureFileSync } from 'fs-extra';
 import { writeFileSync } from 'fs';
+import { NestJSOptions } from './nestjs.adapter.model';
+import { DeploymentType } from '../../utils/application-type';
 
 export class NestJSAdapter extends BaseAdapter {
+  options: NestJSOptions;
+
   async extendOptionsByUserInput() {
     await super.extendOptionsByUserInput();
     const options = this.options as NxDeployItInitSchematicSchema;
@@ -27,7 +31,12 @@ export class NestJSAdapter extends BaseAdapter {
       questions.push(QUESTIONS.gcpRegionCloudFunctions);
     }
 
-    const anwsers = await prompt(questions);
+    questions.push(QUESTIONS.deploymentType);
+
+    const anwsers = await prompt<{
+      deploymentType: DeploymentType;
+      'gcp:region': string;
+    }>(questions);
     this.options = {
       ...options,
       ...anwsers
@@ -37,23 +46,37 @@ export class NestJSAdapter extends BaseAdapter {
   addRequiredDependencies() {
     const dependencies = super.addRequiredDependencies();
 
-    if (this.options.provider === PROVIDER.AZURE) {
-      dependencies.push(
-        {
-          name: '@nestjs/azure-func-http',
-          version: '^0.4.2'
-        },
-        {
-          name: '@azure/functions',
-          version: '^1.2.0'
-        }
-      );
+    if (this.options.deploymentType === DeploymentType.SERVERLESS) {
+      if (this.options.provider === PROVIDER.AZURE) {
+        dependencies.push(
+          {
+            name: '@nestjs/azure-func-http',
+            version: '^0.4.2'
+          },
+          {
+            name: '@azure/functions',
+            version: '^1.2.0'
+          }
+        );
+      }
+      if (this.options.provider === PROVIDER.AWS) {
+        dependencies.push({
+          name: 'aws-serverless-express',
+          version: '^3.3.6'
+        });
+      }
     }
-    if (this.options.provider === PROVIDER.AWS) {
+    if (this.options.deploymentType === DeploymentType.KUBERNETES) {
       dependencies.push({
-        name: 'aws-serverless-express',
-        version: '^3.3.6'
+        name: '@pulumi/kubernetes',
+        version: '^2.2.0'
       });
+      if (this.options.provider === PROVIDER.AWS) {
+        dependencies.push({
+          name: '@pulumi/eks',
+          version: '^0.19.0'
+        });
+      }
     }
     return dependencies;
   }
@@ -70,7 +93,9 @@ export class NestJSAdapter extends BaseAdapter {
   }
 
   getApplicationTemplatePath() {
-    return `${super.getApplicationTemplatePath()}/nestjs/`;
+    return `${super.getApplicationTemplatePath()}/nestjs-${
+      this.options.deploymentType
+    }/`;
   }
 
   getDeployActionConfiguration(): any {
