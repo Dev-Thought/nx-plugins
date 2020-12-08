@@ -38,6 +38,14 @@ function isAngular(targets: TargetDefinitionCollection): boolean {
   return build.builder === '@angular-devkit/build-angular:browser';
 }
 
+function isAngularCustomWebpack(targets: TargetDefinitionCollection): boolean {
+  const build = getTarget(targets, 'build');
+  if (!build) {
+    return false;
+  }
+  return build.builder === '@angular-builders/custom-webpack:browser';
+}
+
 function isAngularUniversal(targets: TargetDefinitionCollection): boolean {
   const build = getTarget(targets, 'build');
   if (!build) {
@@ -129,6 +137,9 @@ export function getApplicationType(
     return ApplicationType.ANGULAR_UNIVERSAL;
   }
   if (isAngular(targets)) {
+    return ApplicationType.ANGULAR;
+  }
+  if (isAngularCustomWebpack(targets)) {
     return ApplicationType.ANGULAR;
   }
   if (isReact(targets)) {
