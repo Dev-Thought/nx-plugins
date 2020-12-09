@@ -6,11 +6,11 @@ import { runBuilder } from './builder';
 import { DeployTargetOptions } from './target-options';
 import * as nrwlWorkspce from '@nrwl/workspace';
 import * as utils from '../../utils/application-type';
-import * as ncc from '@zeit/ncc';
+import * as ncc from '@vercel/ncc';
 import * as fsExtra from 'fs-extra';
 import * as fs from 'fs';
 import { PROVIDER } from '../../utils/provider';
-jest.mock('@zeit/ncc');
+jest.mock('@vercel/ncc');
 
 describe('Command Runner Builder - Deploy', () => {
   let context: MockBuilderContext;

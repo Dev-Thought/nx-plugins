@@ -10,7 +10,7 @@ import { BuilderOutput, BuilderContext } from '@angular-devkit/architect';
 import { Observable, from } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { resolve } from 'path';
-import * as ncc from '@zeit/ncc';
+import * as ncc from '@vercel/ncc';
 import { ensureDirSync, ensureFileSync } from 'fs-extra';
 import { writeFileSync } from 'fs';
 

@@ -33,7 +33,7 @@
   },
   "private": true,
   "dependencies": {
-    "@zeit/ncc": "^0.21.1",
+    "@vercel/ncc": "^0.25.1",
     "enquirer": "^2.3.4",
     "fs-extra": "^8.1.0"
   },

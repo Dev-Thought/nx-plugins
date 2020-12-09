@@ -1,6 +1,6 @@
 {
   "name": "@dev-thought/nx-deploy-it",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "main": "src/index.js",
   "schematics": "./collection.json",
   "builders": "./builders.json",
@@ -26,7 +26,7 @@
   ],
   "dependencies": {
     "@dev-thought/pulumi-npm": "^1.2.0",
-    "@zeit/ncc": "^0.21.1",
+    "@vercel/ncc": "^0.25.1",
     "enquirer": "^2.3.4"
   }
 }
