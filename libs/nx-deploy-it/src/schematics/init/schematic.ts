@@ -9,14 +9,14 @@ import {
   mergeWith,
   move,
   SchematicContext,
-  branchAndMerge
+  branchAndMerge,
 } from '@angular-devkit/schematics';
 import {
   readJsonInTree,
   addDepsToPackageJson,
   getWorkspace,
   updateJsonInTree,
-  updateWorkspace
+  updateWorkspace,
 } from '@nrwl/workspace';
 import { spawnSync } from 'child_process';
 import { resolve, join } from 'path';
@@ -28,20 +28,20 @@ import { BaseAdapter } from '../../adapter/base.adapter';
 export function updateProject(adapter: BaseAdapter): Rule {
   return async () => {
     return chain([
-      updateWorkspace(workspace => {
+      updateWorkspace((workspace) => {
         const project = workspace.projects.get(adapter.options.project);
         project.targets.add({
           name: 'deploy',
-          ...adapter.getDeployActionConfiguration()
+          ...adapter.getDeployActionConfiguration(),
         });
         project.targets.add({
           name: 'destroy',
-          ...adapter.getDestroyActionConfiguration()
+          ...adapter.getDestroyActionConfiguration(),
         });
       }),
       updateJsonInTree(
         join(adapter.project.root, 'tsconfig.app.json'),
-        json => {
+        (json) => {
           const exclude: string[] = json.exclude;
           const excludePaths = 'infrastructure/**/*.ts';
 
@@ -52,7 +52,7 @@ export function updateProject(adapter: BaseAdapter): Rule {
           }
           return json;
         }
-      )
+      ),
     ]);
   };
 }
@@ -79,7 +79,7 @@ function addDependenciesFromPulumiProjectToPackageJson(
         if (!packageJson.dependencies[name]) {
           dependencyList.push({
             name,
-            version
+            version,
           });
         }
       }
@@ -114,11 +114,11 @@ function generateNewPulumiProject(adapter: BaseAdapter): Rule {
       '--description',
       'Infrastructure as Code based on Pulumi - managed by @dev-thought/nx-deploy-it',
       '--generate-only',
-      '--yes'
+      '--yes',
     ];
 
-    spawnSync(getPulumiBinaryPath(), args, {
-      env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' }
+    const data = spawnSync(getPulumiBinaryPath(), args, {
+      env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' },
     });
 
     return addDependenciesFromPulumiProjectToPackageJson(adapter);
@@ -172,11 +172,11 @@ function initializeCloudProviderApplication(adapter: BaseAdapter) {
     mergePulumiProjectIntoTree(adapter),
     cleanupTempPulumiProject(adapter),
     generateInfrastructureCode(adapter),
-    updateProject(adapter)
+    updateProject(adapter),
   ]);
 }
 
-export default function(options: NxDeployItInitSchematicSchema) {
+export default function (options: NxDeployItInitSchematicSchema) {
   return async (host: Tree, context: SchematicContext): Promise<Rule> => {
     const workspace = await getWorkspace(host);
     const project = workspace.projects.get(options.project);

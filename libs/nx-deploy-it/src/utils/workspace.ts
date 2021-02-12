@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import {
   ProjectDefinition,
-  WorkspaceDefinition
+  WorkspaceDefinition,
 } from '@angular-devkit/core/src/workspace';
 import { BaseAdapter } from '../adapter/base.adapter';
 import { getApplicationType, ApplicationType } from './application-type';
@@ -12,7 +12,7 @@ import { ExpressAdapter } from '../adapter/express/express.adapter';
 import { Tree } from '@angular-devkit/schematics';
 import { AngularUniversalAdapter } from '../adapter/angular-universal/angular-universal.adapter';
 import { BuilderContext } from '@angular-devkit/architect';
-import { readWorkspaceConfigPath } from '@nrwl/workspace';
+import { readWorkspaceConfig } from '@nrwl/workspace';
 
 export function getRealWorkspacePath() {
   // TODO!: find a better way
@@ -71,7 +71,7 @@ export function getApplications(
     if (applicationType) {
       applications.push({
         projectName,
-        applicationType
+        applicationType,
       });
     }
   });
@@ -80,7 +80,7 @@ export function getApplications(
 }
 
 export function getProjectConfig(context: BuilderContext) {
-  const workspaceConfig = readWorkspaceConfigPath();
+  const workspaceConfig = readWorkspaceConfig({ format: 'nx' });
 
   return workspaceConfig.projects[context.target.project];
 }
