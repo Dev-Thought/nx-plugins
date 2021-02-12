@@ -3,7 +3,7 @@ import {
   Rule,
   Tree,
   SchematicContext,
-  externalSchematic
+  externalSchematic,
 } from '@angular-devkit/schematics';
 import { getWorkspace } from '@nrwl/workspace';
 import { getApplications } from '../../utils/workspace';
@@ -12,7 +12,7 @@ import { ApplicationType } from '../../utils/application-type';
 import { QUESTIONS } from '../../utils/questions';
 import { PROVIDER } from '../../utils/provider';
 
-export default function(): Rule {
+export default function (): Rule {
   return async (host: Tree, context: SchematicContext): Promise<Rule> => {
     const workspace = await getWorkspace(host);
     const applications = getApplications(workspace, host);
@@ -35,13 +35,13 @@ export default function(): Rule {
       }[];
     }>({
       ...QUESTIONS.setupApplications,
-      choices: applications.map(app => ({
+      choices: applications.map((app) => ({
         name: `${app.projectName} (${app.applicationType})`,
-        value: app
+        value: app,
       })),
-      result: function(result: string) {
+      result: function (result: string) {
         return Object.values(this.map(result));
-      }
+      },
     } as any);
 
     if (choosenApplications.setupApplications.length === 0) {
@@ -49,7 +49,9 @@ export default function(): Rule {
       return chain([]);
     }
 
-    const { provider } = await prompt([QUESTIONS.whichProvider as any]);
+    const { provider } = await prompt<{ provider: PROVIDER }>([
+      QUESTIONS.whichProvider,
+    ]);
 
     switch (provider) {
       case PROVIDER.AWS:
@@ -71,11 +73,11 @@ export default function(): Rule {
     const options = await prompt(questions);
 
     return chain(
-      choosenApplications.setupApplications.map(application => {
+      choosenApplications.setupApplications.map((application) => {
         return externalSchematic('@dev-thought/nx-deploy-it', 'init', {
           ...options,
           provider,
-          project: application.projectName
+          project: application.projectName,
         });
       })
     );
