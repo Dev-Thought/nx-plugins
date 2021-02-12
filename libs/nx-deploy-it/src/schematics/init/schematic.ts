@@ -117,7 +117,7 @@ function generateNewPulumiProject(adapter: BaseAdapter): Rule {
       '--yes',
     ];
 
-    const data = spawnSync(getPulumiBinaryPath(), args, {
+    spawnSync(getPulumiBinaryPath(), args, {
       env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' },
     });
 
