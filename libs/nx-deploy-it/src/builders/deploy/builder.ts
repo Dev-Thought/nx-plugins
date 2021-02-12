@@ -1,7 +1,7 @@
 import {
   BuilderContext,
   BuilderOutput,
-  createBuilder
+  createBuilder,
 } from '@angular-devkit/architect';
 import { Observable, from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { spawnSync } from 'child_process';
 import {
   getPulumiBinaryPath,
   getProjectConfig,
-  getAdapterByApplicationType
+  getAdapterByApplicationType,
 } from '../../utils/workspace';
 
 function spawnStack(
@@ -27,14 +27,14 @@ function spawnStack(
     '--stack',
     `${configuration}-${projectName}`,
     '--cwd',
-    cwd
+    cwd,
   ];
   if (withInit) {
     args.splice(1, 0, 'init');
   }
 
   return spawnSync(getPulumiBinaryPath(), args, {
-    env: process.env
+    env: process.env,
   });
 }
 

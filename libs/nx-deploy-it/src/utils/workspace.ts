@@ -80,7 +80,7 @@ export function getApplications(
 }
 
 export function getProjectConfig(context: BuilderContext) {
-  const workspaceConfig = readWorkspaceConfig({ format: 'nx' });
+  const workspaceConfig = readWorkspaceConfig({ format: 'angularCli' });
 
   return workspaceConfig.projects[context.target.project];
 }
