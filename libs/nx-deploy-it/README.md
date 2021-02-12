@@ -3,6 +3,13 @@
 [![npm version](https://badge.fury.io/js/%40dev-thought%2Fnx-deploy-it.svg)](https://www.npmjs.com/package/@dev-thought/nx-deploy-it)
 [![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?color=blue&style=flat-square)](http://opensource.org/licenses/MIT)
 
+# Version compatibility
+
+| NX Version | Nx Deploy It |
+| ---------- | :----------: |
+| >= 11.x.x  |    2.x.x     |
+| < 11       |    1.x.x     |
+
 **Deploy applications in nx / angular workspaces to the cloud using a provider of your Choice (Azure, AWS, Google Cloud Platform)**
 
 ![AWS example](./docs/nx-deploy-it-aws.gif?raw=true)
