@@ -5,7 +5,7 @@ import {
 } from '@angular-devkit/core/src/workspace';
 import { BaseAdapter } from '../adapter/base.adapter';
 import { getApplicationType, ApplicationType } from './application-type';
-import { NxDeployItInitSchematicSchema } from '../schematics/init/schema';
+import { NxDeployItInitSchematicSchema } from '../generators/init/schema';
 import { WebappAdapter } from '../adapter/webapp/webapp.adapter';
 import { NestJSAdapter } from '../adapter/nestjs/nestjs.adapter';
 import { ExpressAdapter } from '../adapter/express/express.adapter';

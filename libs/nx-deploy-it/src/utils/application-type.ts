@@ -17,7 +17,7 @@ export enum ApplicationType {
 }
 
 function getTarget(
-  targets: TargetDefinitionCollection | {},
+  targets: TargetDefinitionCollection,
   targetName: string
 ): TargetDefinition {
   if (

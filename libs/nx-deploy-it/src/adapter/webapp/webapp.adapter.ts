@@ -6,7 +6,7 @@ import { TargetDefinition } from '@angular-devkit/core/src/workspace';
 import { join } from 'path';
 import { JsonObject } from '@angular-devkit/core';
 import { QUESTIONS } from '../../utils/questions';
-import { NxDeployItInitSchematicSchema } from '../../schematics/init/schema';
+import { NxDeployItInitSchematicSchema } from '../../generators/init/schema';
 
 export class WebappAdapter extends BaseAdapter {
   async extendOptionsByUserInput() {

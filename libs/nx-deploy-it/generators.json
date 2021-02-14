@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "nx-deploy-it",
+  "version": "0.0.1",
+  "generators": {
+    "scan": {
+      "factory": "./src/generators/scan/schematic",
+      "schema": "./src/generators/scan/schema.json",
+      "description": "scan schematic",
+      "aliases": ["ng-add"]
+    },
+    "init": {
+      "factory": "./src/generators/init/schematic",
+      "schema": "./src/generators/init/schema.json",
+      "description": "init schematic"
+    }
+  }
+}

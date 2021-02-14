@@ -2,13 +2,13 @@
   "$schema": "../../node_modules/@angular-devkit/architect/src/builders-schema.json",
   "executors": {
     "deploy": {
-      "implementation": "./src/builders/deploy/builder",
-      "schema": "./src/builders/deploy/schema.json",
+      "implementation": "./src/executors/deploy/builder",
+      "schema": "./src/executors/deploy/schema.json",
       "description": "deploy infrastructure"
     },
     "destroy": {
-      "implementation": "./src/builders/destroy/builder",
-      "schema": "./src/builders/destroy/schema.json",
+      "implementation": "./src/executors/destroy/builder",
+      "schema": "./src/executors/destroy/schema.json",
       "description": "Destroy infrstructure"
     },
     "remove": {

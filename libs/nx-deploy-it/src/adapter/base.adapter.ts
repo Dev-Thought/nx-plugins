@@ -1,7 +1,7 @@
 import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
 import { Rule } from '@angular-devkit/schematics';
 import { ApplicationType } from '../utils/application-type';
-import { ArchitectOptions } from '../schematics/init/architect-options';
+import { ArchitectOptions } from '../generators/init/architect-options';
 import { join } from 'path';
 import { PROVIDER } from '../utils/provider';
 import { QUESTIONS } from '../utils/questions';
@@ -10,10 +10,10 @@ import { BuilderOutput, BuilderContext } from '@angular-devkit/architect';
 import { Observable, from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { NxDeployItBaseOptions } from './base.adapter.model';
-import { NxDeployItInitSchematicSchema } from '../schematics/init/schema';
-import { NxDeployItDeployBuilderSchema } from '../builders/deploy/schema';
+import { NxDeployItInitSchematicSchema } from '../generators/init/schema';
+import { NxDeployItDeployBuilderSchema } from '../executors/deploy/schema';
 import { getDistributionPath, getPulumiBinaryPath } from '../utils/workspace';
-import { DeployTargetOptions } from '../builders/deploy/target-options';
+import { DeployTargetOptions } from '../executors/deploy/target-options';
 import { spawnSync } from 'child_process';
 
 export class BaseAdapter {

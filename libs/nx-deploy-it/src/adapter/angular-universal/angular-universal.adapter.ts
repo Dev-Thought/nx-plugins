@@ -9,9 +9,9 @@ import { QUESTIONS } from '../../utils/questions';
 import { BuilderOutput, BuilderContext } from '@angular-devkit/architect';
 import { Observable, from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { NxDeployItInitSchematicSchema } from '../../schematics/init/schema';
+import { NxDeployItInitSchematicSchema } from '../../generators/init/schema';
 import { getDistributionPath, getProjectConfig } from '../../utils/workspace';
-import { NxDeployItDeployBuilderSchema } from '../../builders/deploy/schema';
+import { NxDeployItDeployBuilderSchema } from '../../executors/deploy/schema';
 import { ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE } from './deployment-type.enum';
 import { copyFileSync } from 'fs';
 
