@@ -1,6 +1,6 @@
 import {
   TargetDefinition,
-  TargetDefinitionCollection
+  TargetDefinitionCollection,
 } from '@angular-devkit/core/src/workspace';
 import { resolve } from 'path';
 import * as ts from 'typescript';
@@ -13,7 +13,7 @@ export enum ApplicationType {
   REACT = 'react',
   NESTJS = 'nestjs',
   EXPRESS = 'express',
-  ANGULAR_UNIVERSAL = 'angular-universal'
+  ANGULAR_UNIVERSAL = 'angular-universal',
 }
 
 function getTarget(

@@ -32,7 +32,7 @@ export class AngularUniversalAdapter extends BaseAdapter {
     const anwsers = await prompt(questions);
     this.options = {
       ...options,
-      ...anwsers
+      ...anwsers,
     };
   }
 
@@ -44,7 +44,7 @@ export class AngularUniversalAdapter extends BaseAdapter {
     if (this.options.provider === PROVIDER.AWS) {
       dependencies.push({
         name: 'aws-serverless-express',
-        version: '^3.3.6'
+        version: '^3.3.6',
       });
     }
 
@@ -53,7 +53,7 @@ export class AngularUniversalAdapter extends BaseAdapter {
         { name: '@azure/arm-cdn', version: '^4.2.0' },
         {
           name: 'azure-aws-serverless-express',
-          version: '^0.1.5'
+          version: '^0.1.5',
         }
       );
     }
@@ -68,7 +68,7 @@ export class AngularUniversalAdapter extends BaseAdapter {
       buildPath: join(
         `../../../${(buildTarget.options as JsonObject).outputPath}`
       ),
-      projectName: this.options.project
+      projectName: this.options.project,
     });
   }
 
@@ -81,7 +81,7 @@ export class AngularUniversalAdapter extends BaseAdapter {
 
     config.options.pulumi.useCdn = false;
     config.configurations = {
-      production: { pulumi: { useCdn: true } }
+      production: { pulumi: { useCdn: true } },
     };
     return config;
   }
@@ -127,9 +127,9 @@ export class AngularUniversalAdapter extends BaseAdapter {
             .scheduleTarget({
               target: 'prerender',
               project: context.target.project,
-              configuration: context.target.configuration || undefined
+              configuration: context.target.configuration || undefined,
             })
-            .then(build => build.result)
+            .then((build) => build.result)
         );
         break;
 
@@ -140,23 +140,23 @@ export class AngularUniversalAdapter extends BaseAdapter {
               {
                 target: 'build',
                 project: context.target.project,
-                configuration: context.target.configuration || undefined
+                configuration: context.target.configuration || undefined,
               },
               {
-                baseHref
+                baseHref,
               }
             ),
             context.scheduleTarget(
               {
                 target: 'server',
                 project: context.target.project,
-                configuration: context.target.configuration || undefined
+                configuration: context.target.configuration || undefined,
               },
               {
                 main: resolve(infrastructureFolder, 'functions/main/index.ts'),
-                tsConfig: resolve(infrastructureFolder, 'tsconfig.json')
+                tsConfig: resolve(infrastructureFolder, 'tsconfig.json'),
               }
-            )
+            ),
           ]).then(([build, server]) =>
             Promise.all([build.result, server.result])
           )

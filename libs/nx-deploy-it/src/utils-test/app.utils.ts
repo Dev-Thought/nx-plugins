@@ -12,7 +12,7 @@ export function createApplication(
       `@nrwl/${applicationType}`,
       'application',
       {
-        name: projectName
+        name: projectName,
       },
       tree
     )

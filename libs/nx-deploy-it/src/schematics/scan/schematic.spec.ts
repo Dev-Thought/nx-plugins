@@ -12,7 +12,7 @@ import { createApplication } from '../../utils-test/app.utils';
 import { clearTimestampFromLogEntry } from '../../utils-test/logger.utils';
 import {
   answerScanQuestions,
-  answerScanQuestionsWithNoApp
+  answerScanQuestionsWithNoApp,
 } from '../../utils-test/enquirer.utils';
 import * as schematics from '@angular-devkit/schematics';
 
@@ -60,7 +60,7 @@ describe('scan schematic', () => {
   });
 
   it('should find no applications', async () => {
-    testRunner.logger.subscribe(log => {
+    testRunner.logger.subscribe((log) => {
       clearTimestampFromLogEntry(log);
       expect(log).toMatchSnapshot();
     });
@@ -81,7 +81,7 @@ describe('scan schematic', () => {
     it('should aboard setup because of no selections', async () => {
       answerScanQuestionsWithNoApp(io);
 
-      testRunner.logger.subscribe(log => {
+      testRunner.logger.subscribe((log) => {
         clearTimestampFromLogEntry(log);
         expect(log).toMatchSnapshot();
       });
@@ -95,7 +95,7 @@ describe('scan schematic', () => {
         .mockImplementation(() => schematics.chain([]));
       answerScanQuestions(io, 'eastasia');
 
-      testRunner.logger.subscribe(log => {
+      testRunner.logger.subscribe((log) => {
         clearTimestampFromLogEntry(log);
         expect(log).toMatchSnapshot();
       });

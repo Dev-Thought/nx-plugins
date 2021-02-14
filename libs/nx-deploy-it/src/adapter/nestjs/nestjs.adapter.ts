@@ -30,7 +30,7 @@ export class NestJSAdapter extends BaseAdapter {
     const anwsers = await prompt(questions);
     this.options = {
       ...options,
-      ...anwsers
+      ...anwsers,
     };
   }
 
@@ -41,18 +41,18 @@ export class NestJSAdapter extends BaseAdapter {
       dependencies.push(
         {
           name: '@nestjs/azure-func-http',
-          version: '^0.4.2'
+          version: '^0.4.2',
         },
         {
           name: '@azure/functions',
-          version: '^1.2.0'
+          version: '^1.2.0',
         }
       );
     }
     if (this.options.provider === PROVIDER.AWS) {
       dependencies.push({
         name: 'aws-serverless-express',
-        version: '^3.3.6'
+        version: '^3.3.6',
       });
     }
     return dependencies;
@@ -65,7 +65,7 @@ export class NestJSAdapter extends BaseAdapter {
       stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
       getRootModuleName: () => 'AppModule',
       getRootModulePath: () => 'app/app.module',
-      projectName: this.options.project
+      projectName: this.options.project,
     });
   }
 
@@ -110,7 +110,7 @@ export class NestJSAdapter extends BaseAdapter {
 
     const build$: Observable<BuilderOutput> = from(
       ncc(resolve(infrastructureFolder, 'functions/main/index.ts'), {
-        cache: resolve(infrastructureFolder, 'buildcache')
+        cache: resolve(infrastructureFolder, 'buildcache'),
       })
     ).pipe(
       map(

@@ -14,7 +14,7 @@ import { createApplication } from '../../utils-test/app.utils';
 import {
   answerInitQuestionsAWS,
   answerInitQuestionsAzure,
-  answerInitQuestionsGCP
+  answerInitQuestionsGCP,
 } from '../../utils-test/enquirer.utils';
 
 describe('init schematic', () => {
@@ -56,7 +56,7 @@ describe('init schematic', () => {
   describe('pulumi project', () => {
     const options: NxDeployItInitSchematicSchema = {
       project: projectName,
-      provider: PROVIDER.AWS
+      provider: PROVIDER.AWS,
     };
 
     beforeEach(async () => {
@@ -110,7 +110,7 @@ describe('init schematic', () => {
   describe('aws provider', () => {
     const options: NxDeployItInitSchematicSchema = {
       project: projectName,
-      provider: PROVIDER.AWS
+      provider: PROVIDER.AWS,
     };
 
     beforeEach(async () => {
@@ -182,7 +182,7 @@ describe('init schematic', () => {
   describe('azure provider', () => {
     const options: NxDeployItInitSchematicSchema = {
       project: projectName,
-      provider: PROVIDER.AZURE
+      provider: PROVIDER.AZURE,
     };
 
     beforeEach(async () => {
@@ -232,7 +232,7 @@ describe('init schematic', () => {
   describe('google cloud platform provider', () => {
     const options: NxDeployItInitSchematicSchema = {
       project: projectName,
-      provider: PROVIDER.GOOGLE_CLOUD_PLATFORM
+      provider: PROVIDER.GOOGLE_CLOUD_PLATFORM,
     };
 
     beforeEach(async () => {

@@ -1,7 +1,7 @@
 import {
   BuilderContext,
   BuilderOutput,
-  createBuilder
+  createBuilder,
 } from '@angular-devkit/architect';
 import { Observable, from, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -22,14 +22,14 @@ function down(
     '--cwd',
     cwd,
     '--stack',
-    `${configuration}-${projectName}`
+    `${configuration}-${projectName}`,
   ];
   if (options.nonInteractive) {
     args.push('--non-interactive', '--yes');
   }
   const up = spawnSync(getPulumiBinaryPath(), args, {
     env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' },
-    stdio: 'inherit'
+    stdio: 'inherit',
   });
 
   if (up.error) {

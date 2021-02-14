@@ -30,7 +30,7 @@ export class ExpressAdapter extends BaseAdapter {
     const anwsers = await prompt(questions);
     this.options = {
       ...options,
-      ...anwsers
+      ...anwsers,
     };
   }
 
@@ -40,13 +40,13 @@ export class ExpressAdapter extends BaseAdapter {
     if (this.options.provider === PROVIDER.AZURE) {
       dependencies.push({
         name: 'azure-aws-serverless-express',
-        version: '^0.1.5'
+        version: '^0.1.5',
       });
     }
     if (this.options.provider === PROVIDER.AWS) {
       dependencies.push({
         name: 'aws-serverless-express',
-        version: '^3.3.6'
+        version: '^3.3.6',
       });
     }
     return dependencies;
@@ -57,7 +57,7 @@ export class ExpressAdapter extends BaseAdapter {
       rootDir: 'src',
       getRootDirectory: () => 'src',
       stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
-      projectName: this.options.project
+      projectName: this.options.project,
     });
   }
 
@@ -96,7 +96,7 @@ export class ExpressAdapter extends BaseAdapter {
 
     const build$: Observable<BuilderOutput> = from(
       ncc(resolve(infrastructureFolder, 'functions/main/index.ts'), {
-        cache: resolve(infrastructureFolder, 'buildcache')
+        cache: resolve(infrastructureFolder, 'buildcache'),
       })
     ).pipe(
       map(

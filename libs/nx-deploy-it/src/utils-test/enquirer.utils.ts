@@ -4,11 +4,11 @@ export const KEYS = {
   UP: '\x1B\x5B\x41',
   DOWN: '\x1B\x5B\x42',
   ENTER: '\x0D',
-  SPACE: '\x20'
+  SPACE: '\x20',
 };
 
 export const delay = (ms: number) =>
-  new Promise(resolve => setTimeout(resolve, ms));
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export function answerInitQuestionsAWS(
   io: MockSTDIN,

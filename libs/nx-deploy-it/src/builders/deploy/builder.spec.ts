@@ -22,7 +22,7 @@ describe('Command Runner Builder - Deploy', () => {
 
     options = {
       project: 'project-mock',
-      provider: PROVIDER.AWS
+      provider: PROVIDER.AWS,
     };
 
     spawnSync.mockReturnValue({
@@ -32,7 +32,7 @@ describe('Command Runner Builder - Deploy', () => {
       signal: null,
       status: null,
       stderr: null,
-      stdout: null
+      stdout: null,
     });
 
     await context.addTarget(
@@ -42,7 +42,7 @@ describe('Command Runner Builder - Deploy', () => {
     context.target = {
       project: 'project-mock',
       configuration: 'dev',
-      target: 'deploy'
+      target: 'deploy',
     };
   });
 
@@ -52,14 +52,14 @@ describe('Command Runner Builder - Deploy', () => {
 
   it('should run deploy for a react app', async () => {
     jest.spyOn(context, 'getTargetOptions').mockResolvedValue({
-      main: 'somewhere.ts'
+      main: 'somewhere.ts',
     } as DeployTargetOptions);
     const scheduleTargetSpy = jest
       .spyOn(context, 'scheduleTarget')
       .mockResolvedValue({
-        result: new Promise(resolve => resolve({ success: true }))
+        result: new Promise((resolve) => resolve({ success: true })),
       } as any);
-    jest.spyOn(nrwlWorkspce, 'readWorkspaceConfigPath').mockReturnValue({
+    jest.spyOn(nrwlWorkspce, 'readWorkspaceConfig').mockReturnValue({
       projects: {
         'project-mock': {
           architect: {
@@ -68,12 +68,12 @@ describe('Command Runner Builder - Deploy', () => {
               options: {
                 main: 'apps/project-mock/src/main.tsx',
                 webpackConfig: '@nrwl/react/plugins/webpack',
-                outputPath: 'dist/apps/project-mock'
-              }
-            }
-          }
-        }
-      }
+                outputPath: 'dist/apps/project-mock',
+              },
+            },
+          },
+        },
+      },
     });
     const result = await runBuilder(options, context).toPromise();
 
@@ -91,13 +91,13 @@ describe('Command Runner Builder - Deploy', () => {
     jest.spyOn(context, 'getTargetOptions').mockResolvedValue({
       main: 'somewhere.ts',
       pulumi: {
-        'aws:region': 'eu-central-1'
-      }
+        'aws:region': 'eu-central-1',
+      },
     } as DeployTargetOptions);
     jest.spyOn(context, 'scheduleTarget').mockResolvedValue({
-      result: new Promise(resolve => resolve({ success: true }))
+      result: new Promise((resolve) => resolve({ success: true })),
     } as any);
-    jest.spyOn(nrwlWorkspce, 'readWorkspaceConfigPath').mockReturnValue({
+    jest.spyOn(nrwlWorkspce, 'readWorkspaceConfig').mockReturnValue({
       projects: {
         'project-mock': {
           architect: {
@@ -106,12 +106,12 @@ describe('Command Runner Builder - Deploy', () => {
               options: {
                 main: 'apps/project-mock/src/main.tsx',
                 webpackConfig: '@nrwl/react/plugins/webpack',
-                outputPath: 'dist/apps/project-mock'
-              }
-            }
-          }
-        }
-      }
+                outputPath: 'dist/apps/project-mock',
+              },
+            },
+          },
+        },
+      },
     });
 
     await runBuilder(options, context).toPromise();
@@ -123,16 +123,16 @@ describe('Command Runner Builder - Deploy', () => {
     jest.spyOn(context, 'getTargetOptions').mockResolvedValue({
       main: 'somewhere.ts',
       pulumi: {
-        'aws:region': 'eu-central-1'
-      }
+        'aws:region': 'eu-central-1',
+      },
     } as DeployTargetOptions);
     jest.spyOn(context, 'scheduleTarget').mockResolvedValue({
-      result: new Promise(resolve => resolve({ success: true }))
+      result: new Promise((resolve) => resolve({ success: true })),
     } as any);
     jest
       .spyOn(utils, 'getApplicationType')
       .mockReturnValueOnce(utils.ApplicationType.NESTJS);
-    jest.spyOn(nrwlWorkspce, 'readWorkspaceConfigPath').mockReturnValue({
+    jest.spyOn(nrwlWorkspce, 'readWorkspaceConfig').mockReturnValue({
       projects: {
         'project-mock': {
           architect: {
@@ -142,19 +142,19 @@ describe('Command Runner Builder - Deploy', () => {
                 outputPath: 'dist/apps/api',
                 main: 'apps/api/src/main.ts',
                 tsConfig: 'apps/api/tsconfig.app.json',
-                assets: ['apps/api/src/assets']
-              }
-            }
+                assets: ['apps/api/src/assets'],
+              },
+            },
           },
-          root: 'apps/api'
-        }
-      }
+          root: 'apps/api',
+        },
+      },
     });
     jest.spyOn(process, 'chdir').mockReturnValue();
     jest.spyOn(process, 'cwd').mockReturnValue('mockProcessCwd');
     (ncc as jest.SpyInstance).mockResolvedValueOnce({
       code: 'Some Code',
-      asset: { 'asset1.png': { source: 'code of asset 1' } }
+      asset: { 'asset1.png': { source: 'code of asset 1' } },
     });
     jest.spyOn(fsExtra, 'ensureDirSync').mockReturnThis();
     jest.spyOn(fsExtra, 'ensureFileSync').mockReturnThis();

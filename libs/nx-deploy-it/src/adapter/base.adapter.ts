@@ -50,7 +50,7 @@ export class BaseAdapter {
     const anwsers = await prompt(questions);
     this.options = {
       ...options,
-      ...anwsers
+      ...anwsers,
     };
   }
 
@@ -71,7 +71,7 @@ export class BaseAdapter {
   getDeployActionConfiguration(): any {
     const architectOptions: ArchitectOptions = {
       main: join(this.project.root, 'infrastructure', 'index.ts'),
-      provider: this.options.provider
+      provider: this.options.provider,
     };
 
     const mergeOptions = { ...this.options };
@@ -82,24 +82,24 @@ export class BaseAdapter {
       builder: '@dev-thought/nx-deploy-it:deploy',
       options: {
         ...architectOptions,
-        pulumi: mergeOptions
+        pulumi: mergeOptions,
       },
-      configurations: {}
+      configurations: {},
     };
   }
 
   getDestroyActionConfiguration(): any {
     const architectOptions: ArchitectOptions = {
       main: join(this.project.root, 'infrastructure', 'index.ts'),
-      provider: this.options.provider
+      provider: this.options.provider,
     };
 
     return {
       builder: '@dev-thought/nx-deploy-it:destroy',
       options: {
-        ...architectOptions
+        ...architectOptions,
       },
-      configurations: {}
+      configurations: {},
     };
   }
 
@@ -117,9 +117,9 @@ export class BaseAdapter {
         .scheduleTarget({
           target: 'build',
           project: context.target.project,
-          configuration: context.target.configuration || ''
+          configuration: context.target.configuration || '',
         })
-        .then(target => target.result)
+        .then((target) => target.result)
     );
 
     return build$.pipe(
@@ -150,7 +150,7 @@ export class BaseAdapter {
       '--cwd',
       cwd,
       '--stack',
-      `${configuration}-${projectName}`
+      `${configuration}-${projectName}`,
     ];
     if (options.nonInteractive) {
       args.push('--non-interactive', '--yes');
@@ -171,7 +171,7 @@ export class BaseAdapter {
 
     const up = spawnSync(getPulumiBinaryPath(), args, {
       env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' },
-      stdio: 'inherit'
+      stdio: 'inherit',
     });
 
     if (up.error) {
@@ -189,11 +189,11 @@ export class BaseAdapter {
       cwd,
       '--stack',
       `${configuration}-${projectName}`,
-      '--json'
+      '--json',
     ];
 
     const output = spawnSync(getPulumiBinaryPath(), args, {
-      env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' }
+      env: { ...process.env, PULUMI_SKIP_UPDATE_CHECK: '1' },
     });
 
     return JSON.parse(output.stdout.toString());

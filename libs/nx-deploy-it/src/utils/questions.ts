@@ -28,8 +28,8 @@ export const QUESTIONS = {
 
       'ap-east-1',
       'ap-northeast-3',
-      'me-south-1'
-    ]
+      'me-south-1',
+    ],
   },
 
   // https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations/list
@@ -46,14 +46,14 @@ export const QUESTIONS = {
       'us-central1',
       'us-east1',
       'asia-east2',
-      'asia-northeast1'
-    ]
+      'asia-northeast1',
+    ],
   },
 
   gcpProjectId: {
     type: 'input',
     name: 'gcp:project',
-    message: 'Your google project ID where all the resources will be deployed'
+    message: 'Your google project ID where all the resources will be deployed',
   },
 
   // get list with: az account list-locations | jq ".[] | .name"
@@ -102,8 +102,8 @@ export const QUESTIONS = {
       'germanynorth',
       'germanywestcentral',
       'norwaywest',
-      'norwayeast'
-    ]
+      'norwayeast',
+    ],
   },
 
   customDomainName: {
@@ -111,21 +111,21 @@ export const QUESTIONS = {
     name: 'customDomainName',
     message:
       'GCP requires a customDomainName which needs to be set up by you. Find more in the documentation.',
-    initial: 'www.example.com'
+    initial: 'www.example.com',
   },
 
   awsProfile: {
     type: 'input',
     name: 'aws:profile',
     message:
-      'Do you want to use a specific aws profile? Just skip if you want to use the default one.'
+      'Do you want to use a specific aws profile? Just skip if you want to use the default one.',
   },
 
   setupApplications: {
     type: 'MultiSelect',
     name: 'setupApplications',
     message:
-      "Please select the applications you want to setup. If you don't select one, you will skip this process and you can do it later again."
+      "Please select the applications you want to setup. If you don't select one, you will skip this process and you can do it later again.",
   },
 
   whichProvider: {
@@ -134,11 +134,11 @@ export const QUESTIONS = {
     choices: [
       { name: 'AWS', value: PROVIDER.AWS },
       { name: 'Azure', value: PROVIDER.AZURE },
-      { name: 'Google Cloud Platform', value: PROVIDER.GOOGLE_CLOUD_PLATFORM }
+      { name: 'Google Cloud Platform', value: PROVIDER.GOOGLE_CLOUD_PLATFORM },
     ],
-    result: function(r: string) {
+    result: function (r: string) {
       return Object.values(this.map(r))[0];
-    }
+    },
   } as any,
 
   angularUniversal: {
@@ -148,15 +148,15 @@ export const QUESTIONS = {
     choices: [
       {
         name: 'Prerendering',
-        value: ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.PRERENDERING
+        value: ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.PRERENDERING,
       },
       {
         name: 'Server Side Rendering',
-        value: ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.SERVER_SIDE_RENDERING
-      }
+        value: ANGULAR_UNIVERSAL_DEPLOYMENT_TYPE.SERVER_SIDE_RENDERING,
+      },
     ],
-    result: function(r: string) {
+    result: function (r: string) {
       return Object.values(this.map(r))[0];
-    }
-  }
+    },
+  },
 };

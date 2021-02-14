@@ -5,7 +5,7 @@ export function hasImport(
   importModule: string
 ): boolean {
   return !!statements
-    .filter(node => {
+    .filter((node) => {
       return node.kind === ts.SyntaxKind.ImportDeclaration;
     })
     .map((node: ts.ImportDeclaration) => (node.moduleSpecifier as any).text)

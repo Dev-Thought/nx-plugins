@@ -24,7 +24,7 @@ export class WebappAdapter extends BaseAdapter {
     const anwsers = await prompt(questions);
     this.options = {
       ...options,
-      ...anwsers
+      ...anwsers,
     };
   }
 
@@ -45,7 +45,7 @@ export class WebappAdapter extends BaseAdapter {
       buildPath: join(
         `../../../${(buildTarget.options as JsonObject).outputPath}`
       ),
-      projectName: this.options.project
+      projectName: this.options.project,
     });
   }
 
@@ -58,7 +58,7 @@ export class WebappAdapter extends BaseAdapter {
 
     config.options.pulumi.useCdn = false;
     config.configurations = {
-      production: { pulumi: { useCdn: true } }
+      production: { pulumi: { useCdn: true } },
     };
     return config;
   }

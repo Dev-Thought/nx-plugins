@@ -14,7 +14,7 @@ describe('Command Runner Builder - Destroy', () => {
     context = await getMockContext();
 
     options = {
-      project: 'project-mock'
+      project: 'project-mock',
     };
   });
 
@@ -30,7 +30,7 @@ describe('Command Runner Builder - Destroy', () => {
 
   it('should run destroy', async () => {
     jest.spyOn(context, 'getTargetOptions').mockResolvedValue({
-      main: 'somewhere.ts'
+      main: 'somewhere.ts',
     } as DestroyTargetOptions);
     spawnSync.mockReturnValue({
       pid: null,
@@ -39,7 +39,7 @@ describe('Command Runner Builder - Destroy', () => {
       signal: null,
       status: null,
       stderr: null,
-      stdout: null
+      stdout: null,
     });
     await context.addTarget(
       { project: 'project-mock', configuration: 'dev', target: 'destroy' },
@@ -48,7 +48,7 @@ describe('Command Runner Builder - Destroy', () => {
     context.target = {
       project: 'project-mock',
       configuration: 'dev',
-      target: 'destroy'
+      target: 'destroy',
     };
     const result = await runBuilder(options, context).toPromise();
 
@@ -58,7 +58,7 @@ describe('Command Runner Builder - Destroy', () => {
 
   it('should run destroy and return success: false if pulumi fails', async () => {
     jest.spyOn(context, 'getTargetOptions').mockResolvedValue({
-      main: 'somewhere.ts'
+      main: 'somewhere.ts',
     } as DestroyTargetOptions);
     spawnSync.mockReturnValue({
       pid: null,
@@ -67,7 +67,7 @@ describe('Command Runner Builder - Destroy', () => {
       signal: null,
       status: null,
       stderr: null,
-      stdout: null
+      stdout: null,
     });
     await context.addTarget(
       { project: 'project-mock', configuration: 'dev', target: 'destroy' },
@@ -76,7 +76,7 @@ describe('Command Runner Builder - Destroy', () => {
     context.target = {
       project: 'project-mock',
       configuration: 'dev',
-      target: 'destroy'
+      target: 'destroy',
     };
 
     const result = await runBuilder(options, context).toPromise();

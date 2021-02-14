@@ -7,27 +7,27 @@ export function createPulumiMockProjectInTree(
   projectName: string
 ) {
   let dependencies: { [index: string]: string } = {
-    '@pulumi/pulumi': '^1.2.3'
+    '@pulumi/pulumi': '^1.2.3',
   };
   switch (provider) {
     case PROVIDER.AWS:
       dependencies = {
         ...dependencies,
         '@pulumi/aws': '^1.2.3',
-        '@pulumi/awsx': '^1.2.3'
+        '@pulumi/awsx': '^1.2.3',
       };
       break;
 
     case PROVIDER.AZURE:
       dependencies = {
         ...dependencies,
-        '@pulumi/azure': '^1.2.3'
+        '@pulumi/azure': '^1.2.3',
       };
       break;
     case PROVIDER.GOOGLE_CLOUD_PLATFORM:
       dependencies = {
         ...dependencies,
-        '@pulumi/gcp': '^1.2.3'
+        '@pulumi/gcp': '^1.2.3',
       };
       break;
 
@@ -38,7 +38,7 @@ export function createPulumiMockProjectInTree(
   tree.create(
     `./apps/${projectName}/infrastructure/package.json`,
     JSON.stringify({
-      dependencies
+      dependencies,
     })
   );
 }

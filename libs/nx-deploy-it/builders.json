@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/@angular-devkit/architect/src/builders-schema.json",
-  "builders": {
+  "executors": {
     "deploy": {
       "implementation": "./src/builders/deploy/builder",
       "schema": "./src/builders/deploy/schema.json",
@@ -10,6 +10,11 @@
       "implementation": "./src/builders/destroy/builder",
       "schema": "./src/builders/destroy/schema.json",
       "description": "Destroy infrstructure"
+    },
+    "remove": {
+      "implementation": "./src/executors/remove/executor",
+      "schema": "./src/executors/remove/schema.json",
+      "description": "Remove nx-deploy-it from your application"
     }
   }
 }
