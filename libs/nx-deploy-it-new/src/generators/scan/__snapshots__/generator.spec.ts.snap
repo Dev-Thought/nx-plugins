@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`scan generator should run successfully 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "info",
+      "no applications found",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`scan generator with applications should aboard setup because of no selections 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "info",
+      "We found 1 supported applications.",
+    ],
+    Array [
+      "info",
+      "No applications selected. Skipping setup",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`scan generator with applications should setup 2 selected applications 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "info",
+      "We found 2 supported applications.",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`scan generator with applications should setup the selected angular application 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      "info",
+      "We found 1 supported applications.",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
