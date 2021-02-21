@@ -72,6 +72,71 @@
           }
         }
       }
+    },
+    "nx-deploy-it-new": {
+      "root": "libs/nx-deploy-it-new",
+      "sourceRoot": "libs/nx-deploy-it-new/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/nx-deploy-it-new/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/nx-deploy-it-new"],
+          "options": {
+            "jestConfig": "libs/nx-deploy-it-new/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/nx-deploy-it-new",
+            "tsConfig": "libs/nx-deploy-it-new/tsconfig.lib.json",
+            "packageJson": "libs/nx-deploy-it-new/package.json",
+            "main": "libs/nx-deploy-it-new/src/index.ts",
+            "assets": [
+              "libs/nx-deploy-it-new/*.md",
+              {
+                "input": "./libs/nx-deploy-it-new/src",
+                "glob": "**/*.!(ts)",
+                "output": "./src"
+              },
+              {
+                "input": "./libs/nx-deploy-it-new",
+                "glob": "generators.json",
+                "output": "."
+              },
+              {
+                "input": "./libs/nx-deploy-it-new",
+                "glob": "executors.json",
+                "output": "."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "nx-deploy-it-new-e2e": {
+      "projectType": "application",
+      "root": "apps/nx-deploy-it-new-e2e",
+      "sourceRoot": "apps/nx-deploy-it-new-e2e/src",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/nx-plugin:e2e",
+          "options": {
+            "target": "nx-deploy-it-new:build",
+            "npmPackageName": "@dev-thought/nx-deploy-it-new",
+            "pluginOutputPath": "dist/libs/nx-deploy-it-new",
+            "jestConfig": "apps/nx-deploy-it-new-e2e/jest.config.js"
+          }
+        }
+      }
     }
   },
   "cli": {

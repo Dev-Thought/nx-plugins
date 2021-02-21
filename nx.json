@@ -2,21 +2,21 @@
   "npmScope": "dev-thought",
   "implicitDependencies": {
     "workspace.json": "*",
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
-    },
+    "package.json": { "dependencies": "*", "devDependencies": "*" },
     "tsconfig.json": "*",
     "tslint.json": "*",
     "nx.json": "*"
   },
   "projects": {
-    "nx-deploy-it": {
-      "tags": []
-    },
+    "nx-deploy-it": { "tags": [] },
     "nx-deploy-it-e2e": {
       "tags": [],
       "implicitDependencies": ["nx-deploy-it"]
+    },
+    "nx-deploy-it-new": { "tags": [] },
+    "nx-deploy-it-new-e2e": {
+      "tags": [],
+      "implicitDependencies": ["nx-deploy-it-new"]
     }
   }
 }

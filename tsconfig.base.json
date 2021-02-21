@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@dev-thought/nx-deploy-it": ["libs/nx-deploy-it/src/index.ts"]
+      "@dev-thought/nx-deploy-it": ["libs/nx-deploy-it/src/index.ts"],
+      "@dev-thought/nx-deploy-it-new": ["libs/nx-deploy-it-new/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

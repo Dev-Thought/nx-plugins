@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "executors": {
+    "build": {
+      "implementation": "./src/executors/build/executor",
+      "schema": "./src/executors/build/schema.json",
+      "description": "build executor"
+    },
+    "deploy": {
+      "implementation": "./src/executors/deploy/executor",
+      "schema": "./src/executors/deploy/schema.json",
+      "description": "deploy executor"
+    },
+    "destroy": {
+      "implementation": "./src/executors/destroy/executor",
+      "schema": "./src/executors/destroy/schema.json",
+      "description": "destroy executor"
+    },
+    "delete": {
+      "implementation": "./src/executors/delete/executor",
+      "schema": "./src/executors/delete/schema.json",
+      "description": "delete executor"
+    }
+  }
+}
