@@ -4,15 +4,15 @@
   "version": "0.0.1",
   "generators": {
     "scan": {
-      "factory": "./src/generators/scan/schematic",
+      "factory": "./src/generators/scan/generator",
       "schema": "./src/generators/scan/schema.json",
-      "description": "scan schematic",
+      "description": "scan generator",
       "aliases": ["ng-add"]
     },
     "init": {
-      "factory": "./src/generators/init/schematic",
+      "factory": "./src/generators/init/generator",
       "schema": "./src/generators/init/schema.json",
-      "description": "init schematic"
+      "description": "init generator"
     }
   }
 }

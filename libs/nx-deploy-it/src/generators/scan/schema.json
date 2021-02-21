@@ -3,5 +3,6 @@
   "id": "scan",
   "title": "",
   "type": "object",
+  "cli": "nx",
   "properties": {}
 }

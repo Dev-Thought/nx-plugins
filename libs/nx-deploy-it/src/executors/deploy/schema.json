@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
   "title": "NxDeployIt Deploy infrastructure",
   "description": "Deploy the infrastructure for the app",
   "type": "object",

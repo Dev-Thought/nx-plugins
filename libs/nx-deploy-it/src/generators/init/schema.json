@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/schema",
   "id": "NxDeployItInit",
   "title": "Add nx-deploy-it cloud configuration for an application",
+  "cli": "nx",
   "type": "object",
   "properties": {
     "project": {

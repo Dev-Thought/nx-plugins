@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
   "title": "NxDeployIt Destroy infrastructure",
   "description": "Destroy the infrastructure for the app",
   "type": "object",
