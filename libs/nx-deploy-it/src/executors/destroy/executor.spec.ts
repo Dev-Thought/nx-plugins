@@ -1,6 +1,6 @@
 import { NxDeployItDestroyBuilderSchema } from './schema';
 import { MockBuilderContext } from '@nrwl/workspace/testing';
-import { runBuilder } from './builder';
+import { runBuilder } from './executor';
 import { getMockContext } from '../../utils-test/builders.utils';
 import { DestroyTargetOptions } from './target-options';
 import * as childProcess from 'child_process';

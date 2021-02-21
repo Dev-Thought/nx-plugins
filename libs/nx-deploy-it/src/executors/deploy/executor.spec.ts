@@ -2,7 +2,7 @@ import { NxDeployItDeployBuilderSchema } from './schema';
 import { MockBuilderContext } from '@nrwl/workspace/testing';
 import * as childProcess from 'child_process';
 import { getMockContext } from '../../utils-test/builders.utils';
-import { runBuilder } from './builder';
+import { runBuilder } from './executor';
 import { DeployTargetOptions } from './target-options';
 import * as nrwlWorkspce from '@nrwl/workspace';
 import * as utils from '../../utils/application-type';
